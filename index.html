@@ -30,7 +30,6 @@ h2{
 margin-left:20px;
 }
 
-/* GRID */
 .container{
 display:grid;
 grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
@@ -43,15 +42,30 @@ padding:20px;
 border-radius:15px;
 box-shadow:0 8px 20px rgba(0,0,0,0.3);
 transition:0.3s;
+cursor:pointer;
 }
 .card:hover{transform:scale(1.05);}
 
-/* SIM COLORS */
+/* SELECTED */
+.selected{
+border:3px solid yellow;
+}
+
+/* COLORS */
 .gp{background:#00a651;}
 .robi{background:#e60000;}
 .airtel{background:#ff0033;}
 .bl{background:#ff6600;}
 .tt{background:#008000;}
+
+.price{
+background:#000;
+padding:5px 10px;
+border-radius:10px;
+display:inline-block;
+margin-top:5px;
+font-weight:bold;
+}
 
 button{
 margin-top:10px;
@@ -63,7 +77,6 @@ color:white;
 cursor:pointer;
 }
 
-/* ADMIN */
 .admin{
 display:none;
 background:#000;
@@ -79,6 +92,13 @@ margin:5px 0;
 border:none;
 border-radius:5px;
 }
+
+.history{
+margin:20px;
+padding:20px;
+background:rgba(0,0,0,0.5);
+border-radius:10px;
+}
 </style>
 </head>
 
@@ -86,23 +106,32 @@ border-radius:5px;
 
 <header onclick="secretClick()">
 <h1>🔥 Internet Offer Zone</h1>
-<p>(৩ বার চাপ দিলে admin login 😉)</p>
 </header>
 
 <div class="slider" id="sliderText">🔥 আজকের অফার</div>
 
-<!-- SIM SECTION FUNCTION COPY STYLE -->
-
 <script>
+let selectedCard = null;
+
+function createCard(id,name,price,className){
+return `
+<div class="card ${className}" id="${id}" onclick="selectCard('${id}')">
+<p>${name}</p>
+<div class="price">💰 ${price}</div>
+<button onclick="orderNow('${name} - ${price}'); event.stopPropagation();">Buy</button>
+</div>`;
+}
+
 function createSection(title, prefix, className){
 document.write(`<h2>📶 ${title}</h2><div class="container">`);
-for(let i=1;i<=4;i++){
-document.write(`
-<div class="card ${className}">
-<p id="${prefix}${i}">${title} Offer ${i}</p>
-<button onclick="orderNow(${prefix}${i}.innerText)">Buy</button>
-</div>`);
+
+let packs=["Family","Gift","House","Regular"];
+let prices=["299৳","149৳","499৳","99৳"];
+
+for(let i=0;i<4;i++){
+document.write(createCard(prefix+(i+1),`${title} ${packs[i]}`,prices[i],className));
 }
+
 document.write(`</div>`);
 }
 </script>
@@ -115,16 +144,20 @@ createSection("Banglalink","b","bl");
 createSection("Teletalk","t","tt");
 </script>
 
-<!-- ADMIN PANEL -->
+<!-- ADMIN -->
 <div class="admin" id="adminPanel">
 <h2>Admin Panel</h2>
 
-<p>Example: gp1 = GP Family Offer</p>
+<input id="newName" placeholder="New Offer Name">
+<input id="newPrice" placeholder="New Price">
+<button onclick="updateSelected()">Update Selected Offer</button>
 
-<input id="key" placeholder="ID (gp1, r1, a1 etc)">
-<input id="value" placeholder="New Offer">
-<button onclick="saveData()">Save</button>
+</div>
 
+<!-- ORDER HISTORY -->
+<div class="history">
+<h2>📦 Your Orders</h2>
+<ul id="orderList"></ul>
 </div>
 
 <script>
@@ -136,38 +169,78 @@ if(clickCount==3){
 let pass=prompt("Password:");
 if(pass=="122055"){
 adminPanel.style.display="block";
-}else alert("Wrong Password!");
+}else alert("Wrong!");
 clickCount=0;
 }
 }
 
-/* SAVE */
-function saveData(){
-let k=document.getElementById("key").value;
-let v=document.getElementById("value").value;
-
-if(document.getElementById(k)){
-document.getElementById(k).innerText=v;
-localStorage.setItem(k,v);
-alert("Updated!");
-}else{
-alert("Wrong ID");
+/* SELECT CARD */
+function selectCard(id){
+if(selectedCard){
+document.getElementById(selectedCard).classList.remove("selected");
 }
+selectedCard=id;
+document.getElementById(id).classList.add("selected");
+}
+
+/* UPDATE SELECTED */
+function updateSelected(){
+if(!selectedCard){
+alert("আগে একটি offer select করুন");
+return;
+}
+
+let name=document.getElementById("newName").value;
+let price=document.getElementById("newPrice").value;
+
+let card=document.getElementById(selectedCard);
+
+card.innerHTML=`
+<p>${name}</p>
+<div class="price">💰 ${price}</div>
+<button onclick="orderNow('${name} - ${price}'); event.stopPropagation();">Buy</button>
+`;
+
+localStorage.setItem(selectedCard, JSON.stringify({name,price}));
+
+alert("Updated ✅");
 }
 
 /* LOAD */
 window.onload=function(){
 for(let i=0;i<localStorage.length;i++){
 let k=localStorage.key(i);
-if(document.getElementById(k)){
-document.getElementById(k).innerText=localStorage.getItem(k);
-}
+let data=JSON.parse(localStorage.getItem(k));
+if(document.getElementById(k) && data){
+let card=document.getElementById(k);
+card.innerHTML=`
+<p>${data.name}</p>
+<div class="price">💰 ${data.price}</div>
+<button onclick="orderNow('${data.name} - ${data.price}'); event.stopPropagation();">Buy</button>
+`;
 }
 }
 
-/* WHATSAPP ORDER */
+/* LOAD ORDERS */
+let orders=JSON.parse(localStorage.getItem("orders")||"[]");
+orders.forEach(o=>{
+let li=document.createElement("li");
+li.innerText=o;
+orderList.appendChild(li);
+});
+}
+
+/* ORDER */
 function orderNow(product){
 window.open("https://wa.me/8801624228476?text="+encodeURIComponent("আমি নিতে চাই: "+product));
+
+let li=document.createElement("li");
+li.innerText=product;
+orderList.appendChild(li);
+
+let orders=JSON.parse(localStorage.getItem("orders")||"[]");
+orders.push(product);
+localStorage.setItem("orders",JSON.stringify(orders));
 }
 
 /* SLIDER */
