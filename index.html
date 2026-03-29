@@ -13,7 +13,6 @@ background:linear-gradient(135deg,#6a11cb,#2575fc);
 color:white;
 }
 
-/* TOP */
 .topbar{text-align:center;padding:5px;font-size:14px;}
 .trust{text-align:center;background:#00ffcc;color:black;padding:8px;font-weight:bold;}
 
@@ -35,20 +34,27 @@ gap:10px;padding:10px;
 .box{
 background:linear-gradient(135deg,#1e3c72,#2a5298);
 padding:10px;border-radius:12px;text-align:center;
-box-shadow:0 5px 15px rgba(0,0,0,0.4);
 }
 
-.price{font-weight:bold;margin-top:3px;}
+.price{font-weight:bold;}
 
 button{
 margin-top:5px;
-padding:8px 10px;
+padding:8px;
 border:none;
 border-radius:20px;
 background:linear-gradient(135deg,#ff512f,#dd2476);
 color:white;
 cursor:pointer;
-font-weight:bold;
+}
+
+/* ADMIN PANEL */
+.admin{
+display:none;
+background:black;
+padding:15px;
+margin:10px;
+border-radius:10px;
 }
 </style>
 </head>
@@ -62,10 +68,19 @@ font-weight:bold;
 <h1>🔥 Internet Offer Zone</h1>
 </header>
 
-<div class="slider" id="sliderText">🔥 সাশ্রয় দামে সব অফার দেখুন</div>
-<div class="notice" id="noticeText">📢 প্রতিদিন নতুন অফার আপডেট করা হয়</div>
+<div class="slider">🔥 সাশ্রয় দামে সব অফার দেখুন</div>
+<div class="notice">📢 প্রতিদিন নতুন অফার আপডেট করা হয়</div>
 
 <div id="main"></div>
+
+<!-- ADMIN PANEL -->
+<div class="admin" id="adminPanel">
+<h3>Admin Panel</h3>
+<input id="idInput" placeholder="Offer ID (gp01, r12...)">
+<input id="nameInput" placeholder="Offer Name">
+<input id="priceInput" placeholder="Price">
+<button onclick="updateOffer()">Update</button>
+</div>
 
 <script>
 let isAdmin=false;
@@ -75,28 +90,29 @@ function login(){
 let pass=prompt("Password:");
 if(pass==="122055"){
 isAdmin=true;
-alert("✅ Admin Mode ON");
+document.getElementById("adminPanel").style.display="block";
+alert("Admin ON");
 }else{
-alert("❌ Wrong Password");
+alert("Wrong Password");
 }
 }
 
 /* CREATE */
 function createSIM(sim,prefix){
 let packs=["Family","Gift","House","Regular","Minute"];
-let html=`<h2 style="margin-left:15px;">📶 ${sim}</h2>`;
+let html=`<h2>${sim}</h2>`;
 
-packs.forEach((pack,index)=>{
-html+=`<h3 style="margin-left:20px;">👉 ${pack}</h3><div class="grid">`;
+packs.forEach((pack,pIndex)=>{
+html+=`<h3>${pack}</h3><div class="grid">`;
 
 for(let i=1;i<=10;i++){
-let id=prefix+index+i;
+let id=prefix+pIndex+i;
 
 html+=`
-<div class="box" data-id="${id}">
+<div class="box">
 <p id="${id}">${sim} ${pack} ${i}</p>
 <p class="price" id="price${id}">0৳</p>
-<button class="buyBtn" data-id="${id}">Buy</button>
+<button onclick="buy('${id}')">Buy</button>
 </div>
 `;
 }
@@ -107,7 +123,6 @@ html+=`</div>`;
 return html;
 }
 
-/* LOAD UI */
 document.getElementById("main").innerHTML=
 createSIM("Grameenphone","gp")+
 createSIM("Robi","r")+
@@ -115,43 +130,27 @@ createSIM("Airtel","a")+
 createSIM("Banglalink","b")+
 createSIM("Teletalk","t");
 
-/* CLICK SYSTEM FIX */
-document.addEventListener("click",function(e){
+/* UPDATE OFFER */
+function updateOffer(){
+let id=idInput.value;
+let name=nameInput.value;
+let price=priceInput.value;
 
-/* BUY BUTTON */
-if(e.target.classList.contains("buyBtn")){
-let id=e.target.getAttribute("data-id");
-
-let name=document.getElementById(id).innerText;
-let price=document.getElementById("price"+id).innerText;
-
-window.open("https://wa.me/8801624228476?text="+encodeURIComponent(name+" - "+price));
+if(!document.getElementById(id)){
+alert("Wrong ID");
 return;
 }
 
-/* EDIT SYSTEM */
-let box=e.target.closest(".box");
-if(box && isAdmin){
-let id=box.getAttribute("data-id");
-
-let name=prompt("Offer Name:",document.getElementById(id).innerText);
-let price=prompt("Price:",document.getElementById("price"+id).innerText);
-
-if(name!==null){
 document.getElementById(id).innerText=name;
-localStorage.setItem(id,name);
-}
-
-if(price!==null){
 document.getElementById("price"+id).innerText=price;
+
+localStorage.setItem(id,name);
 localStorage.setItem("price"+id,price);
+
+alert("Updated");
 }
 
-alert("✅ Updated!");
-}
-});
-
-/* LOAD DATA */
+/* LOAD */
 window.onload=function(){
 for(let i=0;i<localStorage.length;i++){
 let k=localStorage.key(i);
@@ -161,18 +160,13 @@ document.getElementById(k).innerText=localStorage.getItem(k);
 }
 }
 
-/* SLIDER */
-let texts=[
-"🔥 সাশ্রয় দামে সব অফার দেখুন",
-"💥 ধামাকা অফার চলছে",
-"🚀 নতুন প্যাক এসেছে"
-];
+/* BUY */
+function buy(id){
+let name=document.getElementById(id).innerText;
+let price=document.getElementById("price"+id).innerText;
 
-let i=0;
-setInterval(()=>{
-i=(i+1)%texts.length;
-sliderText.innerText=texts[i];
-},2000);
+window.open("https://wa.me/8801624228476?text="+encodeURIComponent(name+" - "+price));
+}
 </script>
 
 </body>
