@@ -16,27 +16,41 @@ color:white;
 .topbar{text-align:center;padding:5px;font-size:14px;}
 .trust{text-align:center;background:#00ffcc;color:black;padding:8px;font-weight:bold;}
 
-header{text-align:center;padding:25px;cursor:pointer;}
+header{text-align:center;padding:20px;cursor:pointer;}
 
-.slider{text-align:center;padding:10px;background:black;font-weight:bold;}
+.slider{
+background:black;
+padding:10px;
+text-align:center;
+font-weight:bold;
+}
 
-.notice{
-background:linear-gradient(90deg,#ffcc00,#ff9900);
-color:black;text-align:center;padding:10px;font-weight:bold;
+.sectionTitle{
+text-align:center;
+margin-top:20px;
+font-size:20px;
+font-weight:bold;
 }
 
 .grid{
 display:grid;
 grid-template-columns:repeat(2,1fr);
-gap:10px;padding:10px;
+gap:10px;
+padding:10px;
 }
 
 .box{
 background:linear-gradient(135deg,#1e3c72,#2a5298);
-padding:10px;border-radius:12px;text-align:center;
+padding:10px;
+border-radius:12px;
+text-align:center;
 }
 
-.price{font-weight:bold;}
+.highlight{
+border:2px solid yellow;
+}
+
+.price{font-weight:bold;font-size:16px;}
 
 button{
 margin-top:5px;
@@ -48,9 +62,19 @@ color:white;
 cursor:pointer;
 }
 
-.admin{
-display:none;
+.notice{
+margin:15px;
+padding:12px;
 background:black;
+border-radius:10px;
+text-align:center;
+font-size:14px;
+border:2px solid yellow;
+}
+
+.adminPanel{
+display:none;
+background:#000;
 padding:15px;
 margin:10px;
 border-radius:10px;
@@ -67,25 +91,37 @@ border-radius:10px;
 <h1>🔥 Internet Offer Zone</h1>
 </header>
 
-<div class="slider">🔥 সাশ্রয় দামে সব অফার দেখুন</div>
-<div class="notice">📢 প্রতিদিন নতুন অফার আপডেট করা হয়</div>
+<div class="slider">🔥 আজকের সেরা অফার</div>
 
+<div class="sectionTitle">📦 All Offers</div>
 <div id="main"></div>
 
-<!-- ADMIN PANEL -->
-<div class="admin" id="adminPanel">
-<h3>Admin Panel</h3>
-<input id="idInput" placeholder="Offer ID (gp01, r12...)">
+<!-- 🔐 ADMIN PANEL -->
+<div class="adminPanel" id="adminPanel">
+<h3>📊 Admin Panel</h3>
+<input id="idInput" placeholder="gp01">
 <input id="nameInput" placeholder="Offer Name">
 <input id="priceInput" placeholder="Price">
-<button onclick="updateOffer()">Update</button>
+<button onclick="saveData()">Save</button>
+</div>
+
+<!-- 💰 UPDATED NOTICE -->
+<div class="notice">
+📢 প্রতিদিন নতুন অফার আপডেট করা হয় <br>
+💬 অর্ডার করতে Buy বাটনে ক্লিক করুন <br><br>
+
+💳 Payment Options: <br>
+📲 bKash: 01618599077 <br>
+📲 Nagad: 01624228476 <br>
+📲 Rocket: 01624228476 <br><br>
+
+⚡ Payment করে Screenshot দিন
 </div>
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js";
 import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js";
 
-/* 🔥 তোমার Firebase config বসানো হয়েছে */
 const firebaseConfig = {
   apiKey: "AIzaSyD44JlXcOD8Fb_Q1UgJtAeHXp35SUcqis8",
   authDomain: "internet-offer-7ad50.firebaseapp.com",
@@ -95,35 +131,31 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
+/* 🔐 LOGIN */
 let isAdmin=false;
 
-/* LOGIN */
 function login(){
-let pass=prompt("Password:");
-if(pass==="122055"){
+let pass = prompt("Admin Password:");
+if(pass==="1234"){
 isAdmin=true;
 document.getElementById("adminPanel").style.display="block";
-alert("Admin ON");
+alert("Admin Mode ON");
 }else{
 alert("Wrong Password");
 }
 }
 window.login = login;
 
-/* CREATE */
+/* CREATE UI */
 function createSIM(sim,prefix){
-let packs=["Family","Gift","House","Regular","Minute"];
-let html=`<h2>${sim}</h2>`;
-
-packs.forEach((pack,pIndex)=>{
-html+=`<h3>${pack}</h3><div class="grid">`;
+let html=`<div class="sectionTitle">${sim}</div><div class="grid">`;
 
 for(let i=1;i<=10;i++){
-let id=prefix+pIndex+i;
+let id=prefix+"0"+i;
 
 html+=`
-<div class="box">
-<p id="${id}">${sim} ${pack} ${i}</p>
+<div class="box" id="box${id}">
+<p id="${id}">${sim} Offer ${i}</p>
 <p class="price" id="price${id}">0৳</p>
 <button onclick="buy('${id}')">Buy</button>
 </div>
@@ -131,8 +163,6 @@ html+=`
 }
 
 html+=`</div>`;
-});
-
 return html;
 }
 
@@ -143,7 +173,7 @@ createSIM("Airtel","a")+
 createSIM("Banglalink","b")+
 createSIM("Teletalk","t");
 
-/* 🔥 FIREBASE LOAD */
+/* 🔥 LOAD DATA */
 async function loadData(){
   const docRef = doc(db, "offers", "all");
   const snap = await getDoc(docRef);
@@ -154,7 +184,11 @@ async function loadData(){
     Object.keys(data).forEach(id=>{
       if(document.getElementById(id)){
         document.getElementById(id).innerText = data[id].name;
-        document.getElementById("price"+id).innerText = data[id].price;
+        document.getElementById("price"+id).innerText = data[id].price + "৳";
+
+        if(parseInt(data[id].price) <= 199){
+          document.getElementById("box"+id).classList.add("highlight");
+        }
       }
     });
   }
@@ -162,10 +196,36 @@ async function loadData(){
 
 loadData();
 
-/* 🔥 UPDATE → সবার জন্য */
-async function updateOffer(){
+/* 💰 UPDATED BUY FUNCTION */
+function buy(id){
+let name=document.getElementById(id).innerText;
+let price=document.getElementById("price"+id).innerText;
+
+let msg = `
+🛒 Order Confirm
+
+📦 ${name}
+💰 ${price}
+
+💳 Payment Options:
+
+📲 bKash: 01618599077
+📲 Nagad: 01624228476
+📲 Rocket: 01624228476
+
+👉 Send Money করে Screenshot দিন
+
+⚡ দ্রুত ডেলিভারি
+`;
+
+window.open("https://wa.me/8801624228476?text="+encodeURIComponent(msg));
+}
+window.buy = buy;
+
+/* 📊 SAVE DATA */
+async function saveData(){
 if(!isAdmin){
-alert("Admin login করুন");
+alert("Login first");
 return;
 }
 
@@ -173,37 +233,14 @@ let id=idInput.value;
 let name=nameInput.value;
 let price=priceInput.value;
 
-if(!document.getElementById(id)){
-alert("Wrong ID");
-return;
+await setDoc(doc(db,"offers","all"), {
+  [id]: {name, price}
+}, {merge:true});
+
+alert("✅ Saved");
+loadData();
 }
-
-/* UI update */
-document.getElementById(id).innerText=name;
-document.getElementById("price"+id).innerText=price;
-
-/* Firebase save */
-const docRef = doc(db, "offers", "all");
-const snap = await getDoc(docRef);
-let oldData = snap.exists() ? snap.data() : {};
-
-oldData[id] = {name, price};
-
-await setDoc(docRef, oldData);
-
-alert("✅ Updated for everyone");
-}
-
-window.updateOffer = updateOffer;
-
-/* BUY */
-function buy(id){
-let name=document.getElementById(id).innerText;
-let price=document.getElementById("price"+id).innerText;
-
-window.open("https://wa.me/8801624228476?text="+encodeURIComponent(name+" - "+price));
-}
-window.buy = buy;
+window.saveData = saveData;
 
 </script>
 
