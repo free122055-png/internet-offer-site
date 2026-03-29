@@ -13,102 +13,59 @@ background:linear-gradient(135deg,#6a11cb,#2575fc);
 color:white;
 }
 
-/* HEADER */
-header{
-text-align:center;
-padding:25px;
-cursor:pointer;
-}
+/* TOP */
+.topbar{text-align:center;padding:5px;font-size:14px;}
+.trust{text-align:center;background:#00ffcc;color:black;padding:8px;font-weight:bold;}
 
-/* SLIDER */
-.slider{
-text-align:center;
-padding:10px;
-background:black;
-font-weight:bold;
-}
+header{text-align:center;padding:25px;cursor:pointer;}
 
-/* NOTICE */
+.slider{text-align:center;padding:10px;background:black;font-weight:bold;}
+
 .notice{
 background:linear-gradient(90deg,#ffcc00,#ff9900);
-color:black;
-text-align:center;
-padding:10px;
-font-weight:bold;
+color:black;text-align:center;padding:10px;font-weight:bold;
 }
 
-/* TITLE */
-h2{
-margin-left:15px;
-}
-
-/* GRID */
 .grid{
 display:grid;
 grid-template-columns:repeat(2,1fr);
-gap:10px;
-padding:10px;
+gap:10px;padding:10px;
 }
 
-/* BOX DESIGN (Updated) */
 .box{
 background:linear-gradient(135deg,#1e3c72,#2a5298);
-padding:10px;
-border-radius:12px;
-text-align:center;
+padding:10px;border-radius:12px;text-align:center;
 box-shadow:0 5px 15px rgba(0,0,0,0.4);
 }
 
-/* BUTTON DESIGN */
+.price{font-weight:bold;margin-top:3px;}
+
 button{
-margin-top:5px;
-padding:8px 10px;
-border:none;
+margin-top:5px;padding:8px 10px;border:none;
 border-radius:20px;
 background:linear-gradient(135deg,#ff512f,#dd2476);
-color:white;
-cursor:pointer;
-font-weight:bold;
-}
-
-/* ADMIN */
-.admin{
-display:none;
-background:black;
-padding:20px;
-margin:20px;
-border-radius:10px;
-}
-
-input{
-width:100%;
-padding:10px;
-margin:5px 0;
-border:none;
-border-radius:5px;
+color:white;cursor:pointer;font-weight:bold;
 }
 </style>
-
 </head>
 
 <body>
+
+<div class="topbar">বিসমিল্লাহির রহমানির রহিম</div>
+<div class="trust">✅ বিশ্বাস আপনার, সততা আমাদের</div>
 
 <header onclick="secretClick()">
 <h1>🔥 Internet Offer Zone</h1>
 </header>
 
-<!-- FIXED SLIDER -->
 <div class="slider" id="sliderText">🔥 সাশ্রয় দামে সব অফার দেখুন</div>
-
-<!-- NOTICE -->
 <div class="notice" id="noticeText">📢 প্রতিদিন নতুন অফার আপডেট করা হয়</div>
 
-<!-- CREATE SYSTEM -->
 <script>
 function createSIM(sim,prefix){
 let packs=["Family","Gift","House","Regular","Minute"];
 
-document.write(`<h2>📶 ${sim}</h2>`);
+document.write(`<h2 style="margin-left:15px;">📶 ${sim}</h2>`);
 
 packs.forEach((pack,index)=>{
 document.write(`<h3 style="margin-left:20px;">👉 ${pack}</h3><div class="grid">`);
@@ -119,12 +76,11 @@ let id=prefix+index+i;
 document.write(`
 <div class="box" onclick="editOffer('${id}')">
 <p id="${id}">${sim} ${pack} ${i}</p>
-<p id="price${id}">0৳</p>
+<p class="price" id="price${id}">0৳</p>
 <button onclick="event.stopPropagation();orderNow('${id}')">Buy</button>
 </div>
 `);
 }
-
 document.write(`</div>`);
 });
 }
@@ -138,66 +94,53 @@ createSIM("Banglalink","b");
 createSIM("Teletalk","t");
 </script>
 
-<!-- ALL OFFERS -->
 <h2>🔥 All Offers</h2>
-<textarea id="allOffers" style="width:95%;height:250px;margin:10px;border-radius:10px;"></textarea>
-
-<!-- ADMIN -->
-<div class="admin" id="adminPanel">
-<h2>Admin Panel</h2>
-
-<input id="newText" placeholder="New Offer Name">
-<input id="newPrice" placeholder="New Price">
-<button onclick="updateOffer()">Update Selected</button>
-
-<h3>Notice Update</h3>
-<input id="noticeInput">
-<button onclick="updateNotice()">Update Notice</button>
-
-<h3>🧾 Orders</h3>
-<div id="orderList"></div>
-</div>
+<textarea id="allOffers" style="width:95%;height:300px;margin:10px;border-radius:10px;"></textarea>
 
 <script>
-let selectedId=null;
+let isAdmin=false;
 
-/* SECRET LOGIN */
+/* LOGIN */
 let clickCount=0;
 function secretClick(){
 clickCount++;
 if(clickCount==3){
 let pass=prompt("Password");
 if(pass=="122055"){
-adminPanel.style.display="block";
+isAdmin=true;
+alert("Admin Mode ON ✅");
 }
 clickCount=0;
 }
 }
 
-/* SELECT */
+/* DIRECT EDIT */
 function editOffer(id){
-selectedId=id;
+if(!isAdmin) return;
+
+let currentText=document.getElementById(id).innerText;
+let currentPrice=document.getElementById("price"+id).innerText;
+
+let newText=prompt("Edit Offer:",currentText);
+if(newText===null) return;
+
+let newPrice=prompt("Edit Price:",currentPrice);
+if(newPrice===null) return;
+
+document.getElementById(id).innerText=newText;
+document.getElementById("price"+id).innerText=newPrice;
+
+localStorage.setItem(id,newText);
+localStorage.setItem("price"+id,newPrice);
 }
 
-/* UPDATE */
-function updateOffer(){
-if(!selectedId) return alert("Select offer first");
-
-let text=document.getElementById("newText").value;
-let price=document.getElementById("newPrice").value;
-
-document.getElementById(selectedId).innerText=text;
-document.getElementById("price"+selectedId).innerText=price;
-
-localStorage.setItem(selectedId,text);
-localStorage.setItem("price"+selectedId,price);
-}
-
-/* NOTICE */
+/* NOTICE UPDATE */
 function updateNotice(){
-let n=document.getElementById("noticeInput").value;
+let n=prompt("Write Notice");
+if(n){
 noticeText.innerText=n;
 localStorage.setItem("notice",n);
+}
 }
 
 /* LOAD */
@@ -232,9 +175,7 @@ loadOrders();
 
 function loadOrders(){
 let orders=JSON.parse(localStorage.getItem("orders")||"[]");
-let html="";
-orders.forEach(o=> html+="<p>"+o+"</p>");
-document.getElementById("orderList").innerHTML=html;
+console.log("Orders:",orders);
 }
 
 /* SLIDER */
@@ -259,7 +200,6 @@ sliderText.innerText=texts[i];
 </a>
 </div>
 
-<!-- FACEBOOK (UPDATED DESIGN) -->
 <div style="margin:20px;text-align:center;background:linear-gradient(135deg,#1877F2,#0A58CA);padding:20px;border-radius:15px;">
 <h2>📘 Facebook Profile</h2>
 <a href="https://facebook.com/fahim12205">
@@ -267,7 +207,6 @@ sliderText.innerText=texts[i];
 </a>
 </div>
 
-<!-- FOOTER -->
 <div style="text-align:center;padding:20px;">
 © 2026 Rajibul Islam Fahim
 </div>
