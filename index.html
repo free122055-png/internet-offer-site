@@ -13,6 +13,7 @@ background:linear-gradient(135deg,#6a11cb,#2575fc);
 color:white;
 }
 
+/* TOP */
 .topbar{text-align:center;padding:5px;font-size:14px;}
 .trust{text-align:center;background:#00ffcc;color:black;padding:8px;font-weight:bold;}
 
@@ -40,10 +41,14 @@ box-shadow:0 5px 15px rgba(0,0,0,0.4);
 .price{font-weight:bold;margin-top:3px;}
 
 button{
-margin-top:5px;padding:8px 10px;border:none;
+margin-top:5px;
+padding:8px 10px;
+border:none;
 border-radius:20px;
 background:linear-gradient(135deg,#ff512f,#dd2476);
-color:white;cursor:pointer;font-weight:bold;
+color:white;
+cursor:pointer;
+font-weight:bold;
 }
 </style>
 </head>
@@ -88,18 +93,21 @@ for(let i=1;i<=10;i++){
 let id=prefix+index+i;
 
 html+=`
-<div class="box" onclick="edit('${id}')">
+<div class="box" data-id="${id}">
 <p id="${id}">${sim} ${pack} ${i}</p>
 <p class="price" id="price${id}">0৳</p>
-<button onclick="event.stopPropagation();buy('${id}')">Buy</button>
+<button class="buyBtn" data-id="${id}">Buy</button>
 </div>
 `;
 }
+
 html+=`</div>`;
 });
+
 return html;
 }
 
+/* LOAD UI */
 document.getElementById("main").innerHTML=
 createSIM("Grameenphone","gp")+
 createSIM("Robi","r")+
@@ -107,30 +115,43 @@ createSIM("Airtel","a")+
 createSIM("Banglalink","b")+
 createSIM("Teletalk","t");
 
-/* EDIT SIMPLE */
-function edit(id){
-if(!isAdmin){
-alert("❗ আগে login করো");
+/* CLICK SYSTEM FIX */
+document.addEventListener("click",function(e){
+
+/* BUY BUTTON */
+if(e.target.classList.contains("buyBtn")){
+let id=e.target.getAttribute("data-id");
+
+let name=document.getElementById(id).innerText;
+let price=document.getElementById("price"+id).innerText;
+
+window.open("https://wa.me/8801624228476?text="+encodeURIComponent(name+" - "+price));
 return;
 }
+
+/* EDIT SYSTEM */
+let box=e.target.closest(".box");
+if(box && isAdmin){
+let id=box.getAttribute("data-id");
 
 let name=prompt("Offer Name:",document.getElementById(id).innerText);
 let price=prompt("Price:",document.getElementById("price"+id).innerText);
 
-if(name){
+if(name!==null){
 document.getElementById(id).innerText=name;
 localStorage.setItem(id,name);
 }
 
-if(price){
+if(price!==null){
 document.getElementById("price"+id).innerText=price;
 localStorage.setItem("price"+id,price);
 }
 
-alert("✅ Done");
+alert("✅ Updated!");
 }
+});
 
-/* LOAD */
+/* LOAD DATA */
 window.onload=function(){
 for(let i=0;i<localStorage.length;i++){
 let k=localStorage.key(i);
@@ -138,14 +159,6 @@ if(document.getElementById(k)){
 document.getElementById(k).innerText=localStorage.getItem(k);
 }
 }
-}
-
-/* BUY */
-function buy(id){
-let name=document.getElementById(id).innerText;
-let price=document.getElementById("price"+id).innerText;
-
-window.open("https://wa.me/8801624228476?text="+encodeURIComponent(name+" - "+price));
 }
 
 /* SLIDER */
