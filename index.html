@@ -42,7 +42,11 @@ input, textarea { width: 100%; padding: 10px; margin: 5px 0; border-radius: 5px;
   </div></div><div class="daily-offer">
   <h2>Daily Offer</h2>
   <p id="dailyText">আজকের অফার এখানে দেখাবে</p>
-</div><!-- ADMIN PANEL --><div class="admin">
+</div><!-- ADMIN PANEL --><!-- LOGIN SYSTEM --><div id="loginBox" style="margin:20px; padding:20px; background:rgba(0,0,0,0.4); border-radius:10px; text-align:center;">
+  <h2>🔐 Admin Login</h2>
+  <input type="password" id="password" placeholder="Enter Password">
+  <button onclick="checkLogin()">Login</button>
+</div><div class="admin" id="adminPanel" style="display:none;">
   <h2>Admin Panel</h2>  <h3>Update Sections</h3>
   <input id="familyInput" placeholder="Family Pack">
   <input id="giftInput" placeholder="Gift Pack">
@@ -80,19 +84,29 @@ window.onload = function() {
   if(localStorage.getItem('regular')) document.getElementById('regularText').innerText = localStorage.getItem('regular');
   if(localStorage.getItem('daily')) document.getElementById('dailyText').innerText = localStorage.getItem('daily');
 }
+function checkLogin() {
+  let pass = document.getElementById('password').value;
+  if(pass === "122055") {
+    document.getElementById('adminPanel').style.display = 'block';
+    document.getElementById('loginBox').style.display = 'none';
+  } else {
+    alert("Wrong Password!");
+  }
+}
+
 </script><!-- WHATSAPP CONTACT SECTION --><div style="margin:20px; padding:25px; text-align:center; border-radius:15px; background: linear-gradient(135deg,#25D366,#128C7E); box-shadow:0 8px 20px rgba(0,0,0,0.3);">
   <h2 style="margin:0 0 10px 0;">📲 Contact on WhatsApp</h2>
   <p style="margin-bottom:15px;">অফার নিতে বা জানতে এখনই WhatsApp এ মেসেজ করুন</p>
   <a href="https://wa.me/8801624228476" target="_blank">
     <button style="background:#fff; color:#25D366; font-weight:bold;">💬 Chat on WhatsApp</button>
   </a>
-</div><!-- FACEBOOK CONTACT SECTION --><div style="margin:20px; padding:25px; text-align:center; border-radius:15px; background: linear-gradient(135deg,#1877F2,#0A58CA); box-shadow:0 8px 20px rgba(0,0,0,0.3);">
-  <h2 style="margin:0 0 10px 0;">📘 Facebook Profile</h2>
-  <p style="margin-bottom:15px;">আমার ফেসবুক প্রোফাইলে যেতে নিচের বাটনে ক্লিক করুন</p>
-  <a href="https://www.facebook.com/fahim12205" target="_blank">
-    <button style="background:#fff; color:#1877F2; font-weight:bold;">👉 Visit Facebook</button>
-  </a>
-</div><!-- FLOATING BUTTONS --><a href="https://wa.me/8801624228476" target="_blank" style="position:fixed; bottom:20px; right:20px; background:#25D366; color:white; padding:15px; border-radius:50%; text-decoration:none; font-size:20px; box-shadow:0 4px 10px rgba(0,0,0,0.3);">
+</div><!-- PREMIUM FACEBOOK PROFILE SECTION --><div style="margin:30px 20px; padding:30px; border-radius:20px; text-align:center; background: linear-gradient(135deg,#1877F2,#4e9af1,#0A58CA); box-shadow:0 10px 30px rgba(0,0,0,0.4); position:relative; overflow:hidden;">  <!-- Glow Effect -->  <div style="position:absolute; width:200px; height:200px; background:rgba(255,255,255,0.1); border-radius:50%; top:-50px; left:-50px;"></div>
+  <div style="position:absolute; width:150px; height:150px; background:rgba(255,255,255,0.1); border-radius:50%; bottom:-40px; right:-40px;"></div>  <h2 style="margin:0 0 10px 0; font-size:26px;">🔥 Connect With Me</h2>
+  <p style="margin-bottom:15px; font-size:15px;">নতুন নতুন অফার পেতে আমার Facebook প্রোফাইল ফলো করুন</p>  <a href="https://www.facebook.com/fahim12205" target="_blank">
+    <button style="background:#fff; color:#1877F2; font-weight:bold; padding:12px 25px; font-size:16px; border-radius:30px; transition:0.3s;">
+      👉 Follow on Facebook
+    </button>
+  </a></div><!-- FLOATING BUTTONS --><a href="https://wa.me/8801624228476" target="_blank" style="position:fixed; bottom:20px; right:20px; background:#25D366; color:white; padding:15px; border-radius:50%; text-decoration:none; font-size:20px; box-shadow:0 4px 10px rgba(0,0,0,0.3);">
 💬
 </a><a href="https://www.facebook.com/fahim12205" target="_blank" style="position:fixed; bottom:80px; right:20px; background:#1877F2; color:white; padding:15px; border-radius:50%; text-decoration:none; font-size:20px; box-shadow:0 4px 10px rgba(0,0,0,0.3);">
 📘
