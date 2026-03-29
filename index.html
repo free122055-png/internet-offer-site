@@ -48,7 +48,6 @@ color:white;
 cursor:pointer;
 }
 
-/* ADMIN PANEL */
 .admin{
 display:none;
 background:black;
@@ -82,7 +81,20 @@ border-radius:10px;
 <button onclick="updateOffer()">Update</button>
 </div>
 
-<script>
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js";
+import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js";
+
+/* 🔥 তোমার Firebase config বসানো হয়েছে */
+const firebaseConfig = {
+  apiKey: "AIzaSyD44JlXcOD8Fb_Q1UgJtAeHXp35SUcqis8",
+  authDomain: "internet-offer-7ad50.firebaseapp.com",
+  projectId: "internet-offer-7ad50"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
 let isAdmin=false;
 
 /* LOGIN */
@@ -96,6 +108,7 @@ alert("Admin ON");
 alert("Wrong Password");
 }
 }
+window.login = login;
 
 /* CREATE */
 function createSIM(sim,prefix){
@@ -130,8 +143,32 @@ createSIM("Airtel","a")+
 createSIM("Banglalink","b")+
 createSIM("Teletalk","t");
 
-/* UPDATE OFFER */
-function updateOffer(){
+/* 🔥 FIREBASE LOAD */
+async function loadData(){
+  const docRef = doc(db, "offers", "all");
+  const snap = await getDoc(docRef);
+
+  if(snap.exists()){
+    const data = snap.data();
+
+    Object.keys(data).forEach(id=>{
+      if(document.getElementById(id)){
+        document.getElementById(id).innerText = data[id].name;
+        document.getElementById("price"+id).innerText = data[id].price;
+      }
+    });
+  }
+}
+
+loadData();
+
+/* 🔥 UPDATE → সবার জন্য */
+async function updateOffer(){
+if(!isAdmin){
+alert("Admin login করুন");
+return;
+}
+
 let id=idInput.value;
 let name=nameInput.value;
 let price=priceInput.value;
@@ -141,24 +178,23 @@ alert("Wrong ID");
 return;
 }
 
+/* UI update */
 document.getElementById(id).innerText=name;
 document.getElementById("price"+id).innerText=price;
 
-localStorage.setItem(id,name);
-localStorage.setItem("price"+id,price);
+/* Firebase save */
+const docRef = doc(db, "offers", "all");
+const snap = await getDoc(docRef);
+let oldData = snap.exists() ? snap.data() : {};
 
-alert("Updated");
+oldData[id] = {name, price};
+
+await setDoc(docRef, oldData);
+
+alert("✅ Updated for everyone");
 }
 
-/* LOAD */
-window.onload=function(){
-for(let i=0;i<localStorage.length;i++){
-let k=localStorage.key(i);
-if(document.getElementById(k)){
-document.getElementById(k).innerText=localStorage.getItem(k);
-}
-}
-}
+window.updateOffer = updateOffer;
 
 /* BUY */
 function buy(id){
@@ -167,6 +203,8 @@ let price=document.getElementById("price"+id).innerText;
 
 window.open("https://wa.me/8801624228476?text="+encodeURIComponent(name+" - "+price));
 }
+window.buy = buy;
+
 </script>
 
 </body>
