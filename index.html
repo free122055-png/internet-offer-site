@@ -30,14 +30,14 @@ font-weight:bold;
 
 /* NOTICE */
 .notice{
-background:#ffcc00;
+background:linear-gradient(90deg,#ffcc00,#ff9900);
 color:black;
 text-align:center;
 padding:10px;
 font-weight:bold;
 }
 
-/* SECTION TITLE */
+/* TITLE */
 h2{
 margin-left:15px;
 }
@@ -50,23 +50,25 @@ gap:10px;
 padding:10px;
 }
 
-/* SMALL BOX */
+/* BOX DESIGN (Updated) */
 .box{
-background:black;
+background:linear-gradient(135deg,#1e3c72,#2a5298);
 padding:10px;
-border-radius:10px;
+border-radius:12px;
 text-align:center;
+box-shadow:0 5px 15px rgba(0,0,0,0.4);
 }
 
-/* BUTTON */
+/* BUTTON DESIGN */
 button{
 margin-top:5px;
-padding:6px;
+padding:8px 10px;
 border:none;
-border-radius:15px;
-background:#222;
+border-radius:20px;
+background:linear-gradient(135deg,#ff512f,#dd2476);
 color:white;
 cursor:pointer;
+font-weight:bold;
 }
 
 /* ADMIN */
@@ -95,8 +97,11 @@ border-radius:5px;
 <h1>🔥 Internet Offer Zone</h1>
 </header>
 
-<div class="slider" id="sliderText">🔥 আজকের অফার</div>
-<div class="notice" id="noticeText">📢 নিচে সব অফার দেখুন</div>
+<!-- FIXED SLIDER -->
+<div class="slider" id="sliderText">🔥 সাশ্রয় দামে সব অফার দেখুন</div>
+
+<!-- NOTICE -->
+<div class="notice" id="noticeText">📢 প্রতিদিন নতুন অফার আপডেট করা হয়</div>
 
 <!-- CREATE SYSTEM -->
 <script>
@@ -133,20 +138,19 @@ createSIM("Banglalink","b");
 createSIM("Teletalk","t");
 </script>
 
-<!-- ALL OFFERS LARGE SECTION -->
+<!-- ALL OFFERS -->
 <h2>🔥 All Offers</h2>
-<textarea id="allOffers" style="width:95%;height:200px;margin:10px;border-radius:10px;"></textarea>
+<textarea id="allOffers" style="width:95%;height:250px;margin:10px;border-radius:10px;"></textarea>
 
-<!-- ADMIN PANEL -->
+<!-- ADMIN -->
 <div class="admin" id="adminPanel">
 <h2>Admin Panel</h2>
 
 <input id="newText" placeholder="New Offer Name">
 <input id="newPrice" placeholder="New Price">
-
 <button onclick="updateOffer()">Update Selected</button>
 
-<h3>Notice</h3>
+<h3>Notice Update</h3>
 <input id="noticeInput">
 <button onclick="updateNotice()">Update Notice</button>
 
@@ -170,13 +174,12 @@ clickCount=0;
 }
 }
 
-/* SELECT OFFER */
+/* SELECT */
 function editOffer(id){
 selectedId=id;
-alert("Selected: "+id);
 }
 
-/* UPDATE OFFER */
+/* UPDATE */
 function updateOffer(){
 if(!selectedId) return alert("Select offer first");
 
@@ -211,7 +214,7 @@ noticeText.innerText=localStorage.getItem("notice");
 loadOrders();
 }
 
-/* ORDER SYSTEM */
+/* ORDER */
 function orderNow(id){
 let name=document.getElementById(id).innerText;
 let price=document.getElementById("price"+id).innerText;
@@ -236,8 +239,9 @@ document.getElementById("orderList").innerHTML=html;
 
 /* SLIDER */
 let texts=[
-"🔥 আজকের অফার",
-"💥 ধামাকা অফার",
+"🔥 সাশ্রয় দামে সব অফার দেখুন",
+"💥 ধামাকা অফার চলছে",
+"🚀 নতুন প্যাক এসেছে",
 "📢 নিচে সব অফার দেখুন"
 ];
 let i=0;
@@ -248,16 +252,24 @@ sliderText.innerText=texts[i];
 </script>
 
 <!-- CONTACT -->
-<div style="margin:20px;text-align:center;background:#25D366;padding:15px;">
-<a href="https://wa.me/8801624228476"><button>WhatsApp</button></a>
+<div style="margin:20px;text-align:center;background:#25D366;padding:15px;border-radius:10px;">
+<h2>📲 WhatsApp</h2>
+<a href="https://wa.me/8801624228476">
+<button>Chat Now</button>
+</a>
 </div>
 
-<div style="margin:20px;text-align:center;background:#1877F2;padding:15px;">
-<a href="https://facebook.com/fahim12205"><button>Facebook</button></a>
+<!-- FACEBOOK (UPDATED DESIGN) -->
+<div style="margin:20px;text-align:center;background:linear-gradient(135deg,#1877F2,#0A58CA);padding:20px;border-radius:15px;">
+<h2>📘 Facebook Profile</h2>
+<a href="https://facebook.com/fahim12205">
+<button style="background:white;color:#1877F2;">Visit Now</button>
+</a>
 </div>
 
+<!-- FOOTER -->
 <div style="text-align:center;padding:20px;">
-© Rajibul Islam Fahim
+© 2026 Rajibul Islam Fahim
 </div>
 
 </body>
