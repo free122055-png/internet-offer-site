@@ -13,9 +13,10 @@ background:linear-gradient(135deg,#6a11cb,#2575fc);
 color:white;
 }
 
+/* HEADER */
 header{
 text-align:center;
-padding:30px;
+padding:25px;
 cursor:pointer;
 }
 
@@ -36,41 +37,34 @@ padding:10px;
 font-weight:bold;
 }
 
+/* SECTION TITLE */
+h2{
+margin-left:15px;
+}
+
 /* GRID */
-.container{
+.grid{
 display:grid;
-grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
-gap:15px;
-padding:20px;
-}
-
-.card{
-padding:20px;
-border-radius:15px;
-box-shadow:0 8px 20px rgba(0,0,0,0.3);
-transition:0.3s;
-}
-.card:hover{transform:scale(1.05);}
-
-/* SIM COLORS */
-.gp{background:#00a651;}
-.robi{background:#e60000;}
-.airtel{background:#ff0033;}
-.bl{background:#ff6600;}
-.tt{background:#008000;}
-
-.price{
-font-size:20px;
-font-weight:bold;
-margin-top:5px;
-}
-
-button{
-margin-top:10px;
+grid-template-columns:repeat(2,1fr);
+gap:10px;
 padding:10px;
-border:none;
-border-radius:20px;
+}
+
+/* SMALL BOX */
+.box{
 background:black;
+padding:10px;
+border-radius:10px;
+text-align:center;
+}
+
+/* BUTTON */
+button{
+margin-top:5px;
+padding:6px;
+border:none;
+border-radius:15px;
+background:#222;
 color:white;
 cursor:pointer;
 }
@@ -78,7 +72,7 @@ cursor:pointer;
 /* ADMIN */
 .admin{
 display:none;
-background:#000;
+background:black;
 padding:20px;
 margin:20px;
 border-radius:10px;
@@ -92,6 +86,7 @@ border:none;
 border-radius:5px;
 }
 </style>
+
 </head>
 
 <body>
@@ -101,60 +96,73 @@ border-radius:5px;
 </header>
 
 <div class="slider" id="sliderText">🔥 আজকের অফার</div>
-<div class="notice" id="noticeText">📢 সব অফার দেখতে নিচে স্ক্রল করুন</div>
+<div class="notice" id="noticeText">📢 নিচে সব অফার দেখুন</div>
 
-<!-- FUNCTION -->
+<!-- CREATE SYSTEM -->
 <script>
-function createSection(title, prefix, className){
-document.write(`<h2 style="margin-left:20px;">📶 ${title}</h2><div class="container">`);
+function createSIM(sim,prefix){
+let packs=["Family","Gift","House","Regular","Minute"];
 
-let names=["Family","Gift","House","Regular","Minute"];
+document.write(`<h2>📶 ${sim}</h2>`);
 
-for(let i=0;i<5;i++){
+packs.forEach((pack,index)=>{
+document.write(`<h3 style="margin-left:20px;">👉 ${pack}</h3><div class="grid">`);
+
+for(let i=1;i<=10;i++){
+let id=prefix+index+i;
+
 document.write(`
-<div class="card ${className}">
-<p id="${prefix}${i+1}">${title} ${names[i]} 0৳</p>
-<div class="price" id="price${prefix}${i+1}">0৳</div>
-<button onclick="orderNow('${prefix}${i+1}')">Buy</button>
-</div>`);
+<div class="box" onclick="editOffer('${id}')">
+<p id="${id}">${sim} ${pack} ${i}</p>
+<p id="price${id}">0৳</p>
+<button onclick="event.stopPropagation();orderNow('${id}')">Buy</button>
+</div>
+`);
 }
 
 document.write(`</div>`);
+});
 }
 </script>
 
 <script>
-createSection("Grameenphone","gp","gp");
-createSection("Robi","r","robi");
-createSection("Airtel","a","airtel");
-createSection("Banglalink","b","bl");
-createSection("Teletalk","t","tt");
+createSIM("Grameenphone","gp");
+createSIM("Robi","r");
+createSIM("Airtel","a");
+createSIM("Banglalink","b");
+createSIM("Teletalk","t");
 </script>
 
-<!-- ADMIN -->
+<!-- ALL OFFERS LARGE SECTION -->
+<h2>🔥 All Offers</h2>
+<textarea id="allOffers" style="width:95%;height:200px;margin:10px;border-radius:10px;"></textarea>
+
+<!-- ADMIN PANEL -->
 <div class="admin" id="adminPanel">
 <h2>Admin Panel</h2>
 
-<input id="editId" placeholder="Offer ID (gp1, r2, a3...)">
-<input id="editText" placeholder="Offer Text">
-<input id="editPrice" placeholder="Price (e.g 299৳)">
-<button onclick="saveData()">Update Offer</button>
+<input id="newText" placeholder="New Offer Name">
+<input id="newPrice" placeholder="New Price">
 
-<h3>Notice Update</h3>
-<input id="noticeInput" placeholder="Write Notice">
+<button onclick="updateOffer()">Update Selected</button>
+
+<h3>Notice</h3>
+<input id="noticeInput">
 <button onclick="updateNotice()">Update Notice</button>
 
-<h3>🧾 Order List</h3>
+<h3>🧾 Orders</h3>
 <div id="orderList"></div>
 </div>
 
 <script>
-let clickCount=0;
+let selectedId=null;
 
+/* SECRET LOGIN */
+let clickCount=0;
 function secretClick(){
 clickCount++;
 if(clickCount==3){
-let pass=prompt("Password:");
+let pass=prompt("Password");
 if(pass=="122055"){
 adminPanel.style.display="block";
 }
@@ -162,29 +170,30 @@ clickCount=0;
 }
 }
 
-/* SAVE OFFER */
-function saveData(){
-let id=document.getElementById("editId").value;
-let text=document.getElementById("editText").value;
-let price=document.getElementById("editPrice").value;
-
-if(document.getElementById(id)){
-document.getElementById(id).innerText=text;
-document.getElementById("price"+id).innerText=price;
-
-localStorage.setItem(id,text);
-localStorage.setItem("price"+id,price);
-
-alert("Updated!");
-}else{
-alert("Wrong ID");
+/* SELECT OFFER */
+function editOffer(id){
+selectedId=id;
+alert("Selected: "+id);
 }
+
+/* UPDATE OFFER */
+function updateOffer(){
+if(!selectedId) return alert("Select offer first");
+
+let text=document.getElementById("newText").value;
+let price=document.getElementById("newPrice").value;
+
+document.getElementById(selectedId).innerText=text;
+document.getElementById("price"+selectedId).innerText=price;
+
+localStorage.setItem(selectedId,text);
+localStorage.setItem("price"+selectedId,price);
 }
 
 /* NOTICE */
 function updateNotice(){
 let n=document.getElementById("noticeInput").value;
-document.getElementById("noticeText").innerText=n;
+noticeText.innerText=n;
 localStorage.setItem("notice",n);
 }
 
@@ -196,20 +205,18 @@ if(document.getElementById(k)){
 document.getElementById(k).innerText=localStorage.getItem(k);
 }
 }
-
 if(localStorage.getItem("notice")){
 noticeText.innerText=localStorage.getItem("notice");
 }
-
 loadOrders();
 }
 
 /* ORDER SYSTEM */
 function orderNow(id){
-let product=document.getElementById(id).innerText;
+let name=document.getElementById(id).innerText;
 let price=document.getElementById("price"+id).innerText;
 
-let full=product+" - "+price;
+let full=name+" - "+price;
 
 let orders=JSON.parse(localStorage.getItem("orders")||"[]");
 orders.push(full);
@@ -223,9 +230,7 @@ loadOrders();
 function loadOrders(){
 let orders=JSON.parse(localStorage.getItem("orders")||"[]");
 let html="";
-orders.forEach(o=>{
-html+="<p>"+o+"</p>";
-});
+orders.forEach(o=> html+="<p>"+o+"</p>");
 document.getElementById("orderList").innerHTML=html;
 }
 
@@ -233,10 +238,8 @@ document.getElementById("orderList").innerHTML=html;
 let texts=[
 "🔥 আজকের অফার",
 "💥 ধামাকা অফার",
-"🚀 নতুন প্যাক এসেছে",
-"📢 সব অফার দেখতে নিচে স্ক্রল করুন"
+"📢 নিচে সব অফার দেখুন"
 ];
-
 let i=0;
 setInterval(()=>{
 i=(i+1)%texts.length;
@@ -244,25 +247,17 @@ sliderText.innerText=texts[i];
 },2000);
 </script>
 
-<!-- WHATSAPP -->
-<div style="margin:20px;padding:20px;text-align:center;background:#25D366;">
-<h2>📲 WhatsApp</h2>
-<a href="https://wa.me/8801624228476" target="_blank">
-<button>Chat Now</button>
-</a>
+<!-- CONTACT -->
+<div style="margin:20px;text-align:center;background:#25D366;padding:15px;">
+<a href="https://wa.me/8801624228476"><button>WhatsApp</button></a>
 </div>
 
-<!-- FACEBOOK -->
-<div style="margin:20px;padding:20px;text-align:center;background:#1877F2;">
-<h2>📘 Facebook</h2>
-<a href="https://facebook.com/fahim12205" target="_blank">
-<button>Visit Profile</button>
-</a>
+<div style="margin:20px;text-align:center;background:#1877F2;padding:15px;">
+<a href="https://facebook.com/fahim12205"><button>Facebook</button></a>
 </div>
 
-<!-- FOOTER -->
 <div style="text-align:center;padding:20px;">
-© 2026 Rajibul Islam Fahim
+© Rajibul Islam Fahim
 </div>
 
 </body>
