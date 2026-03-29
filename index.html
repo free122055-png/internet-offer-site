@@ -19,6 +19,7 @@ padding:30px;
 cursor:pointer;
 }
 
+/* SLIDER */
 .slider{
 text-align:center;
 padding:10px;
@@ -26,10 +27,16 @@ background:black;
 font-weight:bold;
 }
 
-h2{
-margin-left:20px;
+/* NOTICE */
+.notice{
+background:#ffcc00;
+color:black;
+text-align:center;
+padding:10px;
+font-weight:bold;
 }
 
+/* GRID */
 .container{
 display:grid;
 grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
@@ -42,16 +49,10 @@ padding:20px;
 border-radius:15px;
 box-shadow:0 8px 20px rgba(0,0,0,0.3);
 transition:0.3s;
-cursor:pointer;
 }
 .card:hover{transform:scale(1.05);}
 
-/* SELECTED */
-.selected{
-border:3px solid yellow;
-}
-
-/* COLORS */
+/* SIM COLORS */
 .gp{background:#00a651;}
 .robi{background:#e60000;}
 .airtel{background:#ff0033;}
@@ -59,12 +60,9 @@ border:3px solid yellow;
 .tt{background:#008000;}
 
 .price{
-background:#000;
-padding:5px 10px;
-border-radius:10px;
-display:inline-block;
-margin-top:5px;
+font-size:20px;
 font-weight:bold;
+margin-top:5px;
 }
 
 button{
@@ -77,6 +75,7 @@ color:white;
 cursor:pointer;
 }
 
+/* ADMIN */
 .admin{
 display:none;
 background:#000;
@@ -92,13 +91,6 @@ margin:5px 0;
 border:none;
 border-radius:5px;
 }
-
-.history{
-margin:20px;
-padding:20px;
-background:rgba(0,0,0,0.5);
-border-radius:10px;
-}
 </style>
 </head>
 
@@ -109,27 +101,22 @@ border-radius:10px;
 </header>
 
 <div class="slider" id="sliderText">🔥 আজকের অফার</div>
+<div class="notice" id="noticeText">📢 সব অফার দেখতে নিচে স্ক্রল করুন</div>
 
+<!-- FUNCTION -->
 <script>
-let selectedCard = null;
-
-function createCard(id,name,price,className){
-return `
-<div class="card ${className}" id="${id}" onclick="selectCard('${id}')">
-<p>${name}</p>
-<div class="price">💰 ${price}</div>
-<button onclick="orderNow('${name} - ${price}'); event.stopPropagation();">Buy</button>
-</div>`;
-}
-
 function createSection(title, prefix, className){
-document.write(`<h2>📶 ${title}</h2><div class="container">`);
+document.write(`<h2 style="margin-left:20px;">📶 ${title}</h2><div class="container">`);
 
-let packs=["Family","Gift","House","Regular"];
-let prices=["299৳","149৳","499৳","99৳"];
+let names=["Family","Gift","House","Regular","Minute"];
 
-for(let i=0;i<4;i++){
-document.write(createCard(prefix+(i+1),`${title} ${packs[i]}`,prices[i],className));
+for(let i=0;i<5;i++){
+document.write(`
+<div class="card ${className}">
+<p id="${prefix}${i+1}">${title} ${names[i]} 0৳</p>
+<div class="price" id="price${prefix}${i+1}">0৳</div>
+<button onclick="orderNow('${prefix}${i+1}')">Buy</button>
+</div>`);
 }
 
 document.write(`</div>`);
@@ -148,16 +135,17 @@ createSection("Teletalk","t","tt");
 <div class="admin" id="adminPanel">
 <h2>Admin Panel</h2>
 
-<input id="newName" placeholder="New Offer Name">
-<input id="newPrice" placeholder="New Price">
-<button onclick="updateSelected()">Update Selected Offer</button>
+<input id="editId" placeholder="Offer ID (gp1, r2, a3...)">
+<input id="editText" placeholder="Offer Text">
+<input id="editPrice" placeholder="Price (e.g 299৳)">
+<button onclick="saveData()">Update Offer</button>
 
-</div>
+<h3>Notice Update</h3>
+<input id="noticeInput" placeholder="Write Notice">
+<button onclick="updateNotice()">Update Notice</button>
 
-<!-- ORDER HISTORY -->
-<div class="history">
-<h2>📦 Your Orders</h2>
-<ul id="orderList"></ul>
+<h3>🧾 Order List</h3>
+<div id="orderList"></div>
 </div>
 
 <script>
@@ -169,82 +157,86 @@ if(clickCount==3){
 let pass=prompt("Password:");
 if(pass=="122055"){
 adminPanel.style.display="block";
-}else alert("Wrong!");
+}
 clickCount=0;
 }
 }
 
-/* SELECT CARD */
-function selectCard(id){
-if(selectedCard){
-document.getElementById(selectedCard).classList.remove("selected");
+/* SAVE OFFER */
+function saveData(){
+let id=document.getElementById("editId").value;
+let text=document.getElementById("editText").value;
+let price=document.getElementById("editPrice").value;
+
+if(document.getElementById(id)){
+document.getElementById(id).innerText=text;
+document.getElementById("price"+id).innerText=price;
+
+localStorage.setItem(id,text);
+localStorage.setItem("price"+id,price);
+
+alert("Updated!");
+}else{
+alert("Wrong ID");
 }
-selectedCard=id;
-document.getElementById(id).classList.add("selected");
 }
 
-/* UPDATE SELECTED */
-function updateSelected(){
-if(!selectedCard){
-alert("আগে একটি offer select করুন");
-return;
-}
-
-let name=document.getElementById("newName").value;
-let price=document.getElementById("newPrice").value;
-
-let card=document.getElementById(selectedCard);
-
-card.innerHTML=`
-<p>${name}</p>
-<div class="price">💰 ${price}</div>
-<button onclick="orderNow('${name} - ${price}'); event.stopPropagation();">Buy</button>
-`;
-
-localStorage.setItem(selectedCard, JSON.stringify({name,price}));
-
-alert("Updated ✅");
+/* NOTICE */
+function updateNotice(){
+let n=document.getElementById("noticeInput").value;
+document.getElementById("noticeText").innerText=n;
+localStorage.setItem("notice",n);
 }
 
 /* LOAD */
 window.onload=function(){
 for(let i=0;i<localStorage.length;i++){
 let k=localStorage.key(i);
-let data=JSON.parse(localStorage.getItem(k));
-if(document.getElementById(k) && data){
-let card=document.getElementById(k);
-card.innerHTML=`
-<p>${data.name}</p>
-<div class="price">💰 ${data.price}</div>
-<button onclick="orderNow('${data.name} - ${data.price}'); event.stopPropagation();">Buy</button>
-`;
+if(document.getElementById(k)){
+document.getElementById(k).innerText=localStorage.getItem(k);
 }
 }
 
-/* LOAD ORDERS */
-let orders=JSON.parse(localStorage.getItem("orders")||"[]");
-orders.forEach(o=>{
-let li=document.createElement("li");
-li.innerText=o;
-orderList.appendChild(li);
-});
+if(localStorage.getItem("notice")){
+noticeText.innerText=localStorage.getItem("notice");
 }
 
-/* ORDER */
-function orderNow(product){
-window.open("https://wa.me/8801624228476?text="+encodeURIComponent("আমি নিতে চাই: "+product));
+loadOrders();
+}
 
-let li=document.createElement("li");
-li.innerText=product;
-orderList.appendChild(li);
+/* ORDER SYSTEM */
+function orderNow(id){
+let product=document.getElementById(id).innerText;
+let price=document.getElementById("price"+id).innerText;
+
+let full=product+" - "+price;
 
 let orders=JSON.parse(localStorage.getItem("orders")||"[]");
-orders.push(product);
+orders.push(full);
 localStorage.setItem("orders",JSON.stringify(orders));
+
+window.open("https://wa.me/8801624228476?text="+encodeURIComponent("আমি নিতে চাই: "+full));
+
+loadOrders();
+}
+
+function loadOrders(){
+let orders=JSON.parse(localStorage.getItem("orders")||"[]");
+let html="";
+orders.forEach(o=>{
+html+="<p>"+o+"</p>";
+});
+document.getElementById("orderList").innerHTML=html;
 }
 
 /* SLIDER */
-let texts=["🔥 আজকের অফার","💥 Special Deal","🚀 New Pack"];
+let texts=[
+"🔥 আজকের অফার",
+"💥 ধামাকা অফার",
+"🚀 নতুন প্যাক এসেছে",
+"📢 সব অফার দেখতে নিচে স্ক্রল করুন"
+];
+
 let i=0;
 setInterval(()=>{
 i=(i+1)%texts.length;
