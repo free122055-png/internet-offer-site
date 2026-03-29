@@ -1,0 +1,100 @@
+<!DOCTYPE html><html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Internet Offers</title>
+<style>
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: linear-gradient(135deg, #6a11cb, #2575fc);
+  color: white;
+}header { text-align: center; padding: 30px; }
+
+.container { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; padding: 20px; }
+
+.card { background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(12px); border-radius: 15px; padding: 20px; }
+
+button { padding: 10px 15px; border: none; border-radius: 20px; background: #ff7eb3; color: white; cursor: pointer; }
+
+.daily-offer { margin: 20px; padding: 20px; background: rgba(0,0,0,0.3); border-radius: 10px; text-align: center; }
+
+.admin { margin: 20px; padding: 20px; background: rgba(255,255,255,0.1); border-radius: 10px; }
+
+input, textarea { width: 100%; padding: 10px; margin: 5px 0; border-radius: 5px; border: none; }
+
+</style>
+</head>
+<body><header>
+  <h1>🔥 Internet Offer Zone</h1>
+</header><div class="container">  <div class="card" id="family">
+    <h2>Family Pack</h2>
+    <p id="familyText">Default Family Offer</p>
+  </div>  <div class="card" id="gift">
+    <h2>Gift Pack</h2>
+    <p id="giftText">Default Gift Offer</p>
+  </div>  <div class="card" id="house">
+    <h2>House Offer</h2>
+    <p id="houseText">Default House Offer</p>
+  </div>  <div class="card" id="regular">
+    <h2>Regular Pack</h2>
+    <p id="regularText">Default Regular Offer</p>
+  </div></div><div class="daily-offer">
+  <h2>Daily Offer</h2>
+  <p id="dailyText">আজকের অফার এখানে দেখাবে</p>
+</div><!-- ADMIN PANEL --><div class="admin">
+  <h2>Admin Panel</h2>  <h3>Update Sections</h3>
+  <input id="familyInput" placeholder="Family Pack">
+  <input id="giftInput" placeholder="Gift Pack">
+  <input id="houseInput" placeholder="House Offer">
+  <input id="regularInput" placeholder="Regular Pack"><button onclick="updateSections()">Update Sections</button>
+
+  <h3>Update Daily Offer</h3>
+  <textarea id="dailyInput" placeholder="Today's Offer"></textarea>
+  <button onclick="updateDaily()">Update Daily Offer</button>
+</div><script>
+function updateSections() {
+  document.getElementById('familyText').innerText = document.getElementById('familyInput').value;
+  document.getElementById('giftText').innerText = document.getElementById('giftInput').value;
+  document.getElementById('houseText').innerText = document.getElementById('houseInput').value;
+  document.getElementById('regularText').innerText = document.getElementById('regularInput').value;
+
+  // Save to localStorage
+  localStorage.setItem('family', document.getElementById('familyInput').value);
+  localStorage.setItem('gift', document.getElementById('giftInput').value);
+  localStorage.setItem('house', document.getElementById('houseInput').value);
+  localStorage.setItem('regular', document.getElementById('regularInput').value);
+}
+
+function updateDaily() {
+  let value = document.getElementById('dailyInput').value;
+  document.getElementById('dailyText').innerText = value;
+  localStorage.setItem('daily', value);
+}
+
+// Load saved data
+window.onload = function() {
+  if(localStorage.getItem('family')) document.getElementById('familyText').innerText = localStorage.getItem('family');
+  if(localStorage.getItem('gift')) document.getElementById('giftText').innerText = localStorage.getItem('gift');
+  if(localStorage.getItem('house')) document.getElementById('houseText').innerText = localStorage.getItem('house');
+  if(localStorage.getItem('regular')) document.getElementById('regularText').innerText = localStorage.getItem('regular');
+  if(localStorage.getItem('daily')) document.getElementById('dailyText').innerText = localStorage.getItem('daily');
+}
+</script><!-- WHATSAPP CONTACT SECTION --><div style="margin:20px; padding:25px; text-align:center; border-radius:15px; background: linear-gradient(135deg,#25D366,#128C7E); box-shadow:0 8px 20px rgba(0,0,0,0.3);">
+  <h2 style="margin:0 0 10px 0;">📲 Contact on WhatsApp</h2>
+  <p style="margin-bottom:15px;">অফার নিতে বা জানতে এখনই WhatsApp এ মেসেজ করুন</p>
+  <a href="https://wa.me/8801624228476" target="_blank">
+    <button style="background:#fff; color:#25D366; font-weight:bold;">💬 Chat on WhatsApp</button>
+  </a>
+</div><!-- FACEBOOK CONTACT SECTION --><div style="margin:20px; padding:25px; text-align:center; border-radius:15px; background: linear-gradient(135deg,#1877F2,#0A58CA); box-shadow:0 8px 20px rgba(0,0,0,0.3);">
+  <h2 style="margin:0 0 10px 0;">📘 Facebook Profile</h2>
+  <p style="margin-bottom:15px;">আমার ফেসবুক প্রোফাইলে যেতে নিচের বাটনে ক্লিক করুন</p>
+  <a href="https://www.facebook.com/fahim12205" target="_blank">
+    <button style="background:#fff; color:#1877F2; font-weight:bold;">👉 Visit Facebook</button>
+  </a>
+</div><!-- FLOATING BUTTONS --><a href="https://wa.me/8801624228476" target="_blank" style="position:fixed; bottom:20px; right:20px; background:#25D366; color:white; padding:15px; border-radius:50%; text-decoration:none; font-size:20px; box-shadow:0 4px 10px rgba(0,0,0,0.3);">
+💬
+</a><a href="https://www.facebook.com/fahim12205" target="_blank" style="position:fixed; bottom:80px; right:20px; background:#1877F2; color:white; padding:15px; border-radius:50%; text-decoration:none; font-size:20px; box-shadow:0 4px 10px rgba(0,0,0,0.3);">
+📘
+</a></body>
+</html>
