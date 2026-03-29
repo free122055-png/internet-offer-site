@@ -23,12 +23,14 @@ cursor:pointer;
 text-align:center;
 padding:10px;
 background:black;
+font-weight:bold;
 }
 
 h2{
 margin-left:20px;
 }
 
+/* GRID */
 .container{
 display:grid;
 grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
@@ -44,6 +46,7 @@ transition:0.3s;
 }
 .card:hover{transform:scale(1.05);}
 
+/* SIM COLORS */
 .gp{background:#00a651;}
 .robi{background:#e60000;}
 .airtel{background:#ff0033;}
@@ -60,6 +63,7 @@ color:white;
 cursor:pointer;
 }
 
+/* ADMIN */
 .admin{
 display:none;
 background:#000;
@@ -72,8 +76,8 @@ input{
 width:100%;
 padding:10px;
 margin:5px 0;
-border-radius:5px;
 border:none;
+border-radius:5px;
 }
 </style>
 </head>
@@ -82,95 +86,119 @@ border:none;
 
 <header onclick="secretClick()">
 <h1>🔥 Internet Offer Zone</h1>
+<p>(৩ বার চাপ দিলে admin login 😉)</p>
 </header>
 
 <div class="slider" id="sliderText">🔥 আজকের অফার</div>
 
-<!-- GP -->
-<h2>📶 Grameenphone</h2>
-<div class="container">
-<div class="card gp"><p id="gp1">GP Family 299৳</p><button onclick="orderNow(gp1.innerText)">Buy</button></div>
-<div class="card gp"><p id="gp2">GP Gift 149৳</p><button onclick="orderNow(gp2.innerText)">Buy</button></div>
-<div class="card gp"><p id="gp3">GP House 499৳</p><button onclick="orderNow(gp3.innerText)">Buy</button></div>
-<div class="card gp"><p id="gp4">GP Regular 99৳</p><button onclick="orderNow(gp4.innerText)">Buy</button></div>
-</div>
+<!-- SIM SECTION FUNCTION COPY STYLE -->
 
-<!-- ROBI -->
-<h2>📶 Robi</h2>
-<div class="container">
-<div class="card robi"><p>Robi Family 299৳</p><button onclick="orderNow(this.previousElementSibling.innerText)">Buy</button></div>
-<div class="card robi"><p>Robi Gift 159৳</p><button onclick="orderNow(this.previousElementSibling.innerText)">Buy</button></div>
-<div class="card robi"><p>Robi House 499৳</p><button onclick="orderNow(this.previousElementSibling.innerText)">Buy</button></div>
-<div class="card robi"><p>Robi Regular 99৳</p><button onclick="orderNow(this.previousElementSibling.innerText)">Buy</button></div>
-</div>
+<script>
+function createSection(title, prefix, className){
+document.write(`<h2>📶 ${title}</h2><div class="container">`);
+for(let i=1;i<=4;i++){
+document.write(`
+<div class="card ${className}">
+<p id="${prefix}${i}">${title} Offer ${i}</p>
+<button onclick="orderNow(${prefix}${i}.innerText)">Buy</button>
+</div>`);
+}
+document.write(`</div>`);
+}
+</script>
 
-<!-- AIRTEL -->
-<h2>📶 Airtel</h2>
-<div class="container">
-<div class="card airtel"><p>Airtel Family 299৳</p><button onclick="orderNow(this.previousElementSibling.innerText)">Buy</button></div>
-<div class="card airtel"><p>Airtel Gift 149৳</p><button onclick="orderNow(this.previousElementSibling.innerText)">Buy</button></div>
-<div class="card airtel"><p>Airtel House 499৳</p><button onclick="orderNow(this.previousElementSibling.innerText)">Buy</button></div>
-<div class="card airtel"><p>Airtel Regular 99৳</p><button onclick="orderNow(this.previousElementSibling.innerText)">Buy</button></div>
-</div>
+<script>
+createSection("Grameenphone","gp","gp");
+createSection("Robi","r","robi");
+createSection("Airtel","a","airtel");
+createSection("Banglalink","b","bl");
+createSection("Teletalk","t","tt");
+</script>
 
-<!-- BANGLALINK -->
-<h2>📶 Banglalink</h2>
-<div class="container">
-<div class="card bl"><p>BL Family 299৳</p><button onclick="orderNow(this.previousElementSibling.innerText)">Buy</button></div>
-<div class="card bl"><p>BL Gift 149৳</p><button onclick="orderNow(this.previousElementSibling.innerText)">Buy</button></div>
-<div class="card bl"><p>BL House 499৳</p><button onclick="orderNow(this.previousElementSibling.innerText)">Buy</button></div>
-<div class="card bl"><p>BL Regular 99৳</p><button onclick="orderNow(this.previousElementSibling.innerText)">Buy</button></div>
-</div>
-
-<!-- TELETALK -->
-<h2>📶 Teletalk</h2>
-<div class="container">
-<div class="card tt"><p>TT Family 299৳</p><button onclick="orderNow(this.previousElementSibling.innerText)">Buy</button></div>
-<div class="card tt"><p>TT Gift 149৳</p><button onclick="orderNow(this.previousElementSibling.innerText)">Buy</button></div>
-<div class="card tt"><p>TT House 499৳</p><button onclick="orderNow(this.previousElementSibling.innerText)">Buy</button></div>
-<div class="card tt"><p>TT Regular 99৳</p><button onclick="orderNow(this.previousElementSibling.innerText)">Buy</button></div>
-</div>
-
-<!-- ADMIN -->
+<!-- ADMIN PANEL -->
 <div class="admin" id="adminPanel">
 <h2>Admin Panel</h2>
-<input id="edit1" placeholder="Edit GP Family">
+
+<p>Example: gp1 = GP Family Offer</p>
+
+<input id="key" placeholder="ID (gp1, r1, a1 etc)">
+<input id="value" placeholder="New Offer">
 <button onclick="saveData()">Save</button>
+
 </div>
 
 <script>
 let clickCount=0;
+
 function secretClick(){
 clickCount++;
 if(clickCount==3){
-let pass=prompt("Password");
+let pass=prompt("Password:");
 if(pass=="122055"){
 adminPanel.style.display="block";
-}
+}else alert("Wrong Password!");
 clickCount=0;
 }
 }
 
+/* SAVE */
 function saveData(){
-gp1.innerText=edit1.value;
-localStorage.setItem("gp1",edit1.value);
+let k=document.getElementById("key").value;
+let v=document.getElementById("value").value;
+
+if(document.getElementById(k)){
+document.getElementById(k).innerText=v;
+localStorage.setItem(k,v);
+alert("Updated!");
+}else{
+alert("Wrong ID");
+}
 }
 
+/* LOAD */
 window.onload=function(){
-if(localStorage.getItem("gp1")) gp1.innerText=localStorage.getItem("gp1");
+for(let i=0;i<localStorage.length;i++){
+let k=localStorage.key(i);
+if(document.getElementById(k)){
+document.getElementById(k).innerText=localStorage.getItem(k);
+}
+}
 }
 
+/* WHATSAPP ORDER */
 function orderNow(product){
 window.open("https://wa.me/8801624228476?text="+encodeURIComponent("আমি নিতে চাই: "+product));
 }
 
-let texts=["🔥 Offer","💥 Deal","🚀 New"];
+/* SLIDER */
+let texts=["🔥 আজকের অফার","💥 Special Deal","🚀 New Pack"];
 let i=0;
 setInterval(()=>{
 i=(i+1)%texts.length;
 sliderText.innerText=texts[i];
 },2000);
 </script>
+
+<!-- WHATSAPP -->
+<div style="margin:20px;padding:20px;text-align:center;background:#25D366;">
+<h2>📲 WhatsApp</h2>
+<a href="https://wa.me/8801624228476" target="_blank">
+<button>Chat Now</button>
+</a>
+</div>
+
+<!-- FACEBOOK -->
+<div style="margin:20px;padding:20px;text-align:center;background:#1877F2;">
+<h2>📘 Facebook</h2>
+<a href="https://facebook.com/fahim12205" target="_blank">
+<button>Visit Profile</button>
+</a>
+</div>
+
+<!-- FOOTER -->
+<div style="text-align:center;padding:20px;">
+© 2026 Rajibul Islam Fahim
+</div>
 
 </body>
 </html>
