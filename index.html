@@ -1,189 +1,176 @@
-<!DOCTYPE html><html lang="en">
+<!DOCTYPE html>
+<html>
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Internet Offers</title>
 
 <style>
-body {
-  margin: 0;
-  font-family: Arial, sans-serif;
-  background: linear-gradient(135deg, #6a11cb, #2575fc);
-  color: white;
+body{
+margin:0;
+font-family:Arial;
+background:linear-gradient(135deg,#6a11cb,#2575fc);
+color:white;
 }
 
-header { text-align: center; padding: 40px; cursor: pointer; }
-
-/* Different Card Designs */
-#family { background: linear-gradient(135deg, #ff7e5f, #feb47b); border-radius: 20px; padding: 25px; }
-#gift { background: linear-gradient(135deg, #a18cd1, #fbc2eb); border-radius: 20px; padding: 25px; }
-#house { background: linear-gradient(135deg, #43cea2, #185a9d); border-radius: 20px; padding: 25px; }
-#regular { background: linear-gradient(135deg, #f7971e, #ffd200); border-radius: 20px; padding: 25px; }
-
-.container {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 20px;
-  padding: 20px;
+header{
+text-align:center;
+padding:30px;
+cursor:pointer;
 }
 
-.card {
-  backdrop-filter: blur(10px);
-  box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+.slider{
+text-align:center;
+padding:10px;
+background:black;
 }
 
-button {
-  padding: 10px 15px;
-  border: none;
-  border-radius: 20px;
-  background: #000;
-  color: white;
-  cursor: pointer;
+h2{
+margin-left:20px;
 }
 
-.daily-offer {
-  margin: 20px;
-  padding: 20px;
-  background: rgba(0,0,0,0.4);
-  border-radius: 10px;
-  text-align: center;
+.container{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+gap:15px;
+padding:20px;
 }
 
-.admin {
-  margin: 20px;
-  padding: 20px;
-  background: rgba(255,255,255,0.1);
-  border-radius: 10px;
+.card{
+padding:20px;
+border-radius:15px;
+box-shadow:0 8px 20px rgba(0,0,0,0.3);
+transition:0.3s;
+}
+.card:hover{transform:scale(1.05);}
+
+.gp{background:#00a651;}
+.robi{background:#e60000;}
+.airtel{background:#ff0033;}
+.bl{background:#ff6600;}
+.tt{background:#008000;}
+
+button{
+margin-top:10px;
+padding:10px;
+border:none;
+border-radius:20px;
+background:black;
+color:white;
+cursor:pointer;
 }
 
-input, textarea {
-  width: 100%;
-  padding: 10px;
-  margin: 5px 0;
-  border-radius: 5px;
-  border: none;
+.admin{
+display:none;
+background:#000;
+padding:20px;
+margin:20px;
+border-radius:10px;
+}
+
+input{
+width:100%;
+padding:10px;
+margin:5px 0;
+border-radius:5px;
+border:none;
 }
 </style>
-
 </head>
+
 <body>
 
-<header onclick="showLogin()">
-  <h1>🔥 Internet Offer Zone</h1>
-  <p>Header-এ click করলে admin login আসবে 😉</p>
+<header onclick="secretClick()">
+<h1>🔥 Internet Offer Zone</h1>
 </header>
 
+<div class="slider" id="sliderText">🔥 আজকের অফার</div>
+
+<!-- GP -->
+<h2>📶 Grameenphone</h2>
 <div class="container">
-  <div class="card" id="family">
-    <h2>👨‍👩‍👧 Family Pack</h2>
-    <p id="familyText">Default Family Offer</p>
-  </div>
-
-  <div class="card" id="gift">
-    <h2>🎁 Gift Pack</h2>
-    <p id="giftText">Default Gift Offer</p>
-  </div>
-
-  <div class="card" id="house">
-    <h2>🏠 House Offer</h2>
-    <p id="houseText">Default House Offer</p>
-  </div>
-
-  <div class="card" id="regular">
-    <h2>📦 Regular Pack</h2>
-    <p id="regularText">Default Regular Offer</p>
-  </div>
+<div class="card gp"><p id="gp1">GP Family 299৳</p><button onclick="orderNow(gp1.innerText)">Buy</button></div>
+<div class="card gp"><p id="gp2">GP Gift 149৳</p><button onclick="orderNow(gp2.innerText)">Buy</button></div>
+<div class="card gp"><p id="gp3">GP House 499৳</p><button onclick="orderNow(gp3.innerText)">Buy</button></div>
+<div class="card gp"><p id="gp4">GP Regular 99৳</p><button onclick="orderNow(gp4.innerText)">Buy</button></div>
 </div>
 
-<div class="daily-offer">
-  <h2>📢 Daily Offer</h2>
-  <p id="dailyText">আজকের অফার এখানে দেখাবে</p>
+<!-- ROBI -->
+<h2>📶 Robi</h2>
+<div class="container">
+<div class="card robi"><p>Robi Family 299৳</p><button onclick="orderNow(this.previousElementSibling.innerText)">Buy</button></div>
+<div class="card robi"><p>Robi Gift 159৳</p><button onclick="orderNow(this.previousElementSibling.innerText)">Buy</button></div>
+<div class="card robi"><p>Robi House 499৳</p><button onclick="orderNow(this.previousElementSibling.innerText)">Buy</button></div>
+<div class="card robi"><p>Robi Regular 99৳</p><button onclick="orderNow(this.previousElementSibling.innerText)">Buy</button></div>
 </div>
 
-<!-- LOGIN -->
-<div id="loginBox" style="display:none; margin:20px; padding:20px; background:rgba(0,0,0,0.5); border-radius:10px; text-align:center;">
-  <h2>🔐 Admin Login</h2>
-  <input type="password" id="password" placeholder="Enter Password">
-  <button onclick="checkLogin()">Login</button>
+<!-- AIRTEL -->
+<h2>📶 Airtel</h2>
+<div class="container">
+<div class="card airtel"><p>Airtel Family 299৳</p><button onclick="orderNow(this.previousElementSibling.innerText)">Buy</button></div>
+<div class="card airtel"><p>Airtel Gift 149৳</p><button onclick="orderNow(this.previousElementSibling.innerText)">Buy</button></div>
+<div class="card airtel"><p>Airtel House 499৳</p><button onclick="orderNow(this.previousElementSibling.innerText)">Buy</button></div>
+<div class="card airtel"><p>Airtel Regular 99৳</p><button onclick="orderNow(this.previousElementSibling.innerText)">Buy</button></div>
 </div>
 
-<div class="admin" id="adminPanel" style="display:none;">
-  <h2>Admin Panel</h2>
+<!-- BANGLALINK -->
+<h2>📶 Banglalink</h2>
+<div class="container">
+<div class="card bl"><p>BL Family 299৳</p><button onclick="orderNow(this.previousElementSibling.innerText)">Buy</button></div>
+<div class="card bl"><p>BL Gift 149৳</p><button onclick="orderNow(this.previousElementSibling.innerText)">Buy</button></div>
+<div class="card bl"><p>BL House 499৳</p><button onclick="orderNow(this.previousElementSibling.innerText)">Buy</button></div>
+<div class="card bl"><p>BL Regular 99৳</p><button onclick="orderNow(this.previousElementSibling.innerText)">Buy</button></div>
+</div>
 
-  <h3>Update Sections</h3>
-  <input id="familyInput" placeholder="Family Pack">
-  <input id="giftInput" placeholder="Gift Pack">
-  <input id="houseInput" placeholder="House Offer">
-  <input id="regularInput" placeholder="Regular Pack">
-  <button onclick="updateSections()">Update Sections</button>
+<!-- TELETALK -->
+<h2>📶 Teletalk</h2>
+<div class="container">
+<div class="card tt"><p>TT Family 299৳</p><button onclick="orderNow(this.previousElementSibling.innerText)">Buy</button></div>
+<div class="card tt"><p>TT Gift 149৳</p><button onclick="orderNow(this.previousElementSibling.innerText)">Buy</button></div>
+<div class="card tt"><p>TT House 499৳</p><button onclick="orderNow(this.previousElementSibling.innerText)">Buy</button></div>
+<div class="card tt"><p>TT Regular 99৳</p><button onclick="orderNow(this.previousElementSibling.innerText)">Buy</button></div>
+</div>
 
-  <h3>Update Daily Offer</h3>
-  <textarea id="dailyInput" placeholder="Today's Offer"></textarea>
-  <button onclick="updateDaily()">Update Daily Offer</button>
+<!-- ADMIN -->
+<div class="admin" id="adminPanel">
+<h2>Admin Panel</h2>
+<input id="edit1" placeholder="Edit GP Family">
+<button onclick="saveData()">Save</button>
 </div>
 
 <script>
-function showLogin(){
-  document.getElementById('loginBox').style.display='block';
+let clickCount=0;
+function secretClick(){
+clickCount++;
+if(clickCount==3){
+let pass=prompt("Password");
+if(pass=="122055"){
+adminPanel.style.display="block";
+}
+clickCount=0;
+}
 }
 
-function checkLogin() {
-  let pass = document.getElementById('password').value;
-  if(pass === "122055") {
-    document.getElementById('adminPanel').style.display = 'block';
-    document.getElementById('loginBox').style.display = 'none';
-  } else {
-    alert("Wrong Password!");
-  }
+function saveData(){
+gp1.innerText=edit1.value;
+localStorage.setItem("gp1",edit1.value);
 }
 
-function updateSections() {
-  document.getElementById('familyText').innerText = document.getElementById('familyInput').value;
-  document.getElementById('giftText').innerText = document.getElementById('giftInput').value;
-  document.getElementById('houseText').innerText = document.getElementById('houseInput').value;
-  document.getElementById('regularText').innerText = document.getElementById('regularInput').value;
-
-  localStorage.setItem('family', familyInput.value);
-  localStorage.setItem('gift', giftInput.value);
-  localStorage.setItem('house', houseInput.value);
-  localStorage.setItem('regular', regularInput.value);
+window.onload=function(){
+if(localStorage.getItem("gp1")) gp1.innerText=localStorage.getItem("gp1");
 }
 
-function updateDaily() {
-  let value = document.getElementById('dailyInput').value;
-  document.getElementById('dailyText').innerText = value;
-  localStorage.setItem('daily', value);
+function orderNow(product){
+window.open("https://wa.me/8801624228476?text="+encodeURIComponent("আমি নিতে চাই: "+product));
 }
 
-window.onload = function() {
-  if(localStorage.getItem('family')) familyText.innerText = localStorage.getItem('family');
-  if(localStorage.getItem('gift')) giftText.innerText = localStorage.getItem('gift');
-  if(localStorage.getItem('house')) houseText.innerText = localStorage.getItem('house');
-  if(localStorage.getItem('regular')) regularText.innerText = localStorage.getItem('regular');
-  if(localStorage.getItem('daily')) dailyText.innerText = localStorage.getItem('daily');
-}
+let texts=["🔥 Offer","💥 Deal","🚀 New"];
+let i=0;
+setInterval(()=>{
+i=(i+1)%texts.length;
+sliderText.innerText=texts[i];
+},2000);
 </script>
-
-<!-- WhatsApp -->
-<div style="margin:20px; padding:25px; text-align:center; border-radius:15px; background: linear-gradient(135deg,#25D366,#128C7E);">
-  <h2>📲 WhatsApp Contact</h2>
-  <a href="https://wa.me/8801624228476" target="_blank">
-    <button style="background:#fff; color:#25D366;">💬 Chat Now</button>
-  </a>
-</div>
-
-<!-- Facebook -->
-<div style="margin:20px; padding:25px; text-align:center; border-radius:15px; background: linear-gradient(135deg,#1877F2,#0A58CA);">
-  <h2>📘 Facebook Profile</h2>
-  <a href="https://www.facebook.com/fahim12205" target="_blank">
-    <button style="background:#fff; color:#1877F2;">👉 Visit Profile</button>
-  </a>
-</div>
-
-<!-- Footer Name -->
-<div style="text-align:center; padding:20px; opacity:0.8;">
-  © 2026 Rajibul Islam Fahim
-</div>
 
 </body>
 </html>
