@@ -4,7 +4,6 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Internet Offers Premium</title>
-
 <style>
 /* ===== GLOBAL ===== */
 body{
@@ -128,7 +127,7 @@ opacity:0.95;
 /* ===== GRID ===== */
 .grid{
 display:grid;
-grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
 gap:20px;
 padding:20px;
 }
@@ -145,6 +144,9 @@ transition:0.4s;
 box-shadow:0 10px 30px rgba(0,0,0,0.5);
 position:relative;
 overflow:hidden;
+display:flex;
+flex-direction:column;
+gap:15px;
 }
 .box::after{
 content:"";
@@ -164,12 +166,28 @@ transition:0.8s;
 transform:translateY(-10px) scale(1.05);
 }
 
-/* ===== PRICE ===== */
-.price{
+/* ===== MB / PRICE CARD ===== */
+.offerContent{
+display:flex;
+justify-content:space-between;
+align-items:center;
+padding:12px 18px;
+border-radius:20px;
+background:rgba(255,255,255,0.08);
+backdrop-filter:blur(15px);
+box-shadow:0 4px 15px rgba(0,0,0,0.4);
+}
+.offerContent .mb{
 font-weight:bold;
-font-size:20px;
+font-size:18px;
 color:#00ffd5;
-margin-top:8px;
+}
+.offerContent .price{
+font-weight:bold;
+font-size:18px;
+background:linear-gradient(135deg,#ff512f,#dd2476);
+-webkit-background-clip:text;
+color:transparent;
 }
 
 /* ===== BUTTON ===== */
@@ -227,10 +245,13 @@ grid-template-columns:1fr;
 }
 header h1{font-size:32px;}
 .sectionTitle{font-size:20px;}
+.offerContent{
+flex-direction:column;
+gap:8px;
+}
 }
 </style>
 </head>
-
 <body>
 
 <div class="topbar">বিসমিল্লাহির রহমানির রহিম</div>
@@ -292,8 +313,10 @@ offers[sim][pack].forEach((offer)=>{
 let text=(offer.name+offer.price).toLowerCase();
 if(text.includes(search)){
 html+=`<div class="box">
-<p>${offer.name}</p>
-<p class="price">${offer.price}৳</p>
+<div class="offerContent">
+<span class="mb">${offer.name}</span>
+<span class="price">${offer.price}৳</span>
+</div>
 <button onclick="buy('${offer.name}','${offer.price}')">Buy</button>
 </div>`;
 }
@@ -317,8 +340,10 @@ for(let sim in offers){
 for(let pack in offers[sim]){
 offers[sim][pack].forEach((offer)=>{
 html+=`<div class="box">
-<p>${offer.name}</p>
-<p class="price">${offer.price}৳</p>
+<div class="offerContent">
+<span class="mb">${offer.name}</span>
+<span class="price">${offer.price}৳</span>
+</div>
 <button onclick="buy('${offer.name}','${offer.price}')">Buy</button>
 </div>`;
 });
