@@ -105,36 +105,40 @@ let clickCount=0;
 function secretClick(){
 clickCount++;
 if(clickCount==3){
-let pass=prompt("Password");
+let pass=prompt("Enter Admin Password:");
 if(pass=="122055"){
 isAdmin=true;
-alert("Admin Mode ON ✅");
+alert("✅ Admin Mode ON\n👉 এখন অফারে চাপ দিয়ে edit করুন");
+}else{
+alert("❌ Wrong Password");
 }
 clickCount=0;
 }
 }
 
-/* DIRECT EDIT */
+/* EDIT SYSTEM */
 function editOffer(id){
 if(!isAdmin) return;
 
 let currentText=document.getElementById(id).innerText;
 let currentPrice=document.getElementById("price"+id).innerText;
 
-let newText=prompt("Edit Offer:",currentText);
-if(newText===null) return;
+let newText=prompt("✏️ Edit Offer:",currentText);
+if(newText===null || newText=="") return;
 
-let newPrice=prompt("Edit Price:",currentPrice);
-if(newPrice===null) return;
+let newPrice=prompt("💰 Edit Price:",currentPrice);
+if(newPrice===null || newPrice=="") return;
 
 document.getElementById(id).innerText=newText;
 document.getElementById("price"+id).innerText=newPrice;
 
 localStorage.setItem(id,newText);
 localStorage.setItem("price"+id,newPrice);
+
+alert("✅ Updated!");
 }
 
-/* NOTICE UPDATE */
+/* NOTICE */
 function updateNotice(){
 let n=prompt("Write Notice");
 if(n){
@@ -154,7 +158,6 @@ document.getElementById(k).innerText=localStorage.getItem(k);
 if(localStorage.getItem("notice")){
 noticeText.innerText=localStorage.getItem("notice");
 }
-loadOrders();
 }
 
 /* ORDER */
@@ -169,13 +172,6 @@ orders.push(full);
 localStorage.setItem("orders",JSON.stringify(orders));
 
 window.open("https://wa.me/8801624228476?text="+encodeURIComponent("আমি নিতে চাই: "+full));
-
-loadOrders();
-}
-
-function loadOrders(){
-let orders=JSON.parse(localStorage.getItem("orders")||"[]");
-console.log("Orders:",orders);
 }
 
 /* SLIDER */
