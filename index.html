@@ -61,54 +61,55 @@ color:white;cursor:pointer;font-weight:bold;
 <div class="slider" id="sliderText">🔥 সাশ্রয় দামে সব অফার দেখুন</div>
 <div class="notice" id="noticeText">📢 প্রতিদিন নতুন অফার আপডেট করা হয়</div>
 
+<div id="main"></div>
+
 <script>
+let isAdmin=false;
+
+/* CREATE */
 function createSIM(sim,prefix){
 let packs=["Family","Gift","House","Regular","Minute"];
 
-document.write(`<h2 style="margin-left:15px;">📶 ${sim}</h2>`);
+let html=`<h2 style="margin-left:15px;">📶 ${sim}</h2>`;
 
 packs.forEach((pack,index)=>{
-document.write(`<h3 style="margin-left:20px;">👉 ${pack}</h3><div class="grid">`);
+html+=`<h3 style="margin-left:20px;">👉 ${pack}</h3><div class="grid">`;
 
 for(let i=1;i<=10;i++){
 let id=prefix+index+i;
 
-document.write(`
+html+=`
 <div class="box" onclick="editOffer('${id}')">
 <p id="${id}">${sim} ${pack} ${i}</p>
 <p class="price" id="price${id}">0৳</p>
 <button onclick="event.stopPropagation();orderNow('${id}')">Buy</button>
 </div>
-`);
+`;
 }
-document.write(`</div>`);
+
+html+=`</div>`;
 });
+
+return html;
 }
-</script>
 
-<script>
-createSIM("Grameenphone","gp");
-createSIM("Robi","r");
-createSIM("Airtel","a");
-createSIM("Banglalink","b");
+document.getElementById("main").innerHTML=
+createSIM("Grameenphone","gp")+
+createSIM("Robi","r")+
+createSIM("Airtel","a")+
+createSIM("Banglalink","b")+
 createSIM("Teletalk","t");
-</script>
 
-<h2>🔥 All Offers</h2>
-<textarea id="allOffers" style="width:95%;height:300px;margin:10px;border-radius:10px;"></textarea>
-
-<script>
-let isAdmin=false;
 
 /* LOGIN */
 let clickCount=0;
 function secretClick(){
 clickCount++;
 if(clickCount==3){
-let pass=prompt("Enter Admin Password:");
+let pass=prompt("Enter Password");
 if(pass=="122055"){
 isAdmin=true;
-alert("✅ Admin Mode ON\n👉 এখন অফারে চাপ দিয়ে edit করুন");
+alert("✅ Admin Mode ON");
 }else{
 alert("❌ Wrong Password");
 }
@@ -116,35 +117,29 @@ clickCount=0;
 }
 }
 
-/* EDIT SYSTEM */
+/* EDIT */
 function editOffer(id){
-if(!isAdmin) return;
+if(!isAdmin){
+alert("❗ Admin login করুন আগে");
+return;
+}
 
-let currentText=document.getElementById(id).innerText;
-let currentPrice=document.getElementById("price"+id).innerText;
+let textEl=document.getElementById(id);
+let priceEl=document.getElementById("price"+id);
 
-let newText=prompt("✏️ Edit Offer:",currentText);
-if(newText===null || newText=="") return;
+let newText=prompt("Edit Offer:",textEl.innerText);
+if(!newText) return;
 
-let newPrice=prompt("💰 Edit Price:",currentPrice);
-if(newPrice===null || newPrice=="") return;
+let newPrice=prompt("Edit Price:",priceEl.innerText);
+if(!newPrice) return;
 
-document.getElementById(id).innerText=newText;
-document.getElementById("price"+id).innerText=newPrice;
+textEl.innerText=newText;
+priceEl.innerText=newPrice;
 
 localStorage.setItem(id,newText);
 localStorage.setItem("price"+id,newPrice);
 
 alert("✅ Updated!");
-}
-
-/* NOTICE */
-function updateNotice(){
-let n=prompt("Write Notice");
-if(n){
-noticeText.innerText=n;
-localStorage.setItem("notice",n);
-}
 }
 
 /* LOAD */
@@ -155,9 +150,6 @@ if(document.getElementById(k)){
 document.getElementById(k).innerText=localStorage.getItem(k);
 }
 }
-if(localStorage.getItem("notice")){
-noticeText.innerText=localStorage.getItem("notice");
-}
 }
 
 /* ORDER */
@@ -165,47 +157,22 @@ function orderNow(id){
 let name=document.getElementById(id).innerText;
 let price=document.getElementById("price"+id).innerText;
 
-let full=name+" - "+price;
-
-let orders=JSON.parse(localStorage.getItem("orders")||"[]");
-orders.push(full);
-localStorage.setItem("orders",JSON.stringify(orders));
-
-window.open("https://wa.me/8801624228476?text="+encodeURIComponent("আমি নিতে চাই: "+full));
+window.open("https://wa.me/8801624228476?text="+encodeURIComponent(name+" - "+price));
 }
 
 /* SLIDER */
 let texts=[
 "🔥 সাশ্রয় দামে সব অফার দেখুন",
 "💥 ধামাকা অফার চলছে",
-"🚀 নতুন প্যাক এসেছে",
-"📢 নিচে সব অফার দেখুন"
+"🚀 নতুন প্যাক এসেছে"
 ];
+
 let i=0;
 setInterval(()=>{
 i=(i+1)%texts.length;
 sliderText.innerText=texts[i];
 },2000);
 </script>
-
-<!-- CONTACT -->
-<div style="margin:20px;text-align:center;background:#25D366;padding:15px;border-radius:10px;">
-<h2>📲 WhatsApp</h2>
-<a href="https://wa.me/8801624228476">
-<button>Chat Now</button>
-</a>
-</div>
-
-<div style="margin:20px;text-align:center;background:linear-gradient(135deg,#1877F2,#0A58CA);padding:20px;border-radius:15px;">
-<h2>📘 Facebook Profile</h2>
-<a href="https://facebook.com/fahim12205">
-<button style="background:white;color:#1877F2;">Visit Now</button>
-</a>
-</div>
-
-<div style="text-align:center;padding:20px;">
-© 2026 Rajibul Islam Fahim
-</div>
 
 </body>
 </html>
