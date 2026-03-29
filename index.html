@@ -13,10 +13,10 @@ background:linear-gradient(135deg,#6a11cb,#2575fc);
 color:white;
 }
 
-.topbar{text-align:center;padding:5px;font-size:14px;}
+.topbar{text-align:center;padding:5px;}
 .trust{text-align:center;background:#00ffcc;color:black;padding:8px;font-weight:bold;}
 
-header{text-align:center;padding:20px;cursor:pointer;}
+header{text-align:center;padding:20px;}
 
 .slider{
 background:black;
@@ -46,11 +46,7 @@ border-radius:12px;
 text-align:center;
 }
 
-.highlight{
-border:2px solid yellow;
-}
-
-.price{font-weight:bold;font-size:16px;}
+.price{font-weight:bold;}
 
 button{
 margin-top:5px;
@@ -68,16 +64,24 @@ padding:12px;
 background:black;
 border-radius:10px;
 text-align:center;
-font-size:14px;
-border:2px solid yellow;
 }
 
-.adminPanel{
-display:none;
-background:#000;
-padding:15px;
-margin:10px;
-border-radius:10px;
+/* ⭐ BEST OFFER */
+.best{
+border:2px solid yellow;
+position:relative;
+}
+
+.best::before{
+content:"🔥 BEST";
+position:absolute;
+top:-8px;
+left:-8px;
+background:red;
+color:white;
+padding:2px 6px;
+font-size:10px;
+border-radius:5px;
 }
 </style>
 </head>
@@ -87,160 +91,293 @@ border-radius:10px;
 <div class="topbar">বিসমিল্লাহির রহমানির রহিম</div>
 <div class="trust">✅ বিশ্বাস আপনার, সততা আমাদের</div>
 
-<header onclick="login()">
+<header>
 <h1>🔥 Internet Offer Zone</h1>
 </header>
 
 <div class="slider">🔥 আজকের সেরা অফার</div>
 
-<div class="sectionTitle">📦 All Offers</div>
 <div id="main"></div>
 
-<!-- 🔐 ADMIN PANEL -->
-<div class="adminPanel" id="adminPanel">
-<h3>📊 Admin Panel</h3>
-<input id="idInput" placeholder="gp01">
-<input id="nameInput" placeholder="Offer Name">
-<input id="priceInput" placeholder="Price">
-<button onclick="saveData()">Save</button>
-</div>
+<!-- 📦 সমস্ত অফার -->
+<div class="sectionTitle">📦 সমস্ত অফার</div>
+<div id="allOffers" class="grid"></div>
 
-<!-- 💰 UPDATED NOTICE -->
+<!-- 🔔 NOTICE -->
 <div class="notice">
 📢 প্রতিদিন নতুন অফার আপডেট করা হয় <br>
-💬 অর্ডার করতে Buy বাটনে ক্লিক করুন <br><br>
-
-💳 Payment Options: <br>
-📲 bKash: 01618599077 <br>
-📲 Nagad: 01624228476 <br>
-📲 Rocket: 01624228476 <br><br>
-
-⚡ Payment করে Screenshot দিন
+💬 Buy বাটনে ক্লিক করে WhatsApp এ অর্ডার করুন <br>
+⚡ দ্রুত সার্ভিস গ্যারান্টি
 </div>
 
-<script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js";
-import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js";
+<script>
 
-const firebaseConfig = {
-  apiKey: "AIzaSyD44JlXcOD8Fb_Q1UgJtAeHXp35SUcqis8",
-  authDomain: "internet-offer-7ad50.firebaseapp.com",
-  projectId: "internet-offer-7ad50"
+/* 🔥 MASTER DATA */
+const offers = {
+
+"Airtel":{
+"Family Pack":[
+{name:"30GB",price:"299"},
+{name:"25GB",price:"249"},
+{name:"20GB",price:"199"},
+{name:"15GB",price:"149"},
+{name:"10GB",price:"99"}
+],
+"Gift Pack":[
+{name:"20GB",price:"199"},
+{name:"15GB",price:"149"},
+{name:"10GB",price:"99"},
+{name:"8GB",price:"79"},
+{name:"5GB",price:"59"}
+],
+"Regular Pack":[
+{name:"10GB",price:"99"},
+{name:"8GB",price:"79"},
+{name:"6GB",price:"59"},
+{name:"4GB",price:"39"},
+{name:"2GB",price:"29"}
+],
+"House Offer":[
+{name:"50GB",price:"399"},
+{name:"40GB",price:"349"},
+{name:"30GB",price:"299"},
+{name:"20GB",price:"199"},
+{name:"10GB",price:"99"}
+],
+"Minute Pack":[
+{name:"100 Min",price:"50"},
+{name:"80 Min",price:"40"},
+{name:"60 Min",price:"30"},
+{name:"40 Min",price:"20"},
+{name:"20 Min",price:"10"}
+]
+},
+
+"Grameenphone":{
+"Family Pack":[
+{name:"30GB",price:"299"},
+{name:"25GB",price:"249"},
+{name:"20GB",price:"199"},
+{name:"15GB",price:"149"},
+{name:"10GB",price:"99"}
+],
+"Gift Pack":[
+{name:"20GB",price:"199"},
+{name:"15GB",price:"149"},
+{name:"10GB",price:"99"},
+{name:"8GB",price:"79"},
+{name:"5GB",price:"59"}
+],
+"Regular Pack":[
+{name:"10GB",price:"99"},
+{name:"8GB",price:"79"},
+{name:"6GB",price:"59"},
+{name:"4GB",price:"39"},
+{name:"2GB",price:"29"}
+],
+"House Offer":[
+{name:"50GB",price:"399"},
+{name:"40GB",price:"349"},
+{name:"30GB",price:"299"},
+{name:"20GB",price:"199"},
+{name:"10GB",price:"99"}
+],
+"Minute Pack":[
+{name:"100 Min",price:"50"},
+{name:"80 Min",price:"40"},
+{name:"60 Min",price:"30"},
+{name:"40 Min",price:"20"},
+{name:"20 Min",price:"10"}
+]
+},
+
+"Robi":{
+"Family Pack":[
+{name:"30GB",price:"299"},
+{name:"25GB",price:"249"},
+{name:"20GB",price:"199"},
+{name:"15GB",price:"149"},
+{name:"10GB",price:"99"}
+],
+"Gift Pack":[
+{name:"20GB",price:"199"},
+{name:"15GB",price:"149"},
+{name:"10GB",price:"99"},
+{name:"8GB",price:"79"},
+{name:"5GB",price:"59"}
+],
+"Regular Pack":[
+{name:"10GB",price:"99"},
+{name:"8GB",price:"79"},
+{name:"6GB",price:"59"},
+{name:"4GB",price:"39"},
+{name:"2GB",price:"29"}
+],
+"House Offer":[
+{name:"50GB",price:"399"},
+{name:"40GB",price:"349"},
+{name:"30GB",price:"299"},
+{name:"20GB",price:"199"},
+{name:"10GB",price:"99"}
+],
+"Minute Pack":[
+{name:"100 Min",price:"50"},
+{name:"80 Min",price:"40"},
+{name:"60 Min",price:"30"},
+{name:"40 Min",price:"20"},
+{name:"20 Min",price:"10"}
+]
+},
+
+"Banglalink":{
+"Family Pack":[
+{name:"30GB",price:"299"},
+{name:"25GB",price:"249"},
+{name:"20GB",price:"199"},
+{name:"15GB",price:"149"},
+{name:"10GB",price:"99"}
+],
+"Gift Pack":[
+{name:"20GB",price:"199"},
+{name:"15GB",price:"149"},
+{name:"10GB",price:"99"},
+{name:"8GB",price:"79"},
+{name:"5GB",price:"59"}
+],
+"Regular Pack":[
+{name:"10GB",price:"99"},
+{name:"8GB",price:"79"},
+{name:"6GB",price:"59"},
+{name:"4GB",price:"39"},
+{name:"2GB",price:"29"}
+],
+"House Offer":[
+{name:"50GB",price:"399"},
+{name:"40GB",price:"349"},
+{name:"30GB",price:"299"},
+{name:"20GB",price:"199"},
+{name:"10GB",price:"99"}
+],
+"Minute Pack":[
+{name:"100 Min",price:"50"},
+{name:"80 Min",price:"40"},
+{name:"60 Min",price:"30"},
+{name:"40 Min",price:"20"},
+{name:"20 Min",price:"10"}
+]
+},
+
+"Teletalk":{
+"Family Pack":[
+{name:"30GB",price:"299"},
+{name:"25GB",price:"249"},
+{name:"20GB",price:"199"},
+{name:"15GB",price:"149"},
+{name:"10GB",price:"99"}
+],
+"Gift Pack":[
+{name:"20GB",price:"199"},
+{name:"15GB",price:"149"},
+{name:"10GB",price:"99"},
+{name:"8GB",price:"79"},
+{name:"5GB",price:"59"}
+],
+"Regular Pack":[
+{name:"10GB",price:"99"},
+{name:"8GB",price:"79"},
+{name:"6GB",price:"59"},
+{name:"4GB",price:"39"},
+{name:"2GB",price:"29"}
+],
+"House Offer":[
+{name:"50GB",price:"399"},
+{name:"40GB",price:"349"},
+{name:"30GB",price:"299"},
+{name:"20GB",price:"199"},
+{name:"10GB",price:"99"}
+],
+"Minute Pack":[
+{name:"100 Min",price:"50"},
+{name:"80 Min",price:"40"},
+{name:"60 Min",price:"30"},
+{name:"40 Min",price:"20"},
+{name:"20 Min",price:"10"}
+]
+}
+
 };
 
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
+/* UI LOAD */
+function loadOffers(){
+let html="";
 
-/* 🔐 LOGIN */
-let isAdmin=false;
+for(let sim in offers){
+html+=`<div class="sectionTitle">${sim}</div>`;
 
-function login(){
-let pass = prompt("Admin Password:");
-if(pass==="1234"){
-isAdmin=true;
-document.getElementById("adminPanel").style.display="block";
-alert("Admin Mode ON");
-}else{
-alert("Wrong Password");
-}
-}
-window.login = login;
+for(let pack in offers[sim]){
+html+=`<div class="sectionTitle">${pack}</div><div class="grid">`;
 
-/* CREATE UI */
-function createSIM(sim,prefix){
-let html=`<div class="sectionTitle">${sim}</div><div class="grid">`;
-
-for(let i=1;i<=10;i++){
-let id=prefix+"0"+i;
-
+offers[sim][pack].forEach((offer)=>{
 html+=`
-<div class="box" id="box${id}">
-<p id="${id}">${sim} Offer ${i}</p>
-<p class="price" id="price${id}">0৳</p>
-<button onclick="buy('${id}')">Buy</button>
+<div class="box">
+<p>${offer.name}</p>
+<p class="price">${offer.price}৳</p>
+<button onclick="buy('${offer.name}','${offer.price}')">Buy</button>
 </div>
 `;
-}
+});
 
 html+=`</div>`;
-return html;
+}
 }
 
-document.getElementById("main").innerHTML=
-createSIM("Grameenphone","gp")+
-createSIM("Robi","r")+
-createSIM("Airtel","a")+
-createSIM("Banglalink","b")+
-createSIM("Teletalk","t");
-
-/* 🔥 LOAD DATA */
-async function loadData(){
-  const docRef = doc(db, "offers", "all");
-  const snap = await getDoc(docRef);
-
-  if(snap.exists()){
-    const data = snap.data();
-
-    Object.keys(data).forEach(id=>{
-      if(document.getElementById(id)){
-        document.getElementById(id).innerText = data[id].name;
-        document.getElementById("price"+id).innerText = data[id].price + "৳";
-
-        if(parseInt(data[id].price) <= 199){
-          document.getElementById("box"+id).classList.add("highlight");
-        }
-      }
-    });
-  }
+document.getElementById("main").innerHTML=html;
 }
 
-loadData();
+loadOffers();
 
-/* 💰 UPDATED BUY FUNCTION */
-function buy(id){
-let name=document.getElementById(id).innerText;
-let price=document.getElementById("price"+id).innerText;
+/* 📦 ALL OFFERS */
+function loadAllOffers(){
+let html="";
 
-let msg = `
-🛒 Order Confirm
-
-📦 ${name}
-💰 ${price}
-
-💳 Payment Options:
-
-📲 bKash: 01618599077
-📲 Nagad: 01624228476
-📲 Rocket: 01624228476
-
-👉 Send Money করে Screenshot দিন
-
-⚡ দ্রুত ডেলিভারি
+for(let sim in offers){
+for(let pack in offers[sim]){
+offers[sim][pack].forEach((offer)=>{
+html+=`
+<div class="box">
+<p>${offer.name}</p>
+<p class="price">${offer.price}৳</p>
+<button onclick="buy('${offer.name}','${offer.price}')">Buy</button>
+</div>
 `;
+});
+}
+}
 
+document.getElementById("allOffers").innerHTML=html;
+}
+
+loadAllOffers();
+
+/* ⭐ BEST */
+function highlightBest(){
+let boxes=document.querySelectorAll(".box");
+
+boxes.forEach(box=>{
+let price=parseInt(box.querySelector(".price").innerText);
+if(price<=99){
+box.classList.add("best");
+}
+});
+}
+
+highlightBest();
+
+/* WhatsApp */
+function buy(name,price){
+let msg=`🛒 Order\n📦 ${name}\n💰 ${price}৳`;
 window.open("https://wa.me/8801624228476?text="+encodeURIComponent(msg));
 }
-window.buy = buy;
-
-/* 📊 SAVE DATA */
-async function saveData(){
-if(!isAdmin){
-alert("Login first");
-return;
-}
-
-let id=idInput.value;
-let name=nameInput.value;
-let price=priceInput.value;
-
-await setDoc(doc(db,"offers","all"), {
-  [id]: {name, price}
-}, {merge:true});
-
-alert("✅ Saved");
-loadData();
-}
-window.saveData = saveData;
 
 </script>
 
