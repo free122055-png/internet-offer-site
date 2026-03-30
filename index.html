@@ -421,8 +421,8 @@ document.getElementById("main").innerHTML=html;
 }
 
 function buy(n,p,v){
-let msg=`${n} ${p}৳ ${v}`;
-window.open("https://wa.me/8801624228476?text="+encodeURIComponent(msg));
+let msg = n + " " + p + "৳ " + v;
+window.open("https://wa.me/8801624228476?text=" + encodeURIComponent(msg), "_blank");
 }
 
 document.getElementById("searchBox").addEventListener("input",renderOffers);
