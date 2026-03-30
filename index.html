@@ -14,7 +14,7 @@ color:white;
 overflow-x:hidden;
 }
 
-/* Glow */
+/* Glow BG */
 body::before{
 content:"";
 position:fixed;
@@ -46,6 +46,32 @@ border:none;
 background:#ffffff15;
 color:white;
 backdrop-filter:blur(10px);
+outline:none;
+}
+
+/* SIM BAR */
+.simBar{
+display:flex;
+overflow-x:auto;
+gap:10px;
+padding:10px;
+}
+.simBtn{
+padding:10px 18px;
+border-radius:25px;
+background:#ffffff10;
+cursor:pointer;
+white-space:nowrap;
+transition:0.3s;
+}
+.simBtn:hover{
+background:#00ffd5;
+color:black;
+}
+.activeSIM{
+background:#00ffd5;
+color:black;
+box-shadow:0 0 10px #00ffd5;
 }
 
 /* Grid */
@@ -64,11 +90,29 @@ padding:20px;
 text-align:center;
 backdrop-filter:blur(15px);
 transition:0.4s;
+position:relative;
+animation:fadeIn 0.5s ease;
+}
+
+@keyframes fadeIn{
+from{opacity:0;transform:translateY(20px);}
+to{opacity:1;transform:translateY(0);}
 }
 
 .box:hover{
 transform:translateY(-10px) scale(1.03);
 box-shadow:0 0 30px #00ffd5;
+}
+
+/* Badge */
+.badge{
+position:absolute;
+top:10px;
+right:10px;
+padding:5px 10px;
+border-radius:15px;
+font-size:11px;
+background:linear-gradient(45deg,#ff512f,#ff0000);
 }
 
 /* Text */
@@ -85,11 +129,13 @@ border-radius:30px;
 background:linear-gradient(135deg,#ff512f,#dd2476);
 color:white;
 cursor:pointer;
+transition:0.3s;
+box-shadow:0 0 10px #ff512f;
 }
 
 button:hover{
 transform:scale(1.1);
-box-shadow:0 0 20px #ff512f;
+box-shadow:0 0 20px #ff512f,0 0 40px #dd2476;
 }
 
 .sectionTitle{
@@ -110,137 +156,174 @@ margin-top:25px;
 <input type="text" id="searchBox" placeholder="🔍 Search GB / Price...">
 </div>
 
+<!-- SIM FILTER -->
+<div class="simBar" id="simBar">
+<div class="simBtn activeSIM" onclick="filterSIM('All',this)">All</div>
+<div class="simBtn" onclick="filterSIM('এয়ারটেল',this)">এয়ারটেল</div>
+<div class="simBtn" onclick="filterSIM('রবি',this)">রবি</div>
+<div class="simBtn" onclick="filterSIM('গ্রামীণ',this)">গ্রামীণ</div>
+<div class="simBtn" onclick="filterSIM('বাংলালিংক',this)">বাংলালিংক</div>
+<div class="simBtn" onclick="filterSIM('skitto',this)">skitto</div>
+<div class="simBtn" onclick="filterSIM('টেলিটক',this)">টেলিটক</div>
+</div>
+
 <div id="main"></div>
 
 <script>
 
 const offers = {
 
-"এয়ারটেল":{  
-"Family Pack":[  
-{name:"10GB",price:"220",validity:"30 দিন"},{name:"15GB",price:"260",validity:"30 দিন"},{name:"20GB",price:"290",validity:"30 দিন"},{name:"40GB",price:"440",validity:"30 দিন"},{name:"50GB",price:"530",validity:"30 দিন"}  
-],  
-"Gift Pack":[  
-{name:"25GB",price:"249",validity:"30 দিন"},{name:"15GB",price:"149",validity:"30 দিন"},{name:"8GB",price:"89",validity:"30 দিন"},{name:"4GB",price:"49",validity:"30 দিন"},{name:"1GB",price:"19",validity:"30 দিন"}  
-],  
-"House Offer":[  
-{name:"40GB",price:"349",validity:"30 দিন"},{name:"25GB",price:"249",validity:"30 দিন"},{name:"12GB",price:"129",validity:"30 দিন"},{name:"6GB",price:"69",validity:"30 দিন"},{name:"3GB",price:"39",validity:"30 দিন"}  
-],  
-"Regular Pack":[  
-{name:"10GB",price:"99",validity:"30 দিন"},{name:"6GB",price:"69",validity:"30 দিন"},{name:"3GB",price:"39",validity:"30 দিন"},{name:"1GB",price:"19",validity:"30 দিন"},{name:"500MB",price:"9",validity:"30 দিন"}  
-],  
-"Minute Offer":[  
-{name:"100Min",price:"99",validity:"30 দিন"},{name:"60Min",price:"69",validity:"30 দিন"},{name:"30Min",price:"39",validity:"30 দিন"},{name:"15Min",price:"19",validity:"30 দিন"},{name:"5Min",price:"9",validity:"30 দিন"}  
-]  
+/* 🔥 তোমার FULL original offers এখানে বসাবে (same রাখবে) */ <script>
+
+const offers = {
+
+"এয়ারটেল":{
+"Family Pack":[
+{name:"10GB",price:"220",validity:"30 দিন"},{name:"15GB",price:"260",validity:"30 দিন"},{name:"20GB",price:"290",validity:"30 দিন"},{name:"40GB",price:"440",validity:"30 দিন"},{name:"50GB",price:"530",validity:"30 দিন"}
+],
+"Gift Pack":[
+{name:"25GB",price:"249",validity:"30 দিন"},{name:"15GB",price:"149",validity:"30 দিন"},{name:"8GB",price:"89",validity:"30 দিন"},{name:"4GB",price:"49",validity:"30 দিন"},{name:"1GB",price:"19",validity:"30 দিন"}
+],
+"House Offer":[
+{name:"40GB",price:"349",validity:"30 দিন"},{name:"25GB",price:"249",validity:"30 দিন"},{name:"12GB",price:"129",validity:"30 দিন"},{name:"6GB",price:"69",validity:"30 দিন"},{name:"3GB",price:"39",validity:"30 দিন"}
+],
+"Regular Pack":[
+{name:"10GB",price:"99",validity:"30 দিন"},{name:"6GB",price:"69",validity:"30 দিন"},{name:"3GB",price:"39",validity:"30 দিন"},{name:"1GB",price:"19",validity:"30 দিন"},{name:"500MB",price:"9",validity:"30 দিন"}
+],
+"Minute Offer":[
+{name:"100Min",price:"99",validity:"30 দিন"},{name:"60Min",price:"69",validity:"30 দিন"},{name:"30Min",price:"39",validity:"30 দিন"},{name:"15Min",price:"19",validity:"30 দিন"},{name:"5Min",price:"9",validity:"30 দিন"}
+]
 },
 
-"রবি":{  
-"Family Pack":[  
-{name:"30GB",price:"299",validity:"30 দিন"},{name:"20GB",price:"199",validity:"30 দিন"},{name:"10GB",price:"99",validity:"30 দিন"},{name:"5GB",price:"59",validity:"30 দিন"},{name:"2GB",price:"29",validity:"30 দিন"}  
-],  
-"Gift Pack":[  
-{name:"25GB",price:"249",validity:"30 দিন"},{name:"15GB",price:"149",validity:"30 দিন"},{name:"8GB",price:"89",validity:"30 দিন"},{name:"4GB",price:"49",validity:"30 দিন"},{name:"1GB",price:"19",validity:"30 দিন"}  
-],  
-"House Offer":[  
-{name:"40GB",price:"349",validity:"30 দিন"},{name:"25GB",price:"249",validity:"30 দিন"},{name:"12GB",price:"129",validity:"30 দিন"},{name:"6GB",price:"69",validity:"30 দিন"},{name:"3GB",price:"39",validity:"30 দিন"}  
-],  
-"Regular Pack":[  
-{name:"10GB",price:"99",validity:"30 দিন"},{name:"6GB",price:"69",validity:"30 দিন"},{name:"3GB",price:"39",validity:"30 দিন"},{name:"1GB",price:"19",validity:"30 দিন"},{name:"500MB",price:"9",validity:"30 দিন"}  
-],  
-"Minute Offer":[  
-{name:"100Min",price:"99",validity:"30 দিন"},{name:"60Min",price:"69",validity:"30 দিন"},{name:"30Min",price:"39",validity:"30 দিন"},{name:"15Min",price:"19",validity:"30 দিন"},{name:"5Min",price:"9",validity:"30 দিন"}  
-]  
+"রবি":{
+"Family Pack":[
+{name:"30GB",price:"299",validity:"30 দিন"},{name:"20GB",price:"199",validity:"30 দিন"},{name:"10GB",price:"99",validity:"30 দিন"},{name:"5GB",price:"59",validity:"30 দিন"},{name:"2GB",price:"29",validity:"30 দিন"}
+],
+"Gift Pack":[
+{name:"25GB",price:"249",validity:"30 দিন"},{name:"15GB",price:"149",validity:"30 দিন"},{name:"8GB",price:"89",validity:"30 দিন"},{name:"4GB",price:"49",validity:"30 দিন"},{name:"1GB",price:"19",validity:"30 দিন"}
+],
+"House Offer":[
+{name:"40GB",price:"349",validity:"30 দিন"},{name:"25GB",price:"249",validity:"30 দিন"},{name:"12GB",price:"129",validity:"30 দিন"},{name:"6GB",price:"69",validity:"30 দিন"},{name:"3GB",price:"39",validity:"30 দিন"}
+],
+"Regular Pack":[
+{name:"10GB",price:"99",validity:"30 দিন"},{name:"6GB",price:"69",validity:"30 দিন"},{name:"3GB",price:"39",validity:"30 দিন"},{name:"1GB",price:"19",validity:"30 দিন"},{name:"500MB",price:"9",validity:"30 দিন"}
+],
+"Minute Offer":[
+{name:"100Min",price:"99",validity:"30 দিন"},{name:"60Min",price:"69",validity:"30 দিন"},{name:"30Min",price:"39",validity:"30 দিন"},{name:"15Min",price:"19",validity:"30 দিন"},{name:"5Min",price:"9",validity:"30 দিন"}
+]
 },
 
-"গ্রামীণ":{  
-"Family Pack":[  
-{name:"30GB",price:"299",validity:"30 দিন"},{name:"20GB",price:"199",validity:"30 দিন"},{name:"10GB",price:"99",validity:"30 দিন"},{name:"5GB",price:"59",validity:"30 দিন"},{name:"2GB",price:"29",validity:"30 দিন"}  
-],  
-"Gift Pack":[  
-{name:"25GB",price:"249",validity:"30 দিন"},{name:"15GB",price:"149",validity:"30 দিন"},{name:"8GB",price:"89",validity:"30 দিন"},{name:"4GB",price:"49",validity:"30 দিন"},{name:"1GB",price:"19",validity:"30 দিন"}  
-],  
-"House Offer":[  
-{name:"40GB",price:"349",validity:"30 দিন"},{name:"25GB",price:"249",validity:"30 দিন"},{name:"12GB",price:"129",validity:"30 দিন"},{name:"6GB",price:"69",validity:"30 দিন"},{name:"3GB",price:"39",validity:"30 দিন"}  
-],  
-"Regular Pack":[  
-{name:"10GB",price:"99",validity:"30 দিন"},{name:"6GB",price:"69",validity:"30 দিন"},{name:"3GB",price:"39",validity:"30 দিন"},{name:"1GB",price:"19",validity:"30 দিন"},{name:"500MB",price:"9",validity:"30 দিন"}  
-],  
-"Minute Offer":[  
-{name:"100Min",price:"99",validity:"30 দিন"},{name:"60Min",price:"69",validity:"30 দিন"},{name:"30Min",price:"39",validity:"30 দিন"},{name:"15Min",price:"19",validity:"30 দিন"},{name:"5Min",price:"9",validity:"30 দিন"}  
-]  
+"গ্রামীণ":{
+"Family Pack":[
+{name:"30GB",price:"299",validity:"30 দিন"},{name:"20GB",price:"199",validity:"30 দিন"},{name:"10GB",price:"99",validity:"30 দিন"},{name:"5GB",price:"59",validity:"30 দিন"},{name:"2GB",price:"29",validity:"30 দিন"}
+],
+"Gift Pack":[
+{name:"25GB",price:"249",validity:"30 দিন"},{name:"15GB",price:"149",validity:"30 দিন"},{name:"8GB",price:"89",validity:"30 দিন"},{name:"4GB",price:"49",validity:"30 দিন"},{name:"1GB",price:"19",validity:"30 দিন"}
+],
+"House Offer":[
+{name:"40GB",price:"349",validity:"30 দিন"},{name:"25GB",price:"249",validity:"30 দিন"},{name:"12GB",price:"129",validity:"30 দিন"},{name:"6GB",price:"69",validity:"30 দিন"},{name:"3GB",price:"39",validity:"30 দিন"}
+],
+"Regular Pack":[
+{name:"10GB",price:"99",validity:"30 দিন"},{name:"6GB",price:"69",validity:"30 দিন"},{name:"3GB",price:"39",validity:"30 দিন"},{name:"1GB",price:"19",validity:"30 দিন"},{name:"500MB",price:"9",validity:"30 দিন"}
+],
+"Minute Offer":[
+{name:"100Min",price:"99",validity:"30 দিন"},{name:"60Min",price:"69",validity:"30 দিন"},{name:"30Min",price:"39",validity:"30 দিন"},{name:"15Min",price:"19",validity:"30 দিন"},{name:"5Min",price:"9",validity:"30 দিন"}
+]
 },
 
-"বাংলালিংক":{  
-"Family Pack":[  
-{name:"30GB",price:"299",validity:"30 দিন"},{name:"20GB",price:"199",validity:"30 দিন"},{name:"10GB",price:"99",validity:"30 দিন"},{name:"5GB",price:"59",validity:"30 দিন"},{name:"2GB",price:"29",validity:"30 দিন"}  
-],  
-"Gift Pack":[  
-{name:"25GB",price:"249",validity:"30 দিন"},{name:"15GB",price:"149",validity:"30 দিন"},{name:"8GB",price:"89",validity:"30 দিন"},{name:"4GB",price:"49",validity:"30 দিন"},{name:"1GB",price:"19",validity:"30 দিন"}  
-],  
-"House Offer":[  
-{name:"40GB",price:"349",validity:"30 দিন"},{name:"25GB",price:"249",validity:"30 দিন"},{name:"12GB",price:"129",validity:"30 দিন"},{name:"6GB",price:"69",validity:"30 দিন"},{name:"3GB",price:"39",validity:"30 দিন"}  
-],  
-"Regular Pack":[  
-{name:"10GB",price:"99",validity:"30 দিন"},{name:"6GB",price:"69",validity:"30 দিন"},{name:"3GB",price:"39",validity:"30 দিন"},{name:"1GB",price:"19",validity:"30 দিন"},{name:"500MB",price:"9",validity:"30 দিন"}  
-],  
-"Minute Offer":[  
-{name:"100Min",price:"99",validity:"30 দিন"},{name:"60Min",price:"69",validity:"30 দিন"},{name:"30Min",price:"39",validity:"30 দিন"},{name:"15Min",price:"19",validity:"30 দিন"},{name:"5Min",price:"9",validity:"30 দিন"}  
-]  
+"বাংলালিংক":{
+"Family Pack":[
+{name:"30GB",price:"299",validity:"30 দিন"},{name:"20GB",price:"199",validity:"30 দিন"},{name:"10GB",price:"99",validity:"30 দিন"},{name:"5GB",price:"59",validity:"30 দিন"},{name:"2GB",price:"29",validity:"30 দিন"}
+],
+"Gift Pack":[
+{name:"25GB",price:"249",validity:"30 দিন"},{name:"15GB",price:"149",validity:"30 দিন"},{name:"8GB",price:"89",validity:"30 দিন"},{name:"4GB",price:"49",validity:"30 দিন"},{name:"1GB",price:"19",validity:"30 দিন"}
+],
+"House Offer":[
+{name:"40GB",price:"349",validity:"30 দিন"},{name:"25GB",price:"249",validity:"30 দিন"},{name:"12GB",price:"129",validity:"30 দিন"},{name:"6GB",price:"69",validity:"30 দিন"},{name:"3GB",price:"39",validity:"30 দিন"}
+],
+"Regular Pack":[
+{name:"10GB",price:"99",validity:"30 দিন"},{name:"6GB",price:"69",validity:"30 দিন"},{name:"3GB",price:"39",validity:"30 দিন"},{name:"1GB",price:"19",validity:"30 দিন"},{name:"500MB",price:"9",validity:"30 দিন"}
+],
+"Minute Offer":[
+{name:"100Min",price:"99",validity:"30 দিন"},{name:"60Min",price:"69",validity:"30 দিন"},{name:"30Min",price:"39",validity:"30 দিন"},{name:"15Min",price:"19",validity:"30 দিন"},{name:"5Min",price:"9",validity:"30 দিন"}
+]
 },
 
-"skitto":{  
-"Family Pack":[  
-{name:"30GB",price:"299",validity:"30 দিন"},{name:"20GB",price:"199",validity:"30 দিন"},{name:"10GB",price:"99",validity:"30 দিন"},{name:"5GB",price:"59",validity:"30 দিন"},{name:"2GB",price:"29",validity:"30 দিন"}  
-],  
-"Gift Pack":[  
-{name:"25GB",price:"249",validity:"30 দিন"},{name:"15GB",price:"149",validity:"30 দিন"},{name:"8GB",price:"89",validity:"30 দিন"},{name:"4GB",price:"49",validity:"30 দিন"},{name:"1GB",price:"19",validity:"30 দিন"}  
-],  
-"House Offer":[  
-{name:"40GB",price:"349",validity:"30 দিন"},{name:"25GB",price:"249",validity:"30 দিন"},{name:"12GB",price:"129",validity:"30 দিন"},{name:"6GB",price:"69",validity:"30 দিন"},{name:"3GB",price:"39",validity:"30 দিন"}  
-],  
-"Regular Pack":[  
-{name:"10GB",price:"99",validity:"30 দিন"},{name:"6GB",price:"69",validity:"30 দিন"},{name:"3GB",price:"39",validity:"30 দিন"},{name:"1GB",price:"19",validity:"30 দিন"},{name:"500MB",price:"9",validity:"30 দিন"}  
-],  
-"Minute Offer":[  
-{name:"100Min",price:"99",validity:"30 দিন"},{name:"60Min",price:"69",validity:"30 দিন"},{name:"30Min",price:"39",validity:"30 দিন"},{name:"15Min",price:"19",validity:"30 দিন"},{name:"5Min",price:"9",validity:"30 দিন"}  
-]  
+"skitto":{
+"Family Pack":[
+{name:"30GB",price:"299",validity:"30 দিন"},{name:"20GB",price:"199",validity:"30 দিন"},{name:"10GB",price:"99",validity:"30 দিন"},{name:"5GB",price:"59",validity:"30 দিন"},{name:"2GB",price:"29",validity:"30 দিন"}
+],
+"Gift Pack":[
+{name:"25GB",price:"249",validity:"30 দিন"},{name:"15GB",price:"149",validity:"30 দিন"},{name:"8GB",price:"89",validity:"30 দিন"},{name:"4GB",price:"49",validity:"30 দিন"},{name:"1GB",price:"19",validity:"30 দিন"}
+],
+"House Offer":[
+{name:"40GB",price:"349",validity:"30 দিন"},{name:"25GB",price:"249",validity:"30 দিন"},{name:"12GB",price:"129",validity:"30 দিন"},{name:"6GB",price:"69",validity:"30 দিন"},{name:"3GB",price:"39",validity:"30 দিন"}
+],
+"Regular Pack":[
+{name:"10GB",price:"99",validity:"30 দিন"},{name:"6GB",price:"69",validity:"30 দিন"},{name:"3GB",price:"39",validity:"30 দিন"},{name:"1GB",price:"19",validity:"30 দিন"},{name:"500MB",price:"9",validity:"30 দিন"}
+],
+"Minute Offer":[
+{name:"100Min",price:"99",validity:"30 দিন"},{name:"60Min",price:"69",validity:"30 দিন"},{name:"30Min",price:"39",validity:"30 দিন"},{name:"15Min",price:"19",validity:"30 দিন"},{name:"5Min",price:"9",validity:"30 দিন"}
+]
 },
 
-"টেলিটক":{  
-"Family Pack":[  
-{name:"30GB",price:"299",validity:"30 দিন"},{name:"20GB",price:"199",validity:"30 দিন"},{name:"10GB",price:"99",validity:"30 দিন"},{name:"5GB",price:"59",validity:"30 দিন"},{name:"2GB",price:"29",validity:"30 দিন"}  
-],  
-"Gift Pack":[  
-{name:"25GB",price:"249",validity:"30 দিন"},{name:"15GB",price:"149",validity:"30 দিন"},{name:"8GB",price:"89",validity:"30 দিন"},{name:"4GB",price:"49",validity:"30 দিন"},{name:"1GB",price:"19",validity:"30 দিন"}  
-],  
-"House Offer":[  
-{name:"40GB",price:"349",validity:"30 দিন"},{name:"25GB",price:"249",validity:"30 দিন"},{name:"12GB",price:"129",validity:"30 দিন"},{name:"6GB",price:"69",validity:"30 দিন"},{name:"3GB",price:"39",validity:"30 দিন"}  
-],  
-"Regular Pack":[  
-{name:"10GB",price:"99",validity:"30 দিন"},{name:"6GB",price:"69",validity:"30 দিন"},{name:"3GB",price:"39",validity:"30 দিন"},{name:"1GB",price:"19",validity:"30 দিন"},{name:"500MB",price:"9",validity:"30 দিন"}  
-],  
-"Minute Offer":[  
-{name:"100Min",price:"99",validity:"30 দিন"},{name:"60Min",price:"69",validity:"30 দিন"},{name:"30Min",price:"39",validity:"30 দিন"},{name:"15Min",price:"19",validity:"30 দিন"},{name:"5Min",price:"9",validity:"30 দিন"}  
-]  
+"টেলিটক":{
+"Family Pack":[
+{name:"30GB",price:"299",validity:"30 দিন"},{name:"20GB",price:"199",validity:"30 দিন"},{name:"10GB",price:"99",validity:"30 দিন"},{name:"5GB",price:"59",validity:"30 দিন"},{name:"2GB",price:"29",validity:"30 দিন"}
+],
+"Gift Pack":[
+{name:"25GB",price:"249",validity:"30 দিন"},{name:"15GB",price:"149",validity:"30 দিন"},{name:"8GB",price:"89",validity:"30 দিন"},{name:"4GB",price:"49",validity:"30 দিন"},{name:"1GB",price:"19",validity:"30 দিন"}
+],
+"House Offer":[
+{name:"40GB",price:"349",validity:"30 দিন"},{name:"25GB",price:"249",validity:"30 দিন"},{name:"12GB",price:"129",validity:"30 দিন"},{name:"6GB",price:"69",validity:"30 দিন"},{name:"3GB",price:"39",validity:"30 দিন"}
+],
+"Regular Pack":[
+{name:"10GB",price:"99",validity:"30 দিন"},{name:"6GB",price:"69",validity:"30 দিন"},{name:"3GB",price:"39",validity:"30 দিন"},{name:"1GB",price:"19",validity:"30 দিন"},{name:"500MB",price:"9",validity:"30 দিন"}
+],
+"Minute Offer":[
+{name:"100Min",price:"99",validity:"30 দিন"},{name:"60Min",price:"69",validity:"30 দিন"},{name:"30Min",price:"39",validity:"30 দিন"},{name:"15Min",price:"19",validity:"30 দিন"},{name:"5Min",price:"9",validity:"30 দিন"}
+]
 }
 
 };
+
+</script>
+
+};
+
+let currentSIM="All";
+
+/* FILTER */
+function filterSIM(sim,el){
+currentSIM=sim;
+
+/* active highlight */
+document.querySelectorAll(".simBtn").forEach(b=>b.classList.remove("activeSIM"));
+el.classList.add("activeSIM");
+
+renderOffers();
+}
 
 function renderOffers(){
 let html="";
 let search=document.getElementById("searchBox").value.toLowerCase();
 
 for(let sim in offers){
+
+if(currentSIM!=="All" && sim!==currentSIM) continue;
+
 html+=`<div class="sectionTitle">${sim}</div>`;
+
 for(let pack in offers[sim]){
 html+=`<div class="sectionTitle">${pack}</div><div class="grid">`;
 
-offers[sim][pack].forEach((o)=>{
+offers[sim][pack].forEach((o,i)=>{
 let text=(o.name+o.price).toLowerCase();
 
 if(text.includes(search)){
 html+=`
 <div class="box">
+<div class="badge">${i==0?"BEST":"HOT"}</div>
 <div class="gb">${o.name}</div>
 <div class="price">${o.price}৳</div>
 <div class="valid">⏳ ${o.validity}</div>
@@ -248,7 +331,6 @@ html+=`
 </div>
 `;
 }
-
 });
 
 html+=`</div>`;
