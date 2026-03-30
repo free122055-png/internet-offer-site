@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Internet Offers Premium</title>
+
 <style>
 /* ===== GLOBAL ===== */
 body{
@@ -34,7 +35,7 @@ font-weight:bold;
 border-bottom:1px solid rgba(255,255,255,0.1);
 }
 
-/* ===== HERO SECTION ===== */
+/* ===== HERO ===== */
 header{
 text-align:center;
 padding:50px 20px 30px 20px;
@@ -46,15 +47,8 @@ background:linear-gradient(90deg,#ff512f,#dd2476,#00c6ff);
 color:transparent;
 animation:shine 5s infinite linear;
 }
-header p{
-font-size:18px;
-opacity:0.8;
-margin-top:10px;
-}
-@keyframes shine{
-0%{filter:hue-rotate(0deg);}
-100%{filter:hue-rotate(360deg);}
-}
+header p{font-size:18px;opacity:0.8;margin-top:10px;}
+@keyframes shine{0%{filter:hue-rotate(0deg);}100%{filter:hue-rotate(360deg);}}
 
 /* ===== SLIDER ===== */
 .slider{
@@ -69,37 +63,21 @@ font-size:20px;
 box-shadow:0 0 30px rgba(255,0,100,0.4);
 animation:pulse 2.5s infinite;
 }
-@keyframes pulse{
-0%{transform:scale(1);}
-50%{transform:scale(1.02);}
-100%{transform:scale(1);}
-}
+@keyframes pulse{0%{transform:scale(1);}50%{transform:scale(1.02);}100%{transform:scale(1);}}
 
-/* ===== SEARCH + FILTER ===== */
-.controls{
-text-align:center;
-padding:20px;
-}
+/* ===== CONTROLS ===== */
+.controls{text-align:center;padding:20px;}
 #searchBox{
 width:90%;
 padding:14px;
 border-radius:30px;
 border:none;
-outline:none;
 background:rgba(255,255,255,0.08);
 color:white;
 font-size:16px;
-backdrop-filter:blur(10px);
-box-shadow:0 0 12px rgba(0,0,0,0.3);
 margin-bottom:15px;
 }
-.filters{
-margin-top:10px;
-display:flex;
-justify-content:center;
-flex-wrap:wrap;
-gap:8px;
-}
+.filters{display:flex;justify-content:center;flex-wrap:wrap;gap:8px;}
 .filters button{
 padding:10px 18px;
 border-radius:30px;
@@ -107,105 +85,44 @@ border:none;
 cursor:pointer;
 background:rgba(255,255,255,0.1);
 color:white;
-transition:0.3s;
-font-weight:bold;
 }
-.filters button:hover{
-background:linear-gradient(135deg,#ff512f,#dd2476);
-transform:scale(1.1);
-}
-
-/* ===== SECTION TITLE ===== */
-.sectionTitle{
-text-align:center;
-margin-top:35px;
-font-size:24px;
-font-weight:bold;
-opacity:0.95;
-}
+.filters button:hover{background:linear-gradient(135deg,#ff512f,#dd2476);transform:scale(1.1);}
 
 /* ===== GRID ===== */
-.grid{
-display:grid;
-grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
-gap:20px;
-padding:20px;
-}
+.sectionTitle{text-align:center;margin-top:35px;font-size:24px;font-weight:bold;}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:20px;padding:20px;}
 
 /* ===== BOX ===== */
 .box{
 background:rgba(255,255,255,0.05);
-border:1px solid rgba(255,255,255,0.1);
-backdrop-filter:blur(25px);
 padding:20px;
 border-radius:25px;
 text-align:center;
 transition:0.4s;
 box-shadow:0 10px 30px rgba(0,0,0,0.5);
-position:relative;
-overflow:hidden;
 display:flex;
 flex-direction:column;
 gap:15px;
 }
-.box::after{
-content:"";
-position:absolute;
-width:100%;
-height:100%;
-top:0;
-left:-100%;
-background:linear-gradient(120deg,transparent,rgba(255,255,255,0.15),transparent);
-transform:translateX(-100%);
-}
-.box:hover::after{
-transform:translateX(100%);
-transition:0.8s;
-}
-.box:hover{
-transform:translateY(-10px) scale(1.05);
-}
+.box:hover{transform:translateY(-10px) scale(1.05);}
 
-/* ===== MB / PRICE CARD ===== */
 .offerContent{
 display:flex;
 justify-content:space-between;
-align-items:center;
 padding:12px 18px;
 border-radius:20px;
 background:rgba(255,255,255,0.08);
-backdrop-filter:blur(15px);
-box-shadow:0 4px 15px rgba(0,0,0,0.4);
 }
-.offerContent .mb{
-font-weight:bold;
-font-size:18px;
-color:#00ffd5;
-}
-.offerContent .price{
-font-weight:bold;
-font-size:18px;
-background:linear-gradient(135deg,#ff512f,#dd2476);
--webkit-background-clip:text;
-color:transparent;
-}
+.mb{font-weight:bold;color:#00ffd5;}
+.price{font-weight:bold;color:#ff512f;}
 
-/* ===== BUTTON ===== */
 button{
-margin-top:12px;
 padding:12px 25px;
 border:none;
 border-radius:30px;
 background:linear-gradient(135deg,#ff512f,#dd2476);
 color:white;
 cursor:pointer;
-font-weight:bold;
-font-size:15px;
-transition:0.3s;
-}
-button:hover{
-transform:scale(1.1);
-background:linear-gradient(135deg,#00c6ff,#0072ff);
 }
 
 /* ===== NOTICE ===== */
@@ -214,44 +131,67 @@ margin:30px;
 padding:20px;
 border-radius:25px;
 background:rgba(0,0,0,0.5);
-backdrop-filter:blur(20px);
 text-align:center;
-border:1px solid rgba(255,255,255,0.1);
-font-size:16px;
 }
 
-/* ===== BEST ===== */
-.best{
-border:3px solid gold;
-box-shadow:0 0 25px gold;
+/* ===== NEW SECTIONS ===== */
+
+/* Bulk */
+.megaSection{
+margin:30px;
+padding:25px;
+border-radius:25px;
+background:rgba(0,255,200,0.08);
+text-align:center;
 }
-.best::before{
-content:"🔥 BEST";
-position:absolute;
-top:-12px;
-left:-12px;
-background:gold;
-color:black;
-padding:5px 10px;
-font-size:13px;
-border-radius:8px;
-font-weight:bold;
+.megaSection textarea{
+width:90%;
+height:100px;
+border-radius:15px;
+padding:10px;
+background:rgba(255,255,255,0.1);
+color:white;
+border:none;
 }
 
-/* ===== MOBILE ===== */
-@media(max-width:500px){
-.grid{
-grid-template-columns:1fr;
+/* Notice Box */
+.noticeBox{
+margin:30px;
+padding:20px;
+border-radius:20px;
+background:linear-gradient(135deg,#ff512f,#dd2476);
+text-align:center;
 }
-header h1{font-size:32px;}
-.sectionTitle{font-size:20px;}
-.offerContent{
-flex-direction:column;
-gap:8px;
+
+/* FB */
+.fbSection{
+margin:30px;
+padding:25px;
+text-align:center;
+border-radius:25px;
+background:rgba(255,255,255,0.08);
 }
+.fbSection a{
+display:inline-block;
+margin-top:10px;
+padding:12px 20px;
+border-radius:30px;
+background:#1877f2;
+color:white;
+text-decoration:none;
+}
+
+/* Guide */
+.chargeGuide{
+margin:30px;
+padding:25px;
+border-radius:25px;
+background:rgba(0,0,0,0.6);
+line-height:1.8;
 }
 </style>
 </head>
+
 <body>
 
 <div class="topbar">বিসমিল্লাহির রহমানির রহিম</div>
@@ -264,7 +204,6 @@ gap:8px;
 
 <div class="slider">🔥 আজকের সেরা অফার</div>
 
-<!-- SEARCH + FILTER -->
 <div class="controls">
 <input type="text" id="searchBox" placeholder="🔍 Search GB / Price...">
 <div class="filters">
@@ -279,47 +218,67 @@ gap:8px;
 
 <div id="main"></div>
 
+<!-- NEW NOTICE -->
+<div class="noticeBox">
+<h2>📢 গুরুত্বপূর্ণ নোটিশ</h2>
+<p>⚡ আজকের অফার সীমিত সময়ের জন্য</p>
+</div>
+
+<!-- BULK SECTION -->
+<div class="megaSection">
+<h2>🚀 সমস্ত অফার (200+)</h2>
+<textarea id="bulkInput"></textarea>
+<button onclick="loadBulkOffers()">Upload</button>
+<div id="bulkOffers" class="grid"></div>
+</div>
+
+<!-- ALL OFFERS -->
 <div class="sectionTitle">📦 সমস্ত অফার</div>
 <div id="allOffers" class="grid"></div>
 
+<!-- CHARGE GUIDE -->
+<div class="chargeGuide">
+<h2>⚡ কিভাবে অফার চার্জ করবেন?</h2>
+<p>
+SIM সিলেক্ট → Offer Buy → WhatsApp Confirm <br>
+✔ Balance থাকতে হবে <br>
+✔ সব সিমে কাজ নাও করতে পারে <br>
+✔ Refund নেই
+</p>
+</div>
+
+<!-- FACEBOOK -->
+<div class="fbSection">
+<h2>👤 Facebook</h2>
+<a href="https://www.facebook.com/fahim12205" target="_blank">Visit Profile</a>
+</div>
+
 <div class="notice">
-📢 প্রতিদিন নতুন অফার আপডেট করা হয় <br>
-💬 Buy বাটনে ক্লিক করে WhatsApp এ অর্ডার করুন <br>
-⚡ দ্রুত সার্ভিস গ্যারান্টি
+📢 প্রতিদিন নতুন অফার আপডেট করা হয়
 </div>
 
 <script>
-/* 🔥 MASTER DATA */
-const offers = {
-"Airtel":{"Family Pack":[{name:"30GB",price:"299"},{name:"20GB",price:"199"},{name:"10GB",price:"99"}]},
-"Grameenphone":{"Family Pack":[{name:"30GB",price:"299"},{name:"20GB",price:"199"},{name:"10GB",price:"99"}]},
-"Robi":{"Family Pack":[{name:"30GB",price:"299"},{name:"20GB",price:"199"},{name:"10GB",price:"99"}]},
-"Banglalink":{"Family Pack":[{name:"30GB",price:"299"},{name:"20GB",price:"199"},{name:"10GB",price:"99"}]},
-"Teletalk":{"Family Pack":[{name:"30GB",price:"299"},{name:"20GB",price:"199"},{name:"10GB",price:"99"}]}
+const offers={
+"Airtel":{"Family Pack":[{name:"30GB",price:"299"}]},
+"Grameenphone":{"Family Pack":[{name:"30GB",price:"299"}]}
 };
 
-/* ===== INITIAL LOAD ===== */
 let currentSIM="All";
 
 function renderOffers(){
 let html="";
-let search=document.getElementById("searchBox").value.toLowerCase();
 for(let sim in offers){
-if(currentSIM!=="All" && sim!==currentSIM) continue;
 html+=`<div class="sectionTitle">${sim}</div>`;
 for(let pack in offers[sim]){
-html+=`<div class="sectionTitle">${pack}</div><div class="grid">`;
-offers[sim][pack].forEach((offer)=>{
-let text=(offer.name+offer.price).toLowerCase();
-if(text.includes(search)){
+html+=`<div class="grid">`;
+offers[sim][pack].forEach(o=>{
 html+=`<div class="box">
 <div class="offerContent">
-<span class="mb">${offer.name}</span>
-<span class="price">${offer.price}৳</span>
+<span class="mb">${o.name}</span>
+<span class="price">${o.price}৳</span>
 </div>
-<button onclick="buy('${offer.name}','${offer.price}')">Buy</button>
+<button onclick="buy('${o.name}','${o.price}')">Buy</button>
 </div>`;
-}
 });
 html+=`</div>`;
 }
@@ -327,55 +286,29 @@ html+=`</div>`;
 document.getElementById("main").innerHTML=html;
 }
 
-/* FILTER SIM */
-function filterSIM(sim){
-currentSIM=sim;
-renderOffers();
-}
-
-/* ALL OFFERS */
-function loadAllOffers(){
+function loadBulkOffers(){
+let data=document.getElementById("bulkInput").value.split(",");
 let html="";
-for(let sim in offers){
-for(let pack in offers[sim]){
-offers[sim][pack].forEach((offer)=>{
+data.forEach(d=>{
+let p=d.split("-");
+if(p.length==2){
 html+=`<div class="box">
 <div class="offerContent">
-<span class="mb">${offer.name}</span>
-<span class="price">${offer.price}৳</span>
+<span class="mb">${p[0]}</span>
+<span class="price">${p[1]}৳</span>
 </div>
-<button onclick="buy('${offer.name}','${offer.price}')">Buy</button>
+<button onclick="buy('${p[0]}','${p[1]}')">Buy</button>
 </div>`;
-});
-}
-}
-document.getElementById("allOffers").innerHTML=html;
-}
-
-loadAllOffers();
-
-/* BEST OFFERS */
-function highlightBest(){
-let boxes=document.querySelectorAll(".box");
-boxes.forEach(box=>{
-let price=parseInt(box.querySelector(".price").innerText);
-if(price<=99){
-box.classList.add("best");
 }
 });
-}
-setTimeout(highlightBest,500);
-
-/* WhatsApp */
-function buy(name,price){
-let msg=`🛒 Order\n📦 ${name}\n💰 ${price}৳`;
-window.open("https://wa.me/8801624228476?text="+encodeURIComponent(msg));
+document.getElementById("bulkOffers").innerHTML=html;
 }
 
-/* SEARCH LISTENER */
-document.getElementById("searchBox").addEventListener("input", renderOffers);
+function buy(n,p){
+let msg=`Order ${n} ${p}`;
+window.open("https://wa.me/8801624228476?text="+msg);
+}
 
-/* INITIAL RENDER */
 renderOffers();
 </script>
 
