@@ -47,7 +47,52 @@ button{margin-top:12px;padding:12px 25px;border:none;border-radius:30px;backgrou
 
 <div id="main"></div>  
 <div id="allOffers" class="grid"></div>  
+<div class="controls">
+<input type="text" id="searchBox" placeholder="🔍 Search GB / Price...">
+</div>
 
+<!-- ✅ এখানে বসাও -->
+<div style="display:flex;overflow-x:auto;gap:12px;padding:15px 10px;">
+
+<div onclick="filterSIM('All')" style="min-width:70px;text-align:center;color:white;">
+<div style="width:50px;height:50px;border-radius:50%;background:#444;margin:auto;"></div>
+<p style="font-size:12px;">All</p>
+</div>
+
+<div onclick="filterSIM('এয়ারটেল')" style="min-width:70px;text-align:center;color:#ff3b3b;">
+<div style="width:50px;height:50px;border-radius:50%;background:#ff3b3b;margin:auto;"></div>
+<p style="font-size:12px;">এয়ারটেল</p>
+</div>
+
+<div onclick="filterSIM('রবি')" style="min-width:70px;text-align:center;color:#00c3ff;">
+<div style="width:50px;height:50px;border-radius:50%;background:#00c3ff;margin:auto;"></div>
+<p style="font-size:12px;">রবি</p>
+</div>
+
+<div onclick="filterSIM('গ্রামীণ')" style="min-width:70px;text-align:center;color:#4cd137;">
+<div style="width:50px;height:50px;border-radius:50%;background:#4cd137;margin:auto;"></div>
+<p style="font-size:12px;">গ্রামীণ</p>
+</div>
+
+<div onclick="filterSIM('বাংলালিংক')" style="min-width:70px;text-align:center;color:#ff9f43;">
+<div style="width:50px;height:50px;border-radius:50%;background:#ff9f43;margin:auto;"></div>
+<p style="font-size:12px;">বাংলালিংক</p>
+</div>
+
+<div onclick="filterSIM('skitto')" style="min-width:70px;text-align:center;color:#2ed573;">
+<div style="width:50px;height:50px;border-radius:50%;background:#2ed573;margin:auto;"></div>
+<p style="font-size:12px;">skitto</p>
+</div>
+
+<div onclick="filterSIM('টেলিটক')" style="min-width:70px;text-align:center;color:#a55eea;">
+<div style="width:50px;height:50px;border-radius:50%;background:#a55eea;margin:auto;"></div>
+<p style="font-size:12px;">টেলিটক</p>
+</div>
+
+</div>
+
+<div id="main"></div>
+<div id="allOffers" class="grid"></div>
 <script> 
 
 const offers = {  
@@ -240,7 +285,7 @@ renderOffers();
 <!-- Instruction + SIM Filter -->
 
 <div class="box" style="margin:20px;">
-<h3>🛒 কিভাবে অফার কিনবেন</h3>
+<h3>🛒 নোটিশ বোর্ড</h3>
 <p style="font-size:14px;line-height:1.6;">
 ১. আপনার পছন্দের অফার সিলেক্ট করুন<br>
 ২. Buy বাটনে ক্লিক করুন<br>
@@ -252,7 +297,7 @@ renderOffers();
 </div>
 
 
-<div class="sectionTitle">📶 সিম নির্বাচন করুন</div>
+<div class="sectionTitle">📶 এই সকল সিমের অফার ক্রয় করবতে পারবেন</div>
 
 <div class="grid" style="padding-top:0;" id="simButtons">
 
