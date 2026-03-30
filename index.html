@@ -6,32 +6,101 @@
 <title>Internet Offers Premium</title> 
 
 <style> 
-body{margin:0;font-family:'Poppins',sans-serif;background:linear-gradient(135deg,#0f2027,#203a43,#2c5364);color:white;}
+body{
+margin:0;
+font-family:'Poppins',sans-serif;
+background:linear-gradient(135deg,#0f2027,#203a43,#2c5364);
+color:white;
+overflow-x:hidden;
+}
 
-.topbar{text-align:center;padding:6px;}
-.trust{text-align:center;padding:12px;color:#00ffd5;}
+/* Glow */
+body::before{
+content:"";
+position:fixed;
+width:400px;
+height:400px;
+background:#00ffd5;
+filter:blur(200px);
+top:-100px;
+left:-100px;
+opacity:0.3;
+}
 
+/* Header */
 header{text-align:center;padding:40px;}
-header h1{font-size:38px;}
+header h1{
+font-size:42px;
+background:linear-gradient(90deg,#ff512f,#dd2476,#00c6ff);
+-webkit-background-clip:text;
+color:transparent;
+}
 
+/* Search */
 .controls{text-align:center;padding:15px;}
+#searchBox{
+width:85%;
+padding:14px;
+border-radius:30px;
+border:none;
+background:#ffffff15;
+color:white;
+backdrop-filter:blur(10px);
+}
 
-#searchBox{width:90%;padding:12px;border-radius:30px;border:none;background:#ffffff10;color:white;}
+/* Grid */
+.grid{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
+gap:20px;
+padding:20px;
+}
 
-.sectionTitle{text-align:center;margin-top:25px;font-size:22px;}
+/* Card */
+.box{
+background:rgba(255,255,255,0.07);
+border-radius:25px;
+padding:20px;
+text-align:center;
+backdrop-filter:blur(15px);
+transition:0.4s;
+}
 
-.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:15px;padding:15px;}
+.box:hover{
+transform:translateY(-10px) scale(1.03);
+box-shadow:0 0 30px #00ffd5;
+}
 
-.box{background:#ffffff10;padding:15px;border-radius:20px;text-align:center;}
+/* Text */
+.gb{font-size:28px;color:#00ffd5;}
+.price{font-size:22px;color:#ffcc00;}
+.valid{font-size:14px;opacity:0.8;}
 
-button{margin-top:10px;padding:10px 20px;border:none;border-radius:25px;background:#ff512f;color:white;cursor:pointer;}
+/* Button */
+button{
+margin-top:10px;
+padding:12px 25px;
+border:none;
+border-radius:30px;
+background:linear-gradient(135deg,#ff512f,#dd2476);
+color:white;
+cursor:pointer;
+}
+
+button:hover{
+transform:scale(1.1);
+box-shadow:0 0 20px #ff512f;
+}
+
+.sectionTitle{
+text-align:center;
+font-size:22px;
+margin-top:25px;
+}
 </style>
 </head>
 
 <body>
-
-<div class="topbar">বিসমিল্লাহির রহমানির রহিম</div>
-<div class="trust">✅ বিশ্বাস আপনার, সততা আমাদের</div>
 
 <header>
 <h1>🔥 Internet Offer Zone</h1>
@@ -39,17 +108,6 @@ button{margin-top:10px;padding:10px 20px;border:none;border-radius:25px;backgrou
 
 <div class="controls">
 <input type="text" id="searchBox" placeholder="🔍 Search GB / Price...">
-</div>
-
-<!-- ✅ SIM FILTER -->
-<div style="display:flex;overflow-x:auto;gap:10px;padding:10px;">
-<div onclick="filterSIM('All')" class="box">All</div>
-<div onclick="filterSIM('এয়ারটেল')" class="box">🔴 এয়ারটেল</div>
-<div onclick="filterSIM('রবি')" class="box">🔵 রবি</div>
-<div onclick="filterSIM('গ্রামীণ')" class="box">🟢 গ্রামীণ</div>
-<div onclick="filterSIM('বাংলালিংক')" class="box">🟠 বাংলালিংক</div>
-<div onclick="filterSIM('skitto')" class="box">⚫ skitto</div>
-<div onclick="filterSIM('টেলিটক')" class="box">🟣 টেলিটক</div>
 </div>
 
 <div id="main"></div>
@@ -168,34 +226,33 @@ const offers = {
 
 };
 
-// সব দেখাবে
 function renderOffers(){
 let html="";
+let search=document.getElementById("searchBox").value.toLowerCase();
+
 for(let sim in offers){
 html+=`<div class="sectionTitle">${sim}</div>`;
 for(let pack in offers[sim]){
 html+=`<div class="sectionTitle">${pack}</div><div class="grid">`;
+
 offers[sim][pack].forEach((o)=>{
-html+=`<div class="box">${o.name} - ${o.price}৳<br>⏳ ${o.validity}<br><button onclick="buy('${o.name}','${o.price}','${o.validity}')">Buy</button></div>`;
-});
-html+=`</div>`;
-}
-}
-document.getElementById("main").innerHTML=html;
+let text=(o.name+o.price).toLowerCase();
+
+if(text.includes(search)){
+html+=`
+<div class="box">
+<div class="gb">${o.name}</div>
+<div class="price">${o.price}৳</div>
+<div class="valid">⏳ ${o.validity}</div>
+<button onclick="buy('${o.name}','${o.price}','${o.validity}')">🚀 Buy</button>
+</div>
+`;
 }
 
-// filter
-function filterSIM(sim){
-if(sim==="All"){renderOffers();return;}
-let html="";
-let s=offers[sim];
-html+=`<div class="sectionTitle">${sim}</div>`;
-for(let pack in s){
-html+=`<div class="sectionTitle">${pack}</div><div class="grid">`;
-s[pack].forEach((o)=>{
-html+=`<div class="box">${o.name} - ${o.price}৳<br>⏳ ${o.validity}<br><button onclick="buy('${o.name}','${o.price}','${o.validity}')">Buy</button></div>`;
 });
+
 html+=`</div>`;
+}
 }
 document.getElementById("main").innerHTML=html;
 }
@@ -204,6 +261,8 @@ function buy(n,p,v){
 let msg=`${n} ${p}৳ ${v}`;
 window.open("https://wa.me/8801624228476?text="+encodeURIComponent(msg));
 }
+
+document.getElementById("searchBox").addEventListener("input",renderOffers);
 
 renderOffers();
 
