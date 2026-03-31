@@ -101,11 +101,70 @@ button:hover{transform:scale(1.1);}
 text-align:center;
 margin-top:20px;
 font-size:20px;
+} /* 🔥 HERO DESIGN */
+.heroBox{
+height:180px;
+background:linear-gradient(135deg,#0f2027,#203a43,#2c5364);
+border-radius:0 0 25px 25px;
+position:relative;
+overflow:hidden;
+}
+
+/* top items */
+.heroItems{
+display:flex;
+gap:8px;
+padding:10px;
+overflow-x:auto;
+}
+
+.heroItems::-webkit-scrollbar{
+display:none;
+}
+
+/* sim buttons */
+.item{
+padding:6px 12px;
+border-radius:20px;
+background:#ffffff20;
+color:white;
+cursor:pointer;
+font-size:12px;
+white-space:nowrap;
+transition:0.3s;
+}
+
+.item:hover{
+background:#00ffd5;
+color:black;
+}
+
+/* center text */
+.heroCenter{
+position:absolute;
+top:60%;
+left:50%;
+transform:translate(-50%,-50%);
+text-align:center;
+}
+
+.heroCenter h2{
+font-size:20px;
+margin:0;
+background:linear-gradient(90deg,#ff512f,#00c6ff);
+-webkit-background-clip:text;
+color:transparent;
+}
+
+.heroCenter p{
+font-size:12px;
+opacity:0.8;
+margin:4px 0;
 }
 </style>
 </head>
 
-<body> <body>
+<body>
 
   <!-- 🔥 HERO SECTION -->
   <div class="heroBox">
