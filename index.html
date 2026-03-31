@@ -183,7 +183,35 @@ font-size:12px;
 opacity:0.7;
 text-align:center;
 }
-</style>
+.noticeBox{
+  margin:15px;
+  padding:15px;
+  border-radius:15px;
+  background:rgba(255,255,255,0.08);
+  backdrop-filter:blur(12px);
+  color:white;
+  font-size:14px;
+  line-height:1.6;
+  box-shadow:0 0 15px rgba(0,255,213,0.3);
+  border:1px solid rgba(255,255,255,0.1);
+}
+
+.noticeBox p{
+  margin:6px 0;
+}
+
+.noticeBox p::before{
+  content:"👉 ";
+  color:#00ffd5;
+}
+
+.noticeBox .admin{
+  margin-top:12px;
+  font-size:12px;
+  opacity:0.7;
+  text-align:center;
+  color:#aaa;
+    }</style>
 </head>
 
 <body>
@@ -224,7 +252,7 @@ text-align:center;
 <input type="text" id="searchBox" placeholder="🔍 Search GB / Price...">
 </div>
 
-<div class="simBar">
+<div class="simBar"> 
 <div class="simBtn activeSIM" onclick="filterSIM('All',this)">All</div>
 <div class="simBtn" onclick="filterSIM('এয়ারটেল',this)">এয়ারটেল</div>
 <div class="simBtn" onclick="filterSIM('রবি',this)">রবি</div>
@@ -234,9 +262,18 @@ text-align:center;
 <div class="simBtn" onclick="filterSIM('টেলিটক',this)">টেলিটক</div>
 </div>
 
-<div id="main"></div>
+<div class="packBar">
+  <div class="packBtn activePack" onclick="filterPack('all', this)">All</div>
+  <div class="packBtn" onclick="filterPack('family', this)">👨‍👩‍👧 Family</div>
+  <div class="packBtn" onclick="filterPack('gift', this)">🎁 Gift</div>
+  <div class="packBtn" onclick="filterPack('house', this)">🏠 House</div>
+  <div class="packBtn" onclick="filterPack('regular', this)">📦 Regular</div>
+  <div class="packBtn" onclick="filterPack('minute', this)">📞 Minute</div>
+</div>
+  <div id="main"></div> 
 
-<script>
+<script> 
+
 
 const offers = {
 
