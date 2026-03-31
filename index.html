@@ -232,6 +232,55 @@ text-align:center;
 /* Hover effect */
 .simBtn:hover{
   background:rgba(0,255,213,0.2);
+/* 🌐 Social Modern Card */
+.socialSection{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+  gap:20px;
+  padding:20px;
+}
+
+.socialCard{
+  background:white;
+  border-radius:25px;
+  overflow:hidden;
+  text-align:center;
+  box-shadow:0 10px 25px rgba(0,0,0,0.2);
+  transition:0.3s;
+}
+
+.socialCard:hover{
+  transform:translateY(-10px);
+}
+
+.socialTop{
+  height:140px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:50px;
+  color:white;
+}
+
+.fb{background:linear-gradient(135deg,#1877f2,#00c6ff);}
+.tw{background:linear-gradient(135deg,#000,#434343);}
+.tg{background:linear-gradient(135deg,#0088cc,#00c6ff);}
+.ig{background:linear-gradient(135deg,#f7971e,#fd1d1d,#833ab4);}
+.tt{background:linear-gradient(135deg,#000,#ff0050);}
+
+.socialBody{
+  padding:15px;
+}
+
+.socialBtn{
+  display:inline-block;
+  margin-top:10px;
+  padding:8px 18px;
+  border-radius:20px;
+  background:linear-gradient(45deg,#6a11cb,#2575fc);
+  color:white;
+  text-decoration:none;
+}
 }</style>
 </head>
 
@@ -477,6 +526,86 @@ document.getElementById("searchBox").addEventListener("input",renderOffers);
 renderOffers();
 
 </script>
+<!-- 🔥 BIG SECTIONS START -->
 
+<div class="bigSection gradient1">
+  <h2>📦 সমস্ত অফার</h2>
+  <p>এখানে তুমি যত খুশি বড় description লিখতে পারবা। সকল অফার সম্পর্কিত বিস্তারিত এখানে থাকবে।</p>
+</div>
+
+<div class="bigSection gradient2">
+  <h2>📢 জরুরি নোটিশ</h2>
+  <p>👉 এখানে সব গুরুত্বপূর্ণ নোটিশ দিবা। যত লম্বা ইচ্ছা লিখতে পারো।</p>
+</div>
+
+<div class="bigSection gradient3">
+  <h2>💎 প্রিমিয়াম অফার</h2>
+  <p>প্রিমিয়াম ইউজারদের জন্য বিশেষ অফার এখানে থাকবে।</p>
+</div>
+
+<div class="bigSection gradient4">
+  <h2>🎁 গিফট অফার</h2>
+  <p>গিফট ও বোনাস অফারগুলা এখানে দেখানো হবে।</p>
+</div>
+
+<div class="bigSection gradient5">
+  <h2>🏠 হাউস অফার</h2>
+  <p>হাউস বা বিশেষ ক্যাটাগরির অফার এখানে থাকবে।</p>
+</div>
+
+<div class="bigSection gradient6">
+  <h2>📞 মিনিট অফার</h2>
+  <p>মিনিট অফার সংক্রান্ত সকল তথ্য এখানে লিখতে পারবা।</p>
+</div>
+
+<!-- 🌐 SOCIAL MODERN SECTION -->
+<div class="socialSection">
+
+  <div class="socialCard">
+    <div class="socialTop fb">📘</div>
+    <div class="socialBody">
+      <h3>Facebook</h3>
+      <p>Follow our page</p>
+      <a class="socialBtn" href="https://www.facebook.com/fahim12205" target="_blank">Visit</a>
+    </div>
+  </div>
+
+  <div class="socialCard">
+    <div class="socialTop tw">🐦</div>
+    <div class="socialBody">
+      <h3>Twitter (X)</h3>
+      <p>Follow on X</p>
+      <a class="socialBtn" href="https://x.com/RIslam43614" target="_blank">Visit</a>
+    </div>
+  </div>
+
+  <div class="socialCard">
+    <div class="socialTop tg">📢</div>
+    <div class="socialBody">
+      <h3>Telegram</h3>
+      <p>Join channel</p>
+      <a class="socialBtn" href="https://t.me/fahim123633" target="_blank">Join</a>
+    </div>
+  </div>
+
+  <div class="socialCard">
+    <div class="socialTop ig">📸</div>
+    <div class="socialBody">
+      <h3>Instagram</h3>
+      <p>See posts</p>
+      <a class="socialBtn" href="https://www.instagram.com/rajibul_islam_fahim?igsh=ZmZjdnBxbnpja2Jz" target="_blank">Visit</a>
+    </div>
+  </div>
+
+  <div class="socialCard">
+    <div class="socialTop tt">🎵</div>
+    <div class="socialBody">
+      <h3>TikTok</h3>
+      <p>Watch videos</p>
+      <a class="socialBtn" href="https://www.tiktok.com/@fahim12205?_r=1&_t=ZS-958w0cl0Vl6" target="_blank">Watch</a>
+    </div>
+  </div>
+
+</div>
 </body>
 </html>
