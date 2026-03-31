@@ -414,19 +414,6 @@ const offers = {
 
 };
 
-  let currentSIM = "All";
-let currentPack = "all";
-
-function filterSIM(sim, el){
-  currentSIM = sim;
-
-  document.querySelectorAll(".simBtn").forEach(b=>{
-    b.classList.remove("activeSIM");
-  });
-  el.classList.add("activeSIM");
-
-  renderOffers();
-}
 
 function filterPack(type, el){
   currentPack = type;
