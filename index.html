@@ -414,6 +414,30 @@ const offers = {
 
 };
 
+  let currentSIM = "All";
+let currentPack = "all";
+
+function filterSIM(sim, el){
+  currentSIM = sim;
+
+  document.querySelectorAll(".simBtn").forEach(b=>{
+    b.classList.remove("activeSIM");
+  });
+  el.classList.add("activeSIM");
+
+  renderOffers();
+}
+
+function filterPack(type, el){
+  currentPack = type;
+
+  document.querySelectorAll(".packBtn").forEach(btn=>{
+    btn.classList.remove("activePack");
+  });
+  el.classList.add("activePack");
+
+  renderOffers();
+}
 let currentSIM="All";
 
 function filterSIM(sim,el){
