@@ -6,6 +6,15 @@
 <title>🔥 বিশ্বাস আপনার সততা আমাদের</title>
 
 <style>
+  <!-- 🔥 TOP IMAGE SECTION -->
+<div class="topImageBox">
+  <img src="https://i.ibb.co/8gZ1K8F/banner.jpg" alt="banner">
+
+  <div class="overlay">
+    <h2>🔥 Internet Offer Pro</h2>
+    <button class="hoverBtn">👉 Click Here</button>
+  </div>
+</div>
 body{
 margin:0;
 font-family:'Poppins',sans-serif;
@@ -314,7 +323,61 @@ text-align:center;
 }</style>
 </head>
 
-<body>
+<body> 
+  /* 🔥 TOP IMAGE DESIGN */
+.topImageBox{
+  position:relative;
+  width:100%;
+  height:220px;
+  overflow:hidden;
+}
+
+.topImageBox img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+}
+
+/* Overlay Text */
+.overlay{
+  position:absolute;
+  top:50%;
+  left:50%;
+  transform:translate(-50%,-50%);
+  text-align:center;
+}
+
+.overlay h2{
+  font-size:22px;
+  background:linear-gradient(90deg,#ff512f,#00c6ff);
+  -webkit-background-clip:text;
+  color:transparent;
+  margin-bottom:10px;
+}
+
+/* Button Animation */
+.hoverBtn{
+  padding:10px 20px;
+  border:none;
+  border-radius:25px;
+  background:linear-gradient(45deg,#00ffd5,#00c3ff);
+  color:black;
+  font-size:14px;
+  cursor:pointer;
+  transition:0.3s;
+  box-shadow:0 0 10px #00ffd5;
+}
+
+/* Hover Effect */
+.hoverBtn:hover{
+  transform:scale(1.1);
+  box-shadow:0 0 20px #00ffd5;
+}
+
+/* Click Animation */
+.hoverBtn:active{
+  transform:scale(0.9);
+}
 
   <!-- 🔥 HERO SECTION -->
   <div class="heroBox">
