@@ -1,28 +1,75 @@
 <!DOCTYPE html>
 <html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Login</title>
+
+<style>
+body{
+  margin:0;
+  height:100vh;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  background:linear-gradient(135deg,#0f2027,#2c5364);
+  font-family:sans-serif;
+}
+
+.box{
+  background:#1e1e2f;
+  padding:25px;
+  border-radius:15px;
+  width:90%;
+  max-width:350px;
+  text-align:center;
+}
+
+h2{
+  color:white;
+}
+
+input{
+  width:100%;
+  padding:12px;
+  margin:10px 0;
+  border:none;
+  border-radius:10px;
+}
+
+button{
+  width:100%;
+  padding:12px;
+  border:none;
+  border-radius:10px;
+  background:#00c6ff;
+  color:white;
+}
+</style>
+</head>
+
 <body>
 
-<h2>User Login</h2>
+<div class="box">
+<h2>🔐 Login</h2>
 
-<input type="text" id="number" placeholder="Phone Number"><br><br>
-<input type="password" id="password" placeholder="Password"><br><br>
+<input type="text" id="number" placeholder="Phone Number">
+<input type="password" id="password" placeholder="Password">
 
 <button onclick="login()">Login</button>
+</div>
 
 <script>
 function login(){
   let number = document.getElementById("number").value;
   let password = document.getElementById("password").value;
 
-  if(number === "" || password === ""){
+  if(number=="" || password==""){
     alert("Fill all fields");
     return;
   }
 
   localStorage.setItem("user", number);
-
-  alert("Login Success");
-  window.location.href = "index.html";
+  window.location.href="index.html";
 }
 </script>
 
