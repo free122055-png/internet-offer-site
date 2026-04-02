@@ -747,7 +747,14 @@ renderOffers();
       <a class="socialBtn" href="https://www.tiktok.com/@fahim12205?_r=1&_t=ZS-958w0cl0Vl6" target="_blank">Watch</a>
     </div>
   </div>
+<button onclick="logout()">Logout</button>
 
+<script>
+function logout(){
+  localStorage.removeItem("user");
+  window.location.href = "user-login.html";
+}
+</script>
 </div>
 </body>
 </html>
