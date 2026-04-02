@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<body>
+
+<h2>User Login</h2>
+
+<input type="text" id="number" placeholder="Phone Number"><br><br>
+<input type="password" id="password" placeholder="Password"><br><br>
+
+<button onclick="login()">Login</button>
+
+<script>
+function login(){
+  let number = document.getElementById("number").value;
+  let password = document.getElementById("password").value;
+
+  if(number === "" || password === ""){
+    alert("Fill all fields");
+    return;
+  }
+
+  localStorage.setItem("user", number);
+
+  alert("Login Success");
+  window.location.href = "index.html";
+}
+</script>
+
+</body>
+</html>
