@@ -344,7 +344,10 @@ if(!localStorage.getItem("user")){
   <header>
     <h1>🔥 বিশ্বাস আপনার সততা আমাদের</h1>
   </header>
-
+<div style="padding:15px; background:#1e1e2f; border-radius:10px; margin:10px;">
+  <h3>👤 Profile</h3>
+  <p>📱 Number: <span id="userNumber"></span></p>
+</div>
   <div class="noticeBox">
   <p>⚡ আপনার প্রয়োজন অনুযায়ী সিম নির্বাচন করুন (এয়ারটেল / রবি / গ্রামীণ / বাংলালিংক)</p>
   <p>📶 যে সিমে অফার নিতে চান, সেই সিমের উপর ক্লিক করলেই সকল উপলব্ধ অফার দেখতে পাবেন।</p>
@@ -756,5 +759,8 @@ function logout(){
 }
 </script>
 </div>
+<script>
+document.getElementById("userNumber").innerText = localStorage.getItem("user");
+</script>
 </body>
 </html>
