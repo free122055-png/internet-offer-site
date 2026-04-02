@@ -316,7 +316,12 @@ text-align:center;
 </head>
 
 <body> 
-  
+
+  <script>
+if(!localStorage.getItem("user")){
+  window.location.href = "user-login.html";
+}
+  </script>
   <!-- 🔥 HERO SECTION -->
   <div class="heroBox">
 
