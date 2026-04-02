@@ -70,16 +70,19 @@ button:hover {
 </head>
 <body>
 
-<h2>User Login</h2>
+<div class="container">
 
-<input type="text" id="username" placeholder="Username"><br><br>
-<input type="text" id="number" placeholder="Phone Number"><br><br>
-<input type="password" id="password" placeholder="Password"><br><br>
-<input type="password" id="confirmPassword" placeholder="Confirm Password"><br><br>
+<h2>🚀 Welcome</h2>
 
-<button onclick="createAccount()">Create Account</button>
+<input type="text" id="username" placeholder="👤 Username">
+<input type="text" id="number" placeholder="📱 Phone Number">
+<input type="password" id="password" placeholder="🔒 Password">
+<input type="password" id="confirmPassword" placeholder="🔐 Confirm Password">
+
+<button class="create-btn" onclick="createAccount()">Create Account</button>
 <button onclick="login()">Login</button>
 
+</div>
 <script>
 function createAccount(){
   let username = document.getElementById("username").value;
