@@ -2,7 +2,7 @@
 <html>
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Login</title>
+<title>Login System</title>
 
 <style>
 body{
@@ -11,7 +11,7 @@ body{
   display:flex;
   justify-content:center;
   align-items:center;
-  background:linear-gradient(135deg,#0f2027,#2c5364);
+  background:linear-gradient(135deg,#141e30,#243b55);
   font-family:sans-serif;
 }
 
@@ -24,9 +24,7 @@ body{
   text-align:center;
 }
 
-h2{
-  color:white;
-}
+h2{color:white;}
 
 input{
   width:100%;
@@ -39,27 +37,33 @@ input{
 button{
   width:100%;
   padding:12px;
+  margin-top:10px;
   border:none;
   border-radius:10px;
-  background:#00c6ff;
   color:white;
+  font-size:15px;
 }
+
+.loginBtn{background:#00c6ff;}
+.signupBtn{background:#28a745;}
 </style>
 </head>
 
 <body>
 
 <div class="box">
-<h2>🔐 Login</h2>
+<h2>🔐 Login / Signup</h2>
 
 <input type="text" id="number" placeholder="Phone Number">
 <input type="password" id="password" placeholder="Password">
 
-<button onclick="login()">Login</button>
+<button class="loginBtn" onclick="login()">Login</button>
+<button class="signupBtn" onclick="signup()">Create Account</button>
 </div>
 
 <script>
-function login(){
+
+function signup(){
   let number = document.getElementById("number").value;
   let password = document.getElementById("password").value;
 
@@ -68,9 +72,28 @@ function login(){
     return;
   }
 
-  localStorage.setItem("user", number);
-  window.location.href="index.html";
+  localStorage.setItem("user_number", number);
+  localStorage.setItem("user_password", password);
+
+  alert("Account Created!");
 }
+
+function login(){
+  let number = document.getElementById("number").value;
+  let password = document.getElementById("password").value;
+
+  let savedNumber = localStorage.getItem("user_number");
+  let savedPassword = localStorage.getItem("user_password");
+
+  if(number === savedNumber && password === savedPassword){
+    localStorage.setItem("user", number);
+    alert("Login Success");
+    window.location.href = "index.html";
+  }else{
+    alert("Wrong Number or Password");
+  }
+}
+
 </script>
 
 </body>
