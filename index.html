@@ -1,767 +1,301 @@
-<!DOCTYPE html>
-<html lang="bn">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>🔥 বিশ্বাস আপনার সততা আমাদের</title>
+import 'dart:io';
+import 'dart:typed_data';
+import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:google_mlkit_face_detection/google_mlkit_face_detection.dart';
+import 'package:image_gallery_saver/image_gallery_saver.dart';
+import 'package:permission_handler/permission_handler.dart';
+import 'package:share_plus/share_plus.dart';
 
-<style>
-
-body{
-margin:0;
-font-family:'Poppins',sans-serif;
-background:linear-gradient(135deg,#0f2027,#203a43,#2c5364);
-color:white;
+void main() {
+  runApp(MyApp());
 }
 
-/* Header */
-header{text-align:center;padding:30px;}
-header h1{
-font-size:35px;
-background:linear-gradient(90deg,#ff512f,#dd2476,#00c6ff);
--webkit-background-clip:text;
-color:transparent;
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData.dark(),
+      home: EditorPage(),
+    );
+  }
 }
 
-/* Search */
-.controls{text-align:center;padding:10px;}
-#searchBox{
-width:85%;
-padding:12px;
-border-radius:25px;
-border:none;
-background:#ffffff15;
-color:white;
-outline:none;
+class EditorPage extends StatefulWidget {
+  @override
+  _EditorPageState createState() => _EditorPageState();
 }
 
-/* SIM Bar */
-.simBar{
-display:flex;
-overflow-x:auto;
-gap:10px;
-padding:10px;
-scrollbar-width:none;
+class _EditorPageState extends State<EditorPage> {
+  File? image;
+  final picker = ImagePicker();
+
+  List<Face> faces = [];
+
+  double brightness = 0;
+  double contrast = 1;
+  double blur = 0;
+
+  bool beautify = false;
+  bool showBefore = false;
+
+  File? editedImage;
+
+  // PICK IMAGE
+  Future pickImage() async {
+    final picked = await picker.pickImage(source: ImageSource.gallery);
+    if (picked != null) {
+      image = File(picked.path);
+      editedImage = image;
+      setState(() {});
+      detectFace();
+    }
+  }
+
+  // FACE DETECT
+  Future detectFace() async {
+    if (image == null) return;
+
+    final inputImage = InputImage.fromFile(image!);
+    final detector = FaceDetector(
+      options: FaceDetectorOptions(enableLandmarks: true),
+    );
+
+    faces = await detector.processImage(inputImage);
+    setState(() {});
+  }
+
+  // APPLY FILTER (simulate export)
+  Future<File> applyExportFilter() async {
+    // simple simulation (real AI filter can be added later)
+    return image!;
+  }
+
+  // SAVE TO GALLERY
+  Future saveToGallery() async {
+    if (editedImage == null) return;
+
+    await Permission.storage.request();
+
+    final bytes = await editedImage!.readAsBytes();
+
+    await ImageGallerySaver.saveImage(
+      Uint8List.fromList(bytes),
+      name: "AI_EDITOR_${DateTime.now().millisecondsSinceEpoch}",
+    );
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text("Saved to Gallery ✅")),
+    );
+  }
+
+  // SHARE IMAGE
+  Future shareImage() async {
+    if (editedImage == null) return;
+
+    await Share.shareXFiles(
+      [XFile(editedImage!.path)],
+      text: "Edited with AI Editor PRO 🔥",
+    );
+  }
+
+  // PRESET
+  void applyPreset(String type) {
+    if (type == "glow") {
+      brightness = 0.3;
+      contrast = 1.2;
+      blur = 0.2;
+    } else if (type == "dark") {
+      brightness = -0.2;
+      contrast = 1.5;
+      blur = 0.1;
+    } else if (type == "pro") {
+      brightness = 0.2;
+      contrast = 1.3;
+      blur = 0.3;
+    }
+    setState(() {});
+  }
+
+  // AUTO EDIT
+  void autoEdit() {
+    brightness = 0.25;
+    contrast = 1.4;
+    blur = 0.25;
+    setState(() {});
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("🔥 AI Editor PRO MAX"),
+        centerTitle: true,
+      ),
+
+      body: Column(
+        children: [
+
+          // IMAGE + BEFORE AFTER
+          GestureDetector(
+            onTap: pickImage,
+            child: Container(
+              height: 280,
+              margin: EdgeInsets.all(10),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(20),
+                gradient: LinearGradient(
+                  colors: [Colors.black, Colors.blue],
+                ),
+              ),
+              child: image == null
+                  ? Center(child: Text("Tap to Upload Image"))
+
+                  : Stack(
+                      children: [
+
+                        // BEFORE IMAGE
+                        ClipRRect(
+                          borderRadius: BorderRadius.circular(20),
+                          child: Image.file(image!, fit: BoxFit.cover),
+                        ),
+
+                        // AFTER (BEAUTIFY LAYER)
+                        if (beautify && faces.isNotEmpty)
+                          Opacity(
+                            opacity: showBefore ? 0.4 : 1,
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(20),
+                              child: ColorFiltered(
+                                colorFilter: ColorFilter.mode(
+                                  Colors.white.withOpacity(0.18),
+                                  BlendMode.softLight,
+                                ),
+                                child: Image.file(image!, fit: BoxFit.cover),
+                              ),
+                            ),
+                          ),
+                      ],
+                    ),
+            ),
+          ),
+
+          // BEFORE / AFTER SLIDER
+          if (image != null)
+            Slider(
+              value: showBefore ? 0 : 1,
+              onChanged: (v) {
+                setState(() {
+                  showBefore = v < 0.5;
+                });
+              },
+            ),
+
+          // BUTTONS
+          Expanded(
+            child: Container(
+              padding: EdgeInsets.all(15),
+              decoration: BoxDecoration(
+                color: Colors.black87,
+                borderRadius: BorderRadius.vertical(top: Radius.circular(25)),
+              ),
+              child: ListView(
+                children: [
+
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      ElevatedButton(
+                        onPressed: pickImage,
+                        child: Text("📷 Pick"),
+                      ),
+                      ElevatedButton(
+                        onPressed: autoEdit,
+                        child: Text("⚡ Auto"),
+                      ),
+                      ElevatedButton(
+                        onPressed: () {
+                          setState(() => beautify = !beautify);
+                        },
+                        child: Text("💄 Beauty"),
+                      ),
+                    ],
+                  ),
+
+                  SizedBox(height: 10),
+
+                  Text("🎨 Adjust"),
+
+                  Slider(
+                    value: brightness,
+                    min: -1,
+                    max: 1,
+                    onChanged: (v) => setState(() => brightness = v),
+                  ),
+
+                  Slider(
+                    value: contrast,
+                    min: 0,
+                    max: 2,
+                    onChanged: (v) => setState(() => contrast = v),
+                  ),
+
+                  Slider(
+                    value: blur,
+                    min: 0,
+                    max: 1,
+                    onChanged: (v) => setState(() => blur = v),
+                  ),
+
+                  SizedBox(height: 10),
+
+                  Text("🔥 Presets"),
+
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      presetBtn("Glow", "glow"),
+                      presetBtn("Dark", "dark"),
+                      presetBtn("Pro", "pro"),
+                    ],
+                  ),
+
+                  SizedBox(height: 10),
+
+                  ElevatedButton(
+                    onPressed: saveToGallery,
+                    child: Text("💾 Save to Gallery"),
+                  ),
+
+                  ElevatedButton(
+                    onPressed: shareImage,
+                    child: Text("📤 Share"),
+                  ),
+
+                  ElevatedButton(
+                    onPressed: () async {
+                      editedImage = await applyExportFilter();
+                      setState(() {});
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text("Export Ready PNG ✅")),
+                      );
+                    },
+                    child: Text("📦 Export PNG"),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget presetBtn(String name, String type) {
+    return ElevatedButton(
+      onPressed: () => applyPreset(type),
+      child: Text(name),
+    );
+  }
 }
-.simBar::-webkit-scrollbar{display:none;}
-
-.simBtn{
-padding:10px 18px;
-border-radius:25px;
-background:#ffffff10;
-cursor:pointer;
-transition:0.3s;
-}
-.simBtn:hover{
-background:#00ffd5;
-color:black;
-}
-.activeSIM{
-background:#00ffd5;
-color:black;
-box-shadow:0 0 10px #00ffd5;
-}
-
-/* Grid */
-.grid{
-display:grid;
-grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
-gap:15px;
-padding:15px;
-}
-
-.box{
-background:rgba(255,255,255,0.08);
-border-radius:20px;
-padding:15px;
-text-align:center;
-transition:0.3s;
-}
-.box:hover{
-transform:translateY(-5px) scale(1.03);
-box-shadow:0 0 15px #00ffd5;
-}
-
-.gb{font-size:22px;color:#00ffd5;}
-.price{font-size:20px;color:#ffcc00;}
-.valid{font-size:13px;opacity:0.8;}
-
-button{
-margin-top:10px;
-padding:8px 15px;
-border:none;
-border-radius:20px;
-background:linear-gradient(135deg,#ff512f,#dd2476);
-color:white;
-cursor:pointer;
-transition:0.3s;
-}
-button:hover{transform:scale(1.1);}
-
-.sectionTitle{
-text-align:center;
-margin-top:20px;
-font-size:20px;
-} /* 🔥 HERO DESIGN */
-.heroBox{
-height:180px;
-background:linear-gradient(135deg,#0f2027,#203a43,#2c5364);
-border-radius:0 0 25px 25px;
-position:relative;
-overflow:hidden;
-}
-
-/* top items */
-.heroItems{
-display:flex;
-gap:8px;
-padding:10px;
-overflow-x:auto;
-}
-
-.heroItems::-webkit-scrollbar{
-display:none;
-}
-
-/* sim buttons */
-.item{
-padding:6px 12px;
-border-radius:20px;
-background:#ffffff20;
-color:white;
-cursor:pointer;
-font-size:12px;
-white-space:nowrap;
-transition:0.3s;
-}
-
-.item:hover{
-background:#00ffd5;
-color:black;
-}
-
-/* center text */
-.heroCenter{
-position:absolute;
-top:60%;
-left:50%;
-transform:translate(-50%,-50%);
-text-align:center;
-}
-
-.heroCenter h2{
-font-size:20px;
-margin:0;
-background:linear-gradient(90deg,#ff512f,#00c6ff);
--webkit-background-clip:text;
-color:transparent;
-}
-
-.heroCenterp{
-font-size:12px;
-opacity:0.8;
-margin:4px 0;
-}
-  .noticeBox{
-margin:15px;
-padding:15px;
-border-radius:15px;
-background:rgba(255,255,255,0.05);
-backdrop-filter:blur(10px);
-color:white;
-font-size:13px;
-line-height:1.6;
-box-shadow:0 0 10px rgba(0,255,213,0.2);
-}
-
-.noticeBox p{
-margin:6px 0;
-}
-
-.noticeBox .admin{
-margin-top:10px;
-font-size:12px;
-opacity:0.7;
-text-align:center;
-}
-.noticeBox{
-  margin:15px;
-  padding:15px;
-  border-radius:15px;
-  background:rgba(255,255,255,0.08);
-  backdrop-filter:blur(12px);
-  color:white;
-  font-size:14px;
-  line-height:1.6;
-  box-shadow:0 0 15px rgba(0,255,213,0.3);
-  border:1px solid rgba(255,255,255,0.1);
-}
-
-.noticeBox p{
-  margin:6px 0;
-}
-
-.noticeBox p::before{
-  content:"👉 ";
-  color:#00ffd5;
-}
-
-.noticeBox .admin{
-  margin-top:12px;
-  font-size:12px;
-  opacity:0.7;
-  text-align:center;
-  color:#aaa;
-    } 
-.simBtn{
-  padding:8px 15px;
-  border-radius:20px;
-  background:rgba(255,255,255,0.1);
-  color:white;
-  margin:5px;
-  display:inline-block;
-  transition:0.3s;
-}
-
-/* Active button (যেটা ক্লিক করা) */
-.simBtn.activeSIM{
-  background:linear-gradient(45deg, #00ffd5, #00c3ff);
-  color:#000;
-  box-shadow:0 0 15px #00ffd5;
-}
-
-/* Hover effect */
-.simBtn:hover{
-  background:rgba(0,255,213,0.2);}
-/* 🌐 Social Modern Card */
-.socialSection{
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
-  gap:20px;
-  padding:20px;
-}
-
-.socialCard{
-  background:white;
-  border-radius:25px;
-  overflow:hidden;
-  text-align:center;
-  box-shadow:0 10px 25px rgba(0,0,0,0.2);
-  transition:0.3s;
-}
-
-.socialCard:hover{
-  transform:translateY(-10px);
-}
-
-.socialTop{
-  height:140px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-size:50px;
-  color:white;
-}
-
-.fb{background:linear-gradient(135deg,#1877f2,#00c6ff);}
-.tw{background:linear-gradient(135deg,#000,#434343);}
-.tg{background:linear-gradient(135deg,#0088cc,#00c6ff);}
-.ig{background:linear-gradient(135deg,#f7971e,#fd1d1d,#833ab4);}
-.tt{background:linear-gradient(135deg,#000,#ff0050);}
-
-.socialBody{
-  padding:15px;
-}
-
-.socialBtn{
-  display:inline-block;
-  margin-top:10px;
-  padding:8px 18px;
-  border-radius:20px;
-  background:linear-gradient(45deg,#6a11cb,#2575fc);
-  color:white;
-  text-decoration:none;
-} /* 🔥 BIG SECTIONS DESIGN */
-.bigSection{
-  margin:20px;
-  padding:25px;
-  border-radius:20px;
-  color:white;
-  box-shadow:0 10px 25px rgba(0,0,0,0.2);
-  transition:0.3s;
-}
-
-.bigSection:hover{
-  transform:translateY(-5px);
-}
-
-.bigSection h2{
-  margin-bottom:10px;
-  font-size:22px;
-}
-
-.bigSection p{
-  font-size:14px;
-  opacity:0.9;
-}
-
-/* 🎨 Gradient Colors */
-.gradient1{background:linear-gradient(135deg,#667eea,#764ba2);}
-.gradient2{background:linear-gradient(135deg,#ff416c,#ff4b2b);}
-.gradient3{background:linear-gradient(135deg,#00c6ff,#0072ff);}
-.gradient4{background:linear-gradient(135deg,#f7971e,#ffd200);}
-.gradient5{background:linear-gradient(135deg,#11998e,#38ef7d);}
-.gradient6{background:linear-gradient(135deg,#fc5c7d,#6a82fb);}
-</style>
-
-</head>
-
-<body> 
-
-  <script>
-if(!localStorage.getItem("user")){
-  window.location.href = "user-login.html";
-}
-  </script>
-  <!-- 🔥 HERO SECTION -->
-  <div class="heroBox">
-
-    <div class="heroItems">
-      <div class="item" onclick="filterSIM('এয়ারটেল',this)">📶</div>
-      <div class="item" onclick="filterSIM('রবি',this)">🔥</div>
-      <div class="item" onclick="filterSIM('গ্রামীণ',this)">🌐</div>
-      <div class="item" onclick="filterSIM('বাংলালিংক',this)">⚡</div>
-      <div class="item" onclick="filterSIM('skitto',this)">💎</div>
-      <div class="item" onclick="filterSIM('টেলিটক',this)">🚀</div>
-    </div>
-
-    <div class="heroCenter">
-      <h2>🔥 Internet Offer Pro</h2>
-      <p>⚡ Fast | ✔ Trusted | 🟢 24/7 </p>
-    </div>
-
-  </div>
-
-  <header>
-    <h1>🔥 বিশ্বাস আপনার সততা আমাদের</h1>
-  </header>
-<div style="padding:15px; background:#1e1e2f; border-radius:10px; margin:10px;">
-  <h3>👤 Profile</h3>
-  <p>📱 Number: <span id="userNumber"></span></p>
-</div>
-  <div class="noticeBox">
-  <p>⚡ আপনার প্রয়োজন অনুযায়ী সিম নির্বাচন করুন (এয়ারটেল / রবি / গ্রামীণ / বাংলালিংক)</p>
-  <p>📶 যে সিমে অফার নিতে চান, সেই সিমের উপর ক্লিক করলেই সকল উপলব্ধ অফার দেখতে পাবেন </p>
-  <p>💰 আপনার পছন্দমতো GB ও মূল্য অনুযায়ী প্যাক নির্বাচন করে সহজেই ক্রয় করুন </p>
-  <p>🔥 দ্রুত, নিরাপদ এবং নির্ভরযোগ্য সার্ভিস সাপোর্ট সুবিধা সহ বিশেষ দ্রষ্টব্য সাইটে কাজ চলমান </p>
-  <p class="admin">Admin panel: Rajibul Islam Fahim</p>
-  </div>
-
-
-<div class="controls">
-<input type="text" id="searchBox" placeholder="🔍 Search GB / Price...">
-</div>
-
-<div class="simBar"> 
-<div class="simBtn activeSIM" onclick="filterSIM('All',this)">All</div>
-<div class="simBtn" onclick="filterSIM('এয়ারটেল',this)">এয়ারটেল</div>
-<div class="simBtn" onclick="filterSIM('রবি',this)">রবি</div>
-<div class="simBtn" onclick="filterSIM('গ্রামীণ',this)">গ্রামীণ</div>
-<div class="simBtn" onclick="filterSIM('বাংলালিংক',this)">বাংলালিংক</div>
-<div class="simBtn" onclick="filterSIM('skitto',this)">skitto</div>
-<div class="simBtn" onclick="filterSIM('টেলিটক',this)">টেলিটক</div>
-</div>
-
-<div class="packBar">
-  <div class="packBtn activePack" onclick="filterPack('all', this)">All</div>
-  <div class="packBtn" onclick="filterPack('family', this)">👨‍👩‍👧 Family</div>
-  <div class="packBtn" onclick="filterPack('gift', this)">🎁 Gift</div>
-  <div class="packBtn" onclick="filterPack('house', this)">🏠 House</div>
-  <div class="packBtn" onclick="filterPack('regular', this)">📦 Regular</div>
-  <div class="packBtn" onclick="filterPack('minute', this)">📞 Minute</div>
-</div>
-  <div id="main"></div> 
-
-<script> 
-
-
-const offers = {
-
-/* ===== এয়ারটেল ===== */
-"এয়ারটেল":{
-"Family Pack":[
-{name:"20GB",price:"320",validity:"30 দিন"},
-{name:"15GB",price:"260",validity:"30 দিন"},
-{name:"20GB",price:"290",validity:"30 দিন"},
-{name:"40GB",price:"440",validity:"30 দিন"},
-{name:"50GB",price:"530",validity:"30 দিন"}
-],
-"Gift Pack":[
-{name:"25GB",price:"310",validity:"30 দিন"},
-{name:"500GB",price:"550",validity:"30 দিন"},
-{name:"55GB",price:"570",validity:"30 দিন"},
-{name:"loading",price:"00",validity:"30 দিন"},
-{name:"loading",price:"00",validity:"30 দিন"}
-],
-"House Offer":[
-{name:"50+500GB",price:"585",validity:"30 দিন"},
-{name:"loading",price:"00",validity:"30 দিন"},
-{name:"loading",price:"00",validity:"30 দিন"},
-{name:"loading",price:"00",validity:"30 দিন"},
-{name:"loading",price:"00",validity:"30 দিন"}
-],
-"Regular Pack":[
-{name:"loading",price:"00",validity:"30 দিন"},
-{name:"loading",price:"00",validity:"30 দিন"},
-{name:"loading",price:"00",validity:"30 দিন"},
-{name:"loading",price:"00",validity:"30 দিন"},
-{name:"loading",price:"00",validity:"30 দিন"}
-],
-"Minute Offer":[
-{name:"100Min",price:"99",validity:"30 দিন"},
-{name:"200Min",price:"150",validity:"30 দিন"},
-{name:"300Min",price:"215",validity:"30 দিন"},
-{name:"500Min",price:"330",validity:"30 দিন"},
-{name:"loading",price:"00",validity:"30 দিন"}
-]
-},
-
-/* ===== রবি ===== */
-"রবি":{
-"Family Pack":[
-{name:"20GB",price:"280",validity:"30 দিন"},
-{name:"60GB",price:"500",validity:"30 দিন"},
-{name:"75GB",price:"525",validity:"30 দিন"},
-{name:"40GB",price:"400",validity:"30 দিন"},
-{name:"90GB",price:"700",validity:"30 দিন"}
-],
-"Gift Pack":[
-{name:"25GB",price:"249",validity:"30 দিন"},
-{name:"15GB",price:"149",validity:"30 দিন"},
-{name:"8GB",price:"89",validity:"30 দিন"},
-{name:"4GB",price:"49",validity:"30 দিন"},
-{name:"1GB",price:"19",validity:"30 দিন"}
-],
-"House Offer":[
-{name:"40GB",price:"349",validity:"30 দিন"},
-{name:"25GB",price:"249",validity:"30 দিন"},
-{name:"12GB",price:"129",validity:"30 দিন"},
-{name:"6GB",price:"69",validity:"30 দিন"},
-{name:"3GB",price:"39",validity:"30 দিন"}
-],
-"Regular Pack":[
-{name:"10GB",price:"99",validity:"30 দিন"},
-{name:"6GB",price:"69",validity:"30 দিন"},
-{name:"3GB",price:"39",validity:"30 দিন"},
-{name:"1GB",price:"19",validity:"30 দিন"},
-{name:"500MB",price:"9",validity:"30 দিন"}
-],
-"Minute Offer":[
-{name:"100Min",price:"99",validity:"30 দিন"},
-{name:"60Min",price:"69",validity:"30 দিন"},
-{name:"30Min",price:"39",validity:"30 দিন"},
-{name:"15Min",price:"19",validity:"30 দিন"},
-{name:"5Min",price:"9",validity:"30 দিন"}
-]
-},
-
-/* ===== গ্রামীণ ===== */
-"গ্রামীণ":{ 
-"Family Pack":[{name:"30GB",price:"299",validity:"30 দিন"},{name:"20GB",price:"199",validity:"30 দিন"},{name:"10GB",price:"99",validity:"30 দিন"},{name:"5GB",price:"59",validity:"30 দিন"},{name:"2GB",price:"29",validity:"30 দিন"}],
-"Gift Pack":[{name:"25GB",price:"249",validity:"30 দিন"},{name:"15GB",price:"149",validity:"30 দিন"},{name:"8GB",price:"89",validity:"30 দিন"},{name:"4GB",price:"49",validity:"30 দিন"},{name:"1GB",price:"19",validity:"30 দিন"}],
-"House Offer":[{name:"40GB",price:"349",validity:"30 দিন"},{name:"25GB",price:"249",validity:"30 দিন"},{name:"12GB",price:"129",validity:"30 দিন"},{name:"6GB",price:"69",validity:"30 দিন"},{name:"3GB",price:"39",validity:"30 দিন"}],
-"Regular Pack":[{name:"10GB",price:"99",validity:"30 দিন"},{name:"6GB",price:"69",validity:"30 দিন"},{name:"3GB",price:"39",validity:"30 দিন"},{name:"1GB",price:"19",validity:"30 দিন"},{name:"500MB",price:"9",validity:"30 দিন"}],
-"Minute Offer":[{name:"100Min",price:"99",validity:"30 দিন"},{name:"60Min",price:"69",validity:"30 দিন"},{name:"30Min",price:"39",validity:"30 দিন"},{name:"15Min",price:"19",validity:"30 দিন"},{name:"5Min",price:"9",validity:"30 দিন"}]
-},
-
-/* ===== বাংলালিংক ===== */
-"বাংলালিংক":{ 
-"Family Pack":[{name:"30GB",price:"299",validity:"30 দিন"},{name:"20GB",price:"199",validity:"30 দিন"},{name:"10GB",price:"99",validity:"30 দিন"},{name:"5GB",price:"59",validity:"30 দিন"},{name:"2GB",price:"29",validity:"30 দিন"}],
-"Gift Pack":[{name:"25GB",price:"249",validity:"30 দিন"},{name:"15GB",price:"149",validity:"30 দিন"},{name:"8GB",price:"89",validity:"30 দিন"},{name:"4GB",price:"49",validity:"30 দিন"},{name:"1GB",price:"19",validity:"30 দিন"}],
-"House Offer":[{name:"40GB",price:"349",validity:"30 দিন"},{name:"25GB",price:"249",validity:"30 দিন"},{name:"12GB",price:"129",validity:"30 দিন"},{name:"6GB",price:"69",validity:"30 দিন"},{name:"3GB",price:"39",validity:"30 দিন"}],
-"Regular Pack":[{name:"10GB",price:"99",validity:"30 দিন"},{name:"6GB",price:"69",validity:"30 দিন"},{name:"3GB",price:"39",validity:"30 দিন"},{name:"1GB",price:"19",validity:"30 দিন"},{name:"500MB",price:"9",validity:"30 দিন"}],
-"Minute Offer":[{name:"100Min",price:"99",validity:"30 দিন"},{name:"60Min",price:"69",validity:"30 দিন"},{name:"30Min",price:"39",validity:"30 দিন"},{name:"15Min",price:"19",validity:"30 দিন"},{name:"5Min",price:"9",validity:"30 দিন"}]
-},
-
-/* ===== skitto ===== */
-"skitto":{ 
-"Family Pack":[{name:"5GB",price:"185",validity:"30 দিন"},{name:"15GB",price:"310",validity:"30 দিন"},{name:"25GB",price:"360",validity:"30 দিন"},{name:"5GB",price:"59",validity:"30 দিন"},{name:"2GB",price:"29",validity:"30 দিন"}],
-"Gift Pack":[{name:"25GB",price:"249",validity:"30 দিন"},{name:"15GB",price:"149",validity:"30 দিন"},{name:"8GB",price:"89",validity:"30 দিন"},{name:"4GB",price:"49",validity:"30 দিন"},{name:"1GB",price:"19",validity:"30 দিন"}],
-"House Offer":[{name:"40GB",price:"349",validity:"30 দিন"},{name:"25GB",price:"249",validity:"30 দিন"},{name:"12GB",price:"129",validity:"30 দিন"},{name:"6GB",price:"69",validity:"30 দিন"},{name:"3GB",price:"39",validity:"30 দিন"}],
-"Regular Pack":[{name:"10GB",price:"99",validity:"30 দিন"},{name:"6GB",price:"69",validity:"30 দিন"},{name:"3GB",price:"39",validity:"30 দিন"},{name:"1GB",price:"19",validity:"30 দিন"},{name:"500MB",price:"9",validity:"30 দিন"}],
-"Minute Offer":[{name:"100Min",price:"99",validity:"30 দিন"},{name:"60Min",price:"69",validity:"30 দিন"},{name:"30Min",price:"39",validity:"30 দিন"},{name:"15Min",price:"19",validity:"30 দিন"},{name:"5Min",price:"9",validity:"30 দিন"}]
-},
-
-/* ===== টেলিটক ===== */
-"টেলিটক":{ 
-"Family Pack":[{name:"30GB",price:"299",validity:"30 দিন"},{name:"20GB",price:"220",validity:"30 দিন"},{name:"10GB",price:"99",validity:"30 দিন"},{name:"50GB",price:"500",validity:"30 দিন"},{name:"100GB",price:"650",validity:"30 দিন"}],
-"Gift Pack":[{name:"loading",price:"00",validity:"30 দিন"},{name:"loading",price:"00",validity:"30 দিন"},{name:"loading",price:"00",validity:"30 দিন"},{name:"loading",price:"00",validity:"30 দিন"},{name:"loading",price:"00",validity:"30 দিন"}],
-"House Offer":[{name:"loading",price:"00",validity:"30 দিন"},{name:"loading",price:"00",validity:"30 দিন"},{name:"loading",price:"00",validity:"30 দিন"},{name:"loading",price:"00",validity:"30 দিন"},{name:"loading",price:"00",validity:"30 দিন"}],
-"Regular Pack":[{name:"loading",price:"00",validity:"30 দিন"},{name:"loading",price:"00",validity:"30 দিন"},{name:"loading",price:"00",validity:"30 দিন"},{name:"loading",price:"00",validity:"30 দিন"},{name:"loading",price:"00",validity:"30 দিন"}],
-"Minute Offer":[{name:"500Min",price:"350",validity:"30 দিন"},{name:"loading",price:"00",validity:"30 দিন"},{name:"loading",price:"00",validity:"30 দিন"},{name:"loading",price:"00",validity:"30 দিন"},{name:"loading",price:"00",validity:"30 দিন"}]
-}
-
-};
-
-
-function filterPack(type, el){
-  currentPack = type;
-
-  document.querySelectorAll(".packBtn").forEach(btn=>{
-    btn.classList.remove("activePack");
-  });
-  el.classList.add("activePack");
-
-  renderOffers();
-}
-let currentSIM="All";
-
-function filterSIM(sim,el){
-currentSIM=sim;
-document.querySelectorAll(".simBtn").forEach(b=>b.classList.remove("activeSIM"));
-el.classList.add("activeSIM");
-renderOffers();
-}
-
-function renderOffers(){
-let html="";
-let search=document.getElementById("searchBox").value.toLowerCase();
-
-for(let sim in offers){
-if(currentSIM!=="All" && sim!==currentSIM) continue;
-
-html+=`<div class="sectionTitle">${sim}</div>`;
-
-for(let pack in offers[sim]){
-html+=`<div class="sectionTitle">${pack}</div><div class="grid">`;
-
-offers[sim][pack].forEach(o=>{
-let text=(o.name+o.price).toLowerCase();
-
-if(text.includes(search)){
-html+=`
-<div class="box">
-<div class="gb">${o.name}</div>
-<div class="price">${o.price}৳</div>
-<div class="valid">${o.validity}</div>
-<button onclick="buy('${o.name}','${o.price}','${o.validity}')">🚀 Buy</button>
-</div>`;
-}
-});
-
-html+=`</div>`;
-}
-}
-
-document.getElementById("main").innerHTML=html;
-}
-
-function buy(n,p,v){
-let msg=`${n} ${p}৳ ${v}`;
-window.location.href="https://wa.me/8801624228476?text="+encodeURIComponent(msg);
-}
-
-document.getElementById("searchBox").addEventListener("input",renderOffers);
-
-renderOffers();
-
-</script>
-<!-- 🔥 BIG SECTIONS START -->
-
-<div class="bigSection gradient1">
-  <h2>📦 বান্ডেল অফার</h2>
-  <p> 📡 জিপি (GP) সেরা ৫ অফার 🇧🇩
-━━━━━━━━━━━━━━━
-💥 100GB — 💰 695৳
-💥 70GB+1600 মিনিট — 💰 960৳
-💥 50GB+1500 মিনিট — 💰 840৳
-💥 30GB+700 মিনিট — 💰 715৳
-💥 Unlimited (15Mbps) — 💰 750৳
-━━━━━━━━━━━━━━━
-📶 বাংলালিংক (BL) সেরা ৫ অফার 🔥
-━━━━━━━━━━━━━━━
-💥 150GB — 💰 850৳
-💥 85GB — 💰 690৳
-💥 60GB — 💰 600৳
-💥 50GB+1500 মিনিট — 💰 850৳
-💥 40GB+700 মিনিট — 💰 700৳
-━━━━━━━━━━━━━━━
-📡 এয়ারটেল (Airtel) সেরা ৫ অফার 🎁
-━━━━━━━━━━━━━━━
-💥 100GB+1000 মিনিট — 💰 740৳
-💥 100GB+100 মিনিট — 💰 690৳
-💥 80GB+500 মিনিট — 💰 660৳
-💥 60GB+500 মিনিট — 💰 620৳
-💥 50GB+500 মিনিট — 💰 540৳
-━━━━━━━━━━━━━━━
-📶 রবি (Robi) সেরা ৫ অফার 🔰
-━━━━━━━━━━━━━━━
-💥 200GB — 💰 740৳
-💥 80GB — 💰 660৳
-💥 60GB — 💰 620৳
-💥 45GB — 💰 520৳
-💥 30GB — 💰 360৳
-━━━━━━━━━━━━━━━
-📡 রবি + এয়ারটেল ফ্যামিলি প্যাক 👫
-━━━━━━━━━━━━━━━
-💥 60GB — 💰 520৳
-💥 50GB — 💰 460৳
-💥 40GB — 💰 440৳
-💥 1000 মিনিট — 💰 400৳
-💥 1500 মিনিট — 💰 550৳
-━━━━━━━━━━━━━━━
-📅 মেয়াদ: ৩০ দিন ✅
-⚠️ লোন থাকলেও সমস্যা নাই
-🚫 OTP/পোস্টপেইড নাম্বার গ্রহণযোগ্য নয় /p>
-</div>
-
-<div class="bigSection gradient2">
-  <h2>📢 অফার বক্স</h2>
-  <p>👉 *💢 বাংলালিংক অফার💢*
-৬১৯®৩০+৪০০=৫১৪/- সবাই পাবে
-৬৯৯®৪০+৫০০=৫৬০/- সবাই পাবে
-৮১৯®৩৫+৭০০=৭১৫/- সবাই পাবে
-৯৯৮®৫০+১৫০০=৮৩০/- সবাই পাবে
-৪১৯®৬৫০ মিনিট=৩৬৫/- সবাই পাবে
-৫১৯®৮২৫ মিনিট=৪৫৪/- সবাই পাবে
-৬৩৯®১০০০ মিনিট=৫৫৫/- সবাই পাবে
-৫৯৮®৪০/৫০ জিবি=৫১৫/- সবাই পাবে
-৬৯৮®৬০ জিবি=৬০০/- সবাই পাবে
-৭৯৮®৮৫ জিবি=৭০৫/- সবাই পাবে
-৯৯৯®১৫০ জিবি=৮৭০/- সবাই পাবে</p>
-</div>
-
-<div class="bigSection gradient3">
-  <h2>💎 আলাপ রিচার্জ</h2>
-  <p> ✨কথা বলার সময় (বোনাসসহ)
-
-1️⃣ ৳১০০ রিচার্জ + ২০% বোনাস
-➡️ মোট ৳১২০
-➡️ ৩৪২ মিনিট ৫১ সেকেন্ড
-
-2️⃣ ৳২০০ রিচার্জ + ২৫% বোনাস
-➡️ মোট ৳২৫০
-➡️ ৭১৪ মিনিট ১৭ সেকেন্ড
-
-3️⃣ ৳৫০০ রিচার্জ + ৩০% বোনাস
-➡️ মোট ৳৬৫০
-➡️ ১৮৫৭ মিনিট ৯ সেকেন্ড
-(প্রায় ৩০ ঘণ্টা ৫৭ মিনিট)
-
-4️⃣ ৳৮০০ রিচার্জ + ৩৫% বোনাস
-➡️ মোট ৳১১৮০
-➡️ ৩৩৭১ মিনিট ২৫ সেকেন্ড
-(প্রায় ৫৬ ঘণ্টা ১১ মিনিট)
-
-5️⃣ ৳১০০০ রিচার্জ + ৩৮% বোনাস
-➡️ মোট ৳১৩৮০
-➡️ ৩৯৪২ মিনিট ৫১ সেকেন্ড
-(প্রায় ৬৫ ঘণ্টা ৪২ মিনিট)
-
- </p>
-</div>
-
-<div class="bigSection gradient4">
-  </h2> 📢 গ্রামীন 📢</h2>
-  <p> 📢 জিপি ১০০% ফ্যামিলি প্যাক 📢
-📦 30GB + 300 মিনিট — 💰 490৳
-📦 30GB + 500 মিনিট — 💰 510৳
-📦 20GB + 500 মিনিট — 💰 490৳
-📦 30GB — 💰 430৳
-📞 1300 মিনিট — 💰 590৳
-📞 1000 মিনিট — 💰 510৳
-📅 মেয়াদ: ৩০ দিন ✅
-⚠️ আগে OTP নেয়া নাম্বার দিবেন না 🚫 </p>
-</div>
-
-<div class="bigSection gradient5">
-  <h2>  🔥 রাইজ অফার {🇴‌🇹‌🇵‌ দিতে হবে} 🔥 </h2>
-  <p> বাংলালিংক
-📶 🔹 60GB + 300 মিনিট ➜ 💰 520৳
-📶 🔹 25GB + 200 মিনিট ➜ 💰 335৳
-📶 🔹 80GB + 400 মিনিট ➜ 💰 680৳
-📶 🔹 30GB + 800 মিনিট ➜ 💰 680৳
-📶 🔹 85GB + 400 মিনিট ➜ 💰 695৳ </p>
-</div>
-
-<div class="bigSection gradient6">
-  <h2>📞 জরুরী নোটিশ </h2>
-  <p> 🔥 অফার ক্রয়ের পূর্বে গুরুত্বপূর্ণ নোটিশ
-
-প্রিয় গ্রাহক,
-আমাদের “Internet Offer Pro” ওয়েবসাইট থেকে যেকোনো ইন্টারনেট প্যাক ক্রয়ের আগে নিচের নির্দেশনাগুলো অনুগ্রহ করে ভালোভাবে পড়ে নিন—
-
-✅ সকল প্যাক সম্পূর্ণ ভেরিফাইড এবং নির্ভরযোগ্য উৎস থেকে সরবরাহ করা হয়।
-✅ প্যাক ক্রয়ের পর নির্দিষ্ট সময়ের (সাধারণত ৫–৩০ মিনিট) মধ্যে আপনার নম্বরে অ্যাক্টিভ হবে।
-✅ ক্রয়ের সময় সঠিক মোবাইল নাম্বার প্রদান করুন, ভুল নাম্বারের জন্য কর্তৃপক্ষ দায়ী নয়।
-✅ কোনো সমস্যা হলে ২৪/৭ সাপোর্টে যোগাযোগ করুন।
-✅ একবার প্যাক অ্যাক্টিভ হয়ে গেলে তা বাতিল বা রিফান্ডযোগ্য নয়।
-✅ অফারের মূল্য এবং মেয়াদ যেকোনো সময় পরিবর্তিত হতে পারে।
-
-⚡ বিশেষ নির্দেশনা:
-দয়া করে বিশ্বস্ততার জন্য শুধুমাত্র এই অফিসিয়াল ওয়েবসাইট ব্যবহার করুন এবং অন্য কোনো তৃতীয় পক্ষের লিংক এড়িয়ে চলুন।
-
-💚 আপনার বিশ্বাসই আমাদের শক্তি — ধন্যবাদ আমাদের সাথে থাকার জন্য। </p>
-</div>
-
-<!-- 🌐 SOCIAL MODERN SECTION -->
-<div class="socialSection">
-
-  <div class="socialCard">
-    <div class="socialTop fb">Facebook📘</div>
-    <div class="socialBody">
-      <h3>Facebook</h3>
-      <p>Follow our page</p>
-      <a class="socialBtn" href="https://www.facebook.com/fahim12205" target="_blank">Visit</a>
-    </div>
-  </div>
-
-  <div class="socialCard">
-    <div class="socialTop tw">Twitter🐦</div>
-    <div class="socialBody">
-      <h3>Twitter (X)</h3>
-      <p>Follow on X</p>
-      <a class="socialBtn" href="https://x.com/RIslam43614" target="_blank">Visit</a>
-    </div>
-  </div>
-
-  <div class="socialCard">
-    <div class="socialTop tg">telegram📢</div>
-    <div class="socialBody">
-      <h3>Telegram</h3>
-      <p>Join channel</p>
-      <a class="socialBtn" href="https://t.me/fahim123633" target="_blank">Join</a>
-    </div>
-  </div>
-
-  <div class="socialCard">
-    <div class="socialTop ig">Instagram📸</div>
-    <div class="socialBody">
-      <h3>Instagram</h3>
-      <p>See posts</p>
-      <a class="socialBtn" href="https://www.instagram.com/rajibul_islam_fahim?igsh=ZmZjdnBxbnpja2Jz" target="_blank">Visit</a>
-    </div>
-  </div>
-
-  <div class="socialCard">
-    <div class="socialTop tt">TikTok🎵</div>
-    <div class="socialBody">
-      <h3>TikTok</h3>
-      <p>Watch videos</p>
-      <a class="socialBtn" href="https://www.tiktok.com/@fahim12205?_r=1&_t=ZS-958w0cl0Vl6" target="_blank">Watch</a>
-    </div>
-  </div>
-<button onclick="logout()">Logout</button>
-
-<script>
-function logout(){
-  localStorage.removeItem("user");
-  window.location.href = "user-login.html";
-}
-</script>
-</div>
-<script>
-document.getElementById("userNumber").innerText = localStorage.getItem("user");
-</script>
-</body>
-</html>
