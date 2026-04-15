@@ -1,11 +1,9 @@
 import 'dart:io';
-import 'dart:typed_data';
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:google_mlkit_face_detection/google_mlkit_face_detection.dart';
-import 'package:image_gallery_saver/image_gallery_saver.dart';
-import 'package:permission_handler/permission_handler.dart';
-import 'package:share_plus/share_plus.dart';
+import 'package:http/http.dart' as http;
 
 void main() {
   runApp(MyApp());
@@ -37,17 +35,16 @@ class _EditorPageState extends State<EditorPage> {
   double contrast = 1;
   double blur = 0;
 
+  String selectedPart = "Face";
+
+  // 🔥 NEW: Beautify toggle
   bool beautify = false;
-  bool showBefore = false;
 
-  File? editedImage;
-
-  // PICK IMAGE
+  // IMAGE PICK
   Future pickImage() async {
     final picked = await picker.pickImage(source: ImageSource.gallery);
     if (picked != null) {
       image = File(picked.path);
-      editedImage = image;
       setState(() {});
       detectFace();
     }
@@ -66,41 +63,7 @@ class _EditorPageState extends State<EditorPage> {
     setState(() {});
   }
 
-  // APPLY FILTER (simulate export)
-  Future<File> applyExportFilter() async {
-    // simple simulation (real AI filter can be added later)
-    return image!;
-  }
-
-  // SAVE TO GALLERY
-  Future saveToGallery() async {
-    if (editedImage == null) return;
-
-    await Permission.storage.request();
-
-    final bytes = await editedImage!.readAsBytes();
-
-    await ImageGallerySaver.saveImage(
-      Uint8List.fromList(bytes),
-      name: "AI_EDITOR_${DateTime.now().millisecondsSinceEpoch}",
-    );
-
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text("Saved to Gallery ✅")),
-    );
-  }
-
-  // SHARE IMAGE
-  Future shareImage() async {
-    if (editedImage == null) return;
-
-    await Share.shareXFiles(
-      [XFile(editedImage!.path)],
-      text: "Edited with AI Editor PRO 🔥",
-    );
-  }
-
-  // PRESET
+  // PRESET SYSTEM
   void applyPreset(String type) {
     if (type == "glow") {
       brightness = 0.3;
@@ -126,18 +89,53 @@ class _EditorPageState extends State<EditorPage> {
     setState(() {});
   }
 
+  // 🔥 REAL BACKGROUND REMOVE (API READY)
+  Future removeBackground() async {
+    if (image == null) return;
+
+    var request = http.MultipartRequest(
+      'POST',
+      Uri.parse('https://api.remove.bg/v1.0/removebg'),
+    );
+
+    request.headers['X-Api-Key'] = 'YOUR_API_KEY'; // এখানে key বসাও
+
+    request.files.add(
+      await http.MultipartFile.fromPath('image_file', image!.path),
+    );
+
+    var response = await request.send();
+
+    if (response.statusCode == 200) {
+      final bytes = await response.stream.toBytes();
+      final file = File('${image!.path}_no_bg.png');
+      await file.writeAsBytes(bytes);
+
+      setState(() {
+        image = file;
+      });
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Background Removed 🔥")),
+      );
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Error removing BG")),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("🔥 AI Editor PRO MAX"),
+        title: Text("🔥 AI Editor PRO"),
         centerTitle: true,
       ),
-
       body: Column(
         children: [
 
-          // IMAGE + BEFORE AFTER
+          // IMAGE BOX
           GestureDetector(
             onTap: pickImage,
             child: Container(
@@ -146,7 +144,7 @@ class _EditorPageState extends State<EditorPage> {
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(20),
                 gradient: LinearGradient(
-                  colors: [Colors.black, Colors.blue],
+                  colors: [Colors.black, Colors.blueAccent],
                 ),
               ),
               child: image == null
@@ -155,25 +153,22 @@ class _EditorPageState extends State<EditorPage> {
                   : Stack(
                       children: [
 
-                        // BEFORE IMAGE
+                        // ORIGINAL IMAGE
                         ClipRRect(
                           borderRadius: BorderRadius.circular(20),
                           child: Image.file(image!, fit: BoxFit.cover),
                         ),
 
-                        // AFTER (BEAUTIFY LAYER)
+                        // 🔥 BEAUTIFY LAYER (Skin Smooth)
                         if (beautify && faces.isNotEmpty)
-                          Opacity(
-                            opacity: showBefore ? 0.4 : 1,
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(20),
-                              child: ColorFiltered(
-                                colorFilter: ColorFilter.mode(
-                                  Colors.white.withOpacity(0.18),
-                                  BlendMode.softLight,
-                                ),
-                                child: Image.file(image!, fit: BoxFit.cover),
+                          ClipRRect(
+                            borderRadius: BorderRadius.circular(20),
+                            child: ColorFiltered(
+                              colorFilter: ColorFilter.mode(
+                                Colors.white.withOpacity(0.18),
+                                BlendMode.softLight,
                               ),
+                              child: Image.file(image!, fit: BoxFit.cover),
                             ),
                           ),
                       ],
@@ -181,51 +176,30 @@ class _EditorPageState extends State<EditorPage> {
             ),
           ),
 
-          // BEFORE / AFTER SLIDER
-          if (image != null)
-            Slider(
-              value: showBefore ? 0 : 1,
-              onChanged: (v) {
-                setState(() {
-                  showBefore = v < 0.5;
-                });
-              },
-            ),
+          // PART SELECT
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              partBtn("Face"),
+              partBtn("Hair"),
+              partBtn("BG"),
+            ],
+          ),
 
-          // BUTTONS
+          // CONTROL PANEL
           Expanded(
             child: Container(
               padding: EdgeInsets.all(15),
               decoration: BoxDecoration(
                 color: Colors.black87,
-                borderRadius: BorderRadius.vertical(top: Radius.circular(25)),
+                borderRadius: BorderRadius.vertical(
+                  top: Radius.circular(25),
+                ),
               ),
               child: ListView(
                 children: [
 
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: [
-                      ElevatedButton(
-                        onPressed: pickImage,
-                        child: Text("📷 Pick"),
-                      ),
-                      ElevatedButton(
-                        onPressed: autoEdit,
-                        child: Text("⚡ Auto"),
-                      ),
-                      ElevatedButton(
-                        onPressed: () {
-                          setState(() => beautify = !beautify);
-                        },
-                        child: Text("💄 Beauty"),
-                      ),
-                    ],
-                  ),
-
-                  SizedBox(height: 10),
-
-                  Text("🎨 Adjust"),
+                  Text("🎨 Adjust", style: TextStyle(fontSize: 18)),
 
                   Slider(
                     value: brightness,
@@ -264,31 +238,44 @@ class _EditorPageState extends State<EditorPage> {
                   SizedBox(height: 10),
 
                   ElevatedButton(
-                    onPressed: saveToGallery,
-                    child: Text("💾 Save to Gallery"),
+                    onPressed: autoEdit,
+                    child: Text("⚡ Auto Edit"),
                   ),
 
                   ElevatedButton(
-                    onPressed: shareImage,
-                    child: Text("📤 Share"),
+                    onPressed: removeBackground,
+                    child: Text("🌄 Remove Background"),
                   ),
 
+                  // 💄 BEAUTIFY BUTTON
                   ElevatedButton(
-                    onPressed: () async {
-                      editedImage = await applyExportFilter();
-                      setState(() {});
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text("Export Ready PNG ✅")),
-                      );
+                    onPressed: () {
+                      setState(() {
+                        beautify = !beautify;
+                      });
                     },
-                    child: Text("📦 Export PNG"),
+                    child: Text(
+                      beautify ? "💄 Beautify ON" : "💄 Beautify OFF",
+                    ),
+                  ),
+
+                  ElevatedButton(
+                    onPressed: () {},
+                    child: Text("💾 Export (Next Update)"),
                   ),
                 ],
               ),
             ),
-          ),
+          )
         ],
       ),
+    );
+  }
+
+  Widget partBtn(String name) {
+    return ElevatedButton(
+      onPressed: () => setState(() => selectedPart = name),
+      child: Text(name),
     );
   }
 
