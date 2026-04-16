@@ -8,48 +8,86 @@ body{font-family:sans-serif}
 .glass{background:rgba(255,255,255,0.08);backdrop-filter:blur(10px);}
 </style></head><body class="bg-gradient-to-br from-[#0f2027] via-[#203a43] to-[#2c5364] text-white"><div class="max-w-6xl mx-auto p-4"><!-- HEADER --><div class="flex justify-between items-center mb-6">
 <h1 class="text-3xl font-bold">💎 InvestPro</h1>
-<button class="bg-red-500 px-4 py-2 rounded-xl">Logout</button>
-</div><!-- HERO --><div class="glass p-6 rounded-2xl mb-6 text-center">
-<h2 class="text-2xl font-bold mb-2">Earn Smart Income</h2>
-<p class="opacity-70">Modern investment dashboard with premium UI</p>
-</div><!-- DASHBOARD --><div class="grid md:grid-cols-3 gap-4 mb-6"><div class="glass p-4 rounded-2xl">
+<button class="bg-red-500 px-4 py-2 rounded-xl" onclick="logout()">Logout</button>
+</div><!-- DASHBOARD --><div class="grid md:grid-cols-3 gap-4 mb-6">
+<div class="glass p-4 rounded-2xl">
 <p>Total Balance</p>
-<h2 class="text-2xl font-bold">1250 ৳</h2>
+<h2 id="balance" class="text-2xl font-bold">1250 ৳</h2>
 </div><div class="glass p-4 rounded-2xl">
 <p>Today Income</p>
 <h2 class="text-2xl font-bold text-green-400">+50 ৳</h2>
 </div><div class="glass p-4 rounded-2xl">
 <p>Total Invest</p>
-<h2 class="text-2xl font-bold">5000 ৳</h2>
-</div></div><!-- ACTION --><div class="glass p-4 rounded-2xl mb-6">
-<input type="number" placeholder="Enter amount" class="w-full p-3 rounded-xl text-black mb-3">
+<h2 id="invested" class="text-2xl font-bold">0 ৳</h2>
+</div>
+</div><!-- ACTION --><div class="glass p-4 rounded-2xl mb-6">
+<input id="amount" type="number" placeholder="Enter amount" class="w-full p-3 rounded-xl text-black mb-3">
 <div class="flex gap-2">
-<button class="flex-1 bg-blue-500 p-3 rounded-xl">Deposit</button>
-<button class="flex-1 bg-purple-500 p-3 rounded-xl">Invest</button>
+<button onclick="deposit()" class="flex-1 bg-blue-500 p-3 rounded-xl">Deposit</button>
+<button onclick="invest()" class="flex-1 bg-purple-500 p-3 rounded-xl">Invest</button>
 </div>
 </div><!-- PLANS --><div class="mb-6">
-<h2 class="text-xl mb-3">🔥 Investment Plans</h2><div class="grid md:grid-cols-3 gap-4"><div class="p-4 rounded-2xl bg-gradient-to-r from-blue-500 to-purple-600">
+<h2 class="text-xl mb-3">🔥 Investment Plans</h2>
+<div class="grid md:grid-cols-3 gap-4"><div class="p-4 rounded-2xl bg-gradient-to-r from-blue-500 to-purple-600">
 <h3 class="font-bold">Starter - 500৳</h3>
 <p>Daily: ~20৳</p>
-<button class="mt-2 bg-black/40 px-4 py-2 rounded">Buy</button>
+<button onclick="buyPlan(500)" class="mt-2 bg-black/40 px-4 py-2 rounded">Buy</button>
 </div><div class="p-4 rounded-2xl bg-gradient-to-r from-green-500 to-teal-600">
 <h3 class="font-bold">Silver - 1000৳</h3>
 <p>Daily: ~40৳</p>
-<button class="mt-2 bg-black/40 px-4 py-2 rounded">Buy</button>
+<button onclick="buyPlan(1000)" class="mt-2 bg-black/40 px-4 py-2 rounded">Buy</button>
 </div><div class="p-4 rounded-2xl bg-gradient-to-r from-pink-500 to-red-600">
 <h3 class="font-bold">Gold - 5000৳</h3>
 <p>Daily: ~200৳</p>
-<button class="mt-2 bg-black/40 px-4 py-2 rounded">Buy</button>
+<button onclick="buyPlan(5000)" class="mt-2 bg-black/40 px-4 py-2 rounded">Buy</button>
 </div></div>
-</div><!-- REFERRAL --><div class="glass p-4 rounded-2xl mb-6">
-<h2 class="text-lg mb-2">👥 Referral</h2>
-<div class="bg-black/30 p-2 rounded">https://site.com/ref123</div>
 </div><!-- ACTIVITY --><div class="glass p-4 rounded-2xl">
-<h2 class="text-lg mb-2">📜 Recent Activity</h2>
-<ul class="space-y-1 text-sm">
-<li>+200৳ Deposit</li>
-<li>-500৳ Invest</li>
-<li>+50৳ Profit</li>
-</ul>
-</div></div></body>
+<h2 class="text-lg mb-2">📜 Activity</h2>
+<ul id="activity" class="space-y-1 text-sm"></ul>
+</div></div><script>
+let balance = 1250;
+let invested = 0;
+
+function updateUI(){
+  document.getElementById("balance").innerText = balance + " ৳";
+  document.getElementById("invested").innerText = invested + " ৳";
+}
+
+function addActivity(text){
+  const li = document.createElement("li");
+  li.innerText = text;
+  document.getElementById("activity").prepend(li);
+}
+
+function deposit(){
+  const amt = Number(document.getElementById("amount").value);
+  if(!amt) return alert("Amount দাও");
+  balance += amt;
+  addActivity("+"+amt+"৳ Deposit");
+  updateUI();
+}
+
+function invest(){
+  const amt = Number(document.getElementById("amount").value);
+  if(balance < amt) return alert("Balance কম");
+  balance -= amt;
+  invested += amt;
+  addActivity("-"+amt+"৳ Invest");
+  updateUI();
+}
+
+function buyPlan(price){
+  if(balance < price) return alert("Balance কম");
+  balance -= price;
+  invested += price;
+  addActivity("Plan কিনেছে: "+price+"৳");
+  updateUI();
+}
+
+function logout(){
+  alert("Logout done");
+}
+
+updateUI();
+</script></body>
 </html>
