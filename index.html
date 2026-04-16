@@ -1,93 +1,169 @@
-<!DOCTYPE html><html lang="en">
+<!DOCTYPE html>
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>💎 InvestPro Premium</title>
-<script src="https://cdn.tailwindcss.com"></script><style>
-body{font-family:sans-serif}
-.glass{background:rgba(255,255,255,0.08);backdrop-filter:blur(10px);}
-</style></head><body class="bg-gradient-to-br from-[#0f2027] via-[#203a43] to-[#2c5364] text-white"><div class="max-w-6xl mx-auto p-4"><!-- HEADER --><div class="flex justify-between items-center mb-6">
-<h1 class="text-3xl font-bold">💎 InvestPro</h1>
-<button class="bg-red-500 px-4 py-2 rounded-xl" onclick="logout()">Logout</button>
-</div><!-- DASHBOARD --><div class="grid md:grid-cols-3 gap-4 mb-6">
-<div class="glass p-4 rounded-2xl">
-<p>Total Balance</p>
-<h2 id="balance" class="text-2xl font-bold">1250 ৳</h2>
-</div><div class="glass p-4 rounded-2xl">
-<p>Today Income</p>
-<h2 class="text-2xl font-bold text-green-400">+50 ৳</h2>
-</div><div class="glass p-4 rounded-2xl">
-<p>Total Invest</p>
-<h2 id="invested" class="text-2xl font-bold">0 ৳</h2>
-</div>
-</div><!-- ACTION --><div class="glass p-4 rounded-2xl mb-6">
-<input id="amount" type="number" placeholder="Enter amount" class="w-full p-3 rounded-xl text-black mb-3">
-<div class="flex gap-2">
-<button onclick="deposit()" class="flex-1 bg-blue-500 p-3 rounded-xl">Deposit</button>
-<button onclick="invest()" class="flex-1 bg-purple-500 p-3 rounded-xl">Invest</button>
-</div>
-</div><!-- PLANS --><div class="mb-6">
-<h2 class="text-xl mb-3">🔥 Investment Plans</h2>
-<div class="grid md:grid-cols-3 gap-4"><div class="p-4 rounded-2xl bg-gradient-to-r from-blue-500 to-purple-600">
-<h3 class="font-bold">Starter - 500৳</h3>
-<p>Daily: ~20৳</p>
-<button onclick="buyPlan(500)" class="mt-2 bg-black/40 px-4 py-2 rounded">Buy</button>
-</div><div class="p-4 rounded-2xl bg-gradient-to-r from-green-500 to-teal-600">
-<h3 class="font-bold">Silver - 1000৳</h3>
-<p>Daily: ~40৳</p>
-<button onclick="buyPlan(1000)" class="mt-2 bg-black/40 px-4 py-2 rounded">Buy</button>
-</div><div class="p-4 rounded-2xl bg-gradient-to-r from-pink-500 to-red-600">
-<h3 class="font-bold">Gold - 5000৳</h3>
-<p>Daily: ~200৳</p>
-<button onclick="buyPlan(5000)" class="mt-2 bg-black/40 px-4 py-2 rounded">Buy</button>
-</div></div>
-</div><!-- ACTIVITY --><div class="glass p-4 rounded-2xl">
-<h2 class="text-lg mb-2">📜 Activity</h2>
-<ul id="activity" class="space-y-1 text-sm"></ul>
-</div></div><script>
-let balance = 1250;
-let invested = 0;
+<title>InvestPro - Full App</title>
 
-function updateUI(){
-  document.getElementById("balance").innerText = balance + " ৳";
-  document.getElementById("invested").innerText = invested + " ৳";
+<script src="https://cdn.tailwindcss.com"></script>
+
+<style>
+body{
+  font-family:sans-serif;
+  background:linear-gradient(135deg,#0f2027,#203a43,#2c5364);
+  color:white;
+}
+.glass{
+  background:rgba(255,255,255,0.08);
+  backdrop-filter:blur(12px);
+  border-radius:15px;
+}
+.page{display:none;animation:fade .4s ease}
+.active{display:block}
+@keyframes fade{
+  from{opacity:0;transform:translateY(10px)}
+  to{opacity:1;transform:translateY(0)}
+}
+button{transition:.2s}
+button:hover{transform:scale(1.05)}
+</style>
+</head>
+
+<body class="p-4">
+
+<!-- HEADER -->
+<div class="flex justify-between items-center mb-4">
+<h1 class="text-2xl font-bold">💎 InvestPro</h1>
+<div class="flex gap-2">
+<button onclick="show('home')" class="bg-blue-500 px-3 py-1 rounded">Home</button>
+<button onclick="show('dash')" class="bg-green-500 px-3 py-1 rounded">Dashboard</button>
+<button onclick="show('plans')" class="bg-purple-500 px-3 py-1 rounded">Plans</button>
+<button onclick="show('wallet')" class="bg-yellow-500 px-3 py-1 rounded">Wallet</button>
+</div>
+</div>
+
+<!-- HOME -->
+<div id="home" class="page active glass p-4">
+<h2 class="text-xl font-bold">🔥 Welcome to InvestPro</h2>
+<p class="opacity-70">Full premium investment system UI</p>
+</div>
+
+<!-- DASHBOARD -->
+<div id="dash" class="page glass p-4">
+<h2 class="text-lg mb-2">Dashboard</h2>
+
+<div class="grid grid-cols-2 gap-3">
+<div class="glass p-3">
+<p>Balance</p>
+<h2 id="bal">1000 ৳</h2>
+</div>
+
+<div class="glass p-3">
+<p>Invested</p>
+<h2 id="inv">0 ৳</h2>
+</div>
+
+<div class="glass p-3 col-span-2">
+<p>Profit</p>
+<h2 id="pro" class="text-green-400">0 ৳</h2>
+</div>
+</div>
+</div>
+
+<!-- PLANS -->
+<div id="plans" class="page glass p-4">
+<h2 class="text-lg mb-3">Investment Plans</h2>
+
+<div class="grid gap-3">
+
+<div class="glass p-3">
+<h3>Basic - 500৳</h3>
+<p>Daily profit: 20৳</p>
+<button onclick="buy(500,20)" class="bg-blue-500 px-3 py-1 rounded">Buy</button>
+</div>
+
+<div class="glass p-3">
+<h3>Silver - 1000৳</h3>
+<p>Daily profit: 40৳</p>
+<button onclick="buy(1000,40)" class="bg-green-500 px-3 py-1 rounded">Buy</button>
+</div>
+
+<div class="glass p-3">
+<h3>Gold - 5000৳</h3>
+<p>Daily profit: 200৳</p>
+<button onclick="buy(5000,200)" class="bg-purple-500 px-3 py-1 rounded">Buy</button>
+</div>
+
+</div>
+</div>
+
+<!-- WALLET -->
+<div id="wallet" class="page glass p-4">
+<h2 class="text-lg mb-2">Wallet</h2>
+
+<input id="amt" type="number" placeholder="amount"
+class="w-full p-2 text-black rounded mb-2">
+
+<div class="flex gap-2">
+<button onclick="deposit()" class="bg-blue-500 px-3 py-1 rounded flex-1">Deposit</button>
+<button onclick="withdraw()" class="bg-red-500 px-3 py-1 rounded flex-1">Withdraw</button>
+</div>
+
+<hr class="my-3">
+
+<h3>Activity</h3>
+<ul id="log" class="text-sm space-y-1"></ul>
+</div>
+
+<script>
+let balance = 1000;
+let invested = 0;
+let profit = 0;
+
+function show(id){
+document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+document.getElementById(id).classList.add('active');
 }
 
-function addActivity(text){
-  const li = document.createElement("li");
-  li.innerText = text;
-  document.getElementById("activity").prepend(li);
+function ui(){
+document.getElementById("bal").innerText = balance+" ৳";
+document.getElementById("inv").innerText = invested+" ৳";
+document.getElementById("pro").innerText = profit+" ৳";
+}
+
+function add(t){
+let li=document.createElement("li");
+li.innerText=t;
+document.getElementById("log").prepend(li);
 }
 
 function deposit(){
-  const amt = Number(document.getElementById("amount").value);
-  if(!amt) return alert("Amount দাও");
-  balance += amt;
-  addActivity("+"+amt+"৳ Deposit");
-  updateUI();
+let a=Number(amt.value);
+if(!a) return alert("amount দাও");
+balance+=a;
+add("Deposit +"+a);
+ui();
 }
 
-function invest(){
-  const amt = Number(document.getElementById("amount").value);
-  if(balance < amt) return alert("Balance কম");
-  balance -= amt;
-  invested += amt;
-  addActivity("-"+amt+"৳ Invest");
-  updateUI();
+function withdraw(){
+let a=Number(amt.value);
+if(balance<a) return alert("low balance");
+balance-=a;
+add("Withdraw -"+a);
+ui();
 }
 
-function buyPlan(price){
-  if(balance < price) return alert("Balance কম");
-  balance -= price;
-  invested += price;
-  addActivity("Plan কিনেছে: "+price+"৳");
-  updateUI();
+function buy(price, daily){
+if(balance<price) return alert("low balance");
+balance-=price;
+invested+=price;
+profit+=daily;
+add("Plan "+price+" bought");
+ui();
 }
 
-function logout(){
-  alert("Logout done");
-}
+ui();
+</script>
 
-updateUI();
-</script></body>
+</body>
 </html>
