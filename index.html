@@ -1,288 +1,101 @@
-import 'dart:io';
-import 'dart:convert';
-import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:google_mlkit_face_detection/google_mlkit_face_detection.dart';
-import 'package:http/http.dart' as http;
+// ========================================= // 💎 FULL PREMIUM INVEST DASHBOARD (SINGLE FILE DEMO) // Frontend Only (Super UI) - Ready to Extend Backend // =========================================
 
-void main() {
-  runApp(MyApp());
-}
+import { useState } from "react";
 
-class MyApp extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData.dark(),
-      home: EditorPage(),
-    );
-  }
-}
+export default function App() { const [balance, setBalance] = useState(1250); const [amount, setAmount] = useState(0);
 
-class EditorPage extends StatefulWidget {
-  @override
-  _EditorPageState createState() => _EditorPageState();
-}
+return ( <div className="min-h-screen bg-gradient-to-br from-[#0f2027] via-[#203a43] to-[#2c5364] text-white p-4">
 
-class _EditorPageState extends State<EditorPage> {
-  File? image;
-  final picker = ImagePicker();
+{/* HEADER */}
+  <div className="flex justify-between items-center mb-6">
+    <h1 className="text-3xl font-bold">💎 InvestPro</h1>
+    <button className="bg-red-500 px-4 py-2 rounded-xl">Logout</button>
+  </div>
 
-  List<Face> faces = [];
+  {/* DASHBOARD CARDS */}
+  <div className="grid grid-cols-2 gap-4 mb-6">
+    <div className="bg-white/10 backdrop-blur-lg p-4 rounded-2xl shadow">
+      <p>Total Balance</p>
+      <h2 className="text-2xl font-bold">{balance} ৳</h2>
+    </div>
 
-  double brightness = 0;
-  double contrast = 1;
-  double blur = 0;
+    <div className="bg-white/10 backdrop-blur-lg p-4 rounded-2xl shadow">
+      <p>Today Income</p>
+      <h2 className="text-2xl font-bold text-green-400">+50 ৳</h2>
+    </div>
+  </div>
 
-  String selectedPart = "Face";
+  {/* ACTION BOX */}
+  <div className="bg-white/10 p-4 rounded-2xl mb-6">
+    <input
+      type="number"
+      placeholder="Enter amount"
+      onChange={(e) => setAmount(Number(e.target.value))}
+      className="w-full p-3 rounded-xl text-black mb-3"
+    />
 
-  // 🔥 NEW: Beautify toggle
-  bool beautify = false;
+    <div className="flex gap-2">
+      <button
+        onClick={() => setBalance(balance + amount)}
+        className="flex-1 bg-blue-500 p-3 rounded-xl"
+      >
+        Deposit
+      </button>
 
-  // IMAGE PICK
-  Future pickImage() async {
-    final picked = await picker.pickImage(source: ImageSource.gallery);
-    if (picked != null) {
-      image = File(picked.path);
-      setState(() {});
-      detectFace();
-    }
-  }
+      <button
+        onClick={() => setBalance(balance - amount)}
+        className="flex-1 bg-purple-500 p-3 rounded-xl"
+      >
+        Invest
+      </button>
+    </div>
+  </div>
 
-  // FACE DETECT
-  Future detectFace() async {
-    if (image == null) return;
+  {/* PLANS */}
+  <div className="mb-6">
+    <h2 className="text-xl mb-3">🔥 Investment Plans</h2>
 
-    final inputImage = InputImage.fromFile(image!);
-    final detector = FaceDetector(
-      options: FaceDetectorOptions(enableLandmarks: true),
-    );
+    <div className="grid gap-4">
+      {[500, 1000, 5000].map((plan) => (
+        <div
+          key={plan}
+          className="bg-gradient-to-r from-blue-500 to-purple-600 p-4 rounded-2xl shadow-lg hover:scale-105 transition"
+        >
+          <h3 className="text-lg font-bold">Plan {plan} ৳</h3>
+          <p>Estimated Daily: {Math.floor(plan * 0.04)} ৳</p>
+          <button className="mt-2 bg-black/40 px-4 py-2 rounded-lg">
+            Buy Plan
+          </button>
+        </div>
+      ))}
+    </div>
+  </div>
 
-    faces = await detector.processImage(inputImage);
-    setState(() {});
-  }
+  {/* REFERRAL */}
+  <div className="bg-white/10 p-4 rounded-2xl mb-6">
+    <h2 className="text-lg mb-2">👥 Referral</h2>
+    <p>Your link:</p>
+    <div className="bg-black/30 p-2 rounded">https://site.com/ref123</div>
+  </div>
 
-  // PRESET SYSTEM
-  void applyPreset(String type) {
-    if (type == "glow") {
-      brightness = 0.3;
-      contrast = 1.2;
-      blur = 0.2;
-    } else if (type == "dark") {
-      brightness = -0.2;
-      contrast = 1.5;
-      blur = 0.1;
-    } else if (type == "pro") {
-      brightness = 0.2;
-      contrast = 1.3;
-      blur = 0.3;
-    }
-    setState(() {});
-  }
+  {/* TRANSACTION */}
+  <div className="bg-white/10 p-4 rounded-2xl">
+    <h2 className="text-lg mb-2">📜 Recent Activity</h2>
+    <ul className="text-sm space-y-1">
+      <li>+200 ৳ Deposit</li>
+      <li>-500 ৳ Invest</li>
+      <li>+50 ৳ Profit</li>
+    </ul>
+  </div>
 
-  // AUTO EDIT
-  void autoEdit() {
-    brightness = 0.25;
-    contrast = 1.4;
-    blur = 0.25;
-    setState(() {});
-  }
+</div>
 
-  // 🔥 REAL BACKGROUND REMOVE (API READY)
-  Future removeBackground() async {
-    if (image == null) return;
+); }
 
-    var request = http.MultipartRequest(
-      'POST',
-      Uri.parse('https://api.remove.bg/v1.0/removebg'),
-    );
+// ========================================= // 🚀 WHAT NEXT YOU MUST ADD (IMPORTANT) // =========================================
 
-    request.headers['X-Api-Key'] = 'YOUR_API_KEY'; // এখানে key বসাও
+// 1. Backend API (Node / Laravel) // 2. Database (MongoDB) // 3. Payment Gateway (bKash/Nagad) // 4. Admin Panel // 5. Real Auth System
 
-    request.files.add(
-      await http.MultipartFile.fromPath('image_file', image!.path),
-    );
+// ========================================= // 🔥 DESIGN FEATURES INCLUDED // ========================================= // ✅ Glassmorphism UI // ✅ Gradient Neon Cards // ✅ Responsive Layout // ✅ Smooth Hover Effects // ✅ App-style Dashboard
 
-    var response = await request.send();
-
-    if (response.statusCode == 200) {
-      final bytes = await response.stream.toBytes();
-      final file = File('${image!.path}_no_bg.png');
-      await file.writeAsBytes(bytes);
-
-      setState(() {
-        image = file;
-      });
-
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Background Removed 🔥")),
-      );
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Error removing BG")),
-      );
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text("🔥 AI Editor PRO"),
-        centerTitle: true,
-      ),
-      body: Column(
-        children: [
-
-          // IMAGE BOX
-          GestureDetector(
-            onTap: pickImage,
-            child: Container(
-              height: 280,
-              margin: EdgeInsets.all(10),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(20),
-                gradient: LinearGradient(
-                  colors: [Colors.black, Colors.blueAccent],
-                ),
-              ),
-              child: image == null
-                  ? Center(child: Text("Tap to Upload Image"))
-
-                  : Stack(
-                      children: [
-
-                        // ORIGINAL IMAGE
-                        ClipRRect(
-                          borderRadius: BorderRadius.circular(20),
-                          child: Image.file(image!, fit: BoxFit.cover),
-                        ),
-
-                        // 🔥 BEAUTIFY LAYER (Skin Smooth)
-                        if (beautify && faces.isNotEmpty)
-                          ClipRRect(
-                            borderRadius: BorderRadius.circular(20),
-                            child: ColorFiltered(
-                              colorFilter: ColorFilter.mode(
-                                Colors.white.withOpacity(0.18),
-                                BlendMode.softLight,
-                              ),
-                              child: Image.file(image!, fit: BoxFit.cover),
-                            ),
-                          ),
-                      ],
-                    ),
-            ),
-          ),
-
-          // PART SELECT
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              partBtn("Face"),
-              partBtn("Hair"),
-              partBtn("BG"),
-            ],
-          ),
-
-          // CONTROL PANEL
-          Expanded(
-            child: Container(
-              padding: EdgeInsets.all(15),
-              decoration: BoxDecoration(
-                color: Colors.black87,
-                borderRadius: BorderRadius.vertical(
-                  top: Radius.circular(25),
-                ),
-              ),
-              child: ListView(
-                children: [
-
-                  Text("🎨 Adjust", style: TextStyle(fontSize: 18)),
-
-                  Slider(
-                    value: brightness,
-                    min: -1,
-                    max: 1,
-                    onChanged: (v) => setState(() => brightness = v),
-                  ),
-
-                  Slider(
-                    value: contrast,
-                    min: 0,
-                    max: 2,
-                    onChanged: (v) => setState(() => contrast = v),
-                  ),
-
-                  Slider(
-                    value: blur,
-                    min: 0,
-                    max: 1,
-                    onChanged: (v) => setState(() => blur = v),
-                  ),
-
-                  SizedBox(height: 10),
-
-                  Text("🔥 Presets"),
-
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: [
-                      presetBtn("Glow", "glow"),
-                      presetBtn("Dark", "dark"),
-                      presetBtn("Pro", "pro"),
-                    ],
-                  ),
-
-                  SizedBox(height: 10),
-
-                  ElevatedButton(
-                    onPressed: autoEdit,
-                    child: Text("⚡ Auto Edit"),
-                  ),
-
-                  ElevatedButton(
-                    onPressed: removeBackground,
-                    child: Text("🌄 Remove Background"),
-                  ),
-
-                  // 💄 BEAUTIFY BUTTON
-                  ElevatedButton(
-                    onPressed: () {
-                      setState(() {
-                        beautify = !beautify;
-                      });
-                    },
-                    child: Text(
-                      beautify ? "💄 Beautify ON" : "💄 Beautify OFF",
-                    ),
-                  ),
-
-                  ElevatedButton(
-                    onPressed: () {},
-                    child: Text("💾 Export (Next Update)"),
-                  ),
-                ],
-              ),
-            ),
-          )
-        ],
-      ),
-    );
-  }
-
-  Widget partBtn(String name) {
-    return ElevatedButton(
-      onPressed: () => setState(() => selectedPart = name),
-      child: Text(name),
-    );
-  }
-
-  Widget presetBtn(String name, String type) {
-    return ElevatedButton(
-      onPressed: () => applyPreset(type),
-      child: Text(name),
-    );
-  }
-}
+// ========================================= // END // =========================================
