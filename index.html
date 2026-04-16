@@ -1,26 +1,28 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="bn">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>MB Recharge Software System</title>
+<title>MB Recharge Pro System</title>
 
 <style>
 body{
 margin:0;
 font-family:Arial;
-background:#0f172a;
+background:linear-gradient(135deg,#0f172a,#1e3a8a,#0f766e);
 color:white;
 display:flex;
+overflow-x:hidden;
 }
 
-/* SIDEBAR */
+/* Sidebar */
 .sidebar{
 width:220px;
 height:100vh;
-background:#111827;
+background:#0b1220;
 padding:15px;
 position:fixed;
+box-shadow:0 0 20px rgba(0,255,150,0.2);
 }
 
 .sidebar h2{
@@ -28,38 +30,47 @@ text-align:center;
 color:#00ff99;
 }
 
-.menu button{
+.sidebar button{
 width:100%;
 padding:10px;
 margin:5px 0;
 border:none;
-background:#1f2937;
-color:white;
-cursor:pointer;
 border-radius:8px;
+cursor:pointer;
+background:#111827;
+color:white;
 transition:0.3s;
 }
 
-.menu button:hover{
+.sidebar button:hover{
 background:#00ff99;
 color:black;
 }
 
-/* MAIN */
+/* Main */
 .main{
 margin-left:240px;
-padding:20px;
 width:100%;
+padding:20px;
 }
 
-/* TOP BAR */
-.topbar{
-display:flex;
-justify-content:space-between;
-align-items:center;
-background:#1f2937;
-padding:10px;
-border-radius:10px;
+/* TOP HERO HOME */
+.hero{
+background:linear-gradient(135deg,#00ff99,#0099ff);
+padding:30px;
+border-radius:20px;
+text-align:center;
+box-shadow:0 0 30px rgba(0,255,150,0.3);
+animation:fade 1s;
+}
+
+.hero h1{
+margin:0;
+font-size:30px;
+}
+
+.hero p{
+margin-top:10px;
 }
 
 /* SECTION */
@@ -74,24 +85,26 @@ display:block;
 }
 
 @keyframes fade{
-from{opacity:0;}
-to{opacity:1;}
+from{opacity:0;transform:translateY(10px);}
+to{opacity:1;transform:translateY(0);}
 }
 
 /* CARDS */
 .card{
-background:white;
-color:black;
+background:rgba(255,255,255,0.1);
+backdrop-filter:blur(10px);
+border:1px solid rgba(255,255,255,0.2);
 padding:15px;
 margin:10px;
-border-radius:12px;
+border-radius:15px;
 display:inline-block;
-width:160px;
+width:170px;
 transition:0.3s;
 }
 
 .card:hover{
-transform:scale(1.05);
+transform:scale(1.08);
+box-shadow:0 0 15px rgba(0,255,150,0.5);
 }
 
 /* BUTTON */
@@ -101,19 +114,10 @@ background:#00ff99;
 border:none;
 border-radius:20px;
 cursor:pointer;
-margin-top:5px;
+margin-top:8px;
 }
 
-/* INPUT */
-input,select{
-padding:10px;
-margin:5px;
-width:200px;
-border-radius:8px;
-border:none;
-}
-
-/* NOTIFICATION */
+/* TOAST */
 .toast{
 position:fixed;
 bottom:20px;
@@ -125,6 +129,13 @@ border-radius:8px;
 display:none;
 }
 
+/* operator label */
+.op-title{
+margin-top:20px;
+font-size:20px;
+color:#00ff99;
+}
+
 </style>
 
 </head>
@@ -133,116 +144,98 @@ display:none;
 
 <!-- SIDEBAR -->
 <div class="sidebar">
-<h2>MB SYSTEM</h2>
-<div class="menu">
+<h2>MB PRO</h2>
+
 <button onclick="show('home')">🏠 Home</button>
-<button onclick="show('internet')">📶 Internet</button>
-<button onclick="show('minute')">📞 Minute</button>
+<button onclick="show('gp')">📡 GP</button>
+<button onclick="show('robi')">📡 Robi</button>
+<button onclick="show('airtel')">📡 Airtel</button>
+<button onclick="show('bl')">📡 Banglalink</button>
+<button onclick="show('teletalk')">📡 Teletalk</button>
 <button onclick="show('quick')">⚡ Quick Buy</button>
-<button onclick="show('offers')">🎁 Offers</button>
-<button onclick="show('payment')">💳 Payment</button>
-<button onclick="show('reviews')">⭐ Reviews</button>
 <button onclick="show('support')">💬 Support</button>
-</div>
+
 </div>
 
 <!-- MAIN -->
 <div class="main">
 
-<!-- TOP -->
-<div class="topbar">
-<h3>🔥 MB Recharge System</h3>
-<button onclick="notify('New Offer Available 🔥')">🔔 Test Notify</button>
-</div>
-
 <!-- HOME -->
 <div id="home" class="section active">
-<h2>Dashboard</h2>
-<p>Total Orders: 120</p>
-<p>Pending: 5</p>
-<p>Completed: 115</p>
-</div>
 
-<!-- INTERNET -->
-<div id="internet" class="section">
-<h2>📶 Internet Packs</h2>
-
-<div class="card">
-GP 1GB - 20৳
-<br><button class="btn" onclick="buy('GP 1GB')">Buy</button>
-</div>
-
-<div class="card">
-Robi 2GB - 35৳
-<br><button class="btn" onclick="buy('Robi 2GB')">Buy</button>
-</div>
-
-<div class="card">
-Airtel 3GB - 50৳
-<br><button class="btn" onclick="buy('Airtel 3GB')">Buy</button>
+<div class="hero">
+<h1>🔥 MB Recharge Pro System</h1>
+<p>সবচেয়ে দ্রুত ইন্টারনেট ও মিনিট অর্ডার সিস্টেম</p>
+<button class="btn" onclick="show('gp')">Start Buy Now</button>
 </div>
 
 </div>
 
-<!-- MINUTE -->
-<div id="minute" class="section">
-<h2>📞 Minute Packs</h2>
+<!-- GP -->
+<div id="gp" class="section">
+<h2 class="op-title">📡 Grameenphone Offers</h2>
 
-<div class="card">
-GP 100 Min - 50৳
-<br><button class="btn" onclick="buy('GP 100 Min')">Buy</button>
+<div class="card">1GB - 20৳<br><button class="btn" onclick="buy('GP 1GB')">Buy</button></div>
+<div class="card">2GB - 35৳<br><button class="btn" onclick="buy('GP 2GB')">Buy</button></div>
+<div class="card">3GB - 50৳<br><button class="btn" onclick="buy('GP 3GB')">Buy</button></div>
+<div class="card">5GB - 70৳<br><button class="btn" onclick="buy('GP 5GB')">Buy</button></div>
 </div>
 
-<div class="card">
-Robi 200 Min - 90৳
-<br><button class="btn" onclick="buy('Robi 200 Min')">Buy</button>
+<!-- ROBI -->
+<div id="robi" class="section">
+<h2 class="op-title">📡 Robi Offers</h2>
+
+<div class="card">1GB - 18৳<br><button class="btn" onclick="buy('Robi 1GB')">Buy</button></div>
+<div class="card">2GB - 30৳<br><button class="btn" onclick="buy('Robi 2GB')">Buy</button></div>
+<div class="card">3GB - 45৳<br><button class="btn" onclick="buy('Robi 3GB')">Buy</button></div>
+<div class="card">5GB - 65৳<br><button class="btn" onclick="buy('Robi 5GB')">Buy</button></div>
 </div>
 
+<!-- AIRTEL -->
+<div id="airtel" class="section">
+<h2 class="op-title">📡 Airtel Offers</h2>
+
+<div class="card">1GB - 19৳<br><button class="btn" onclick="buy('Airtel 1GB')">Buy</button></div>
+<div class="card">2GB - 32৳<br><button class="btn" onclick="buy('Airtel 2GB')">Buy</button></div>
+<div class="card">3GB - 48৳<br><button class="btn" onclick="buy('Airtel 3GB')">Buy</button></div>
+<div class="card">5GB - 68৳<br><button class="btn" onclick="buy('Airtel 5GB')">Buy</button></div>
 </div>
 
-<!-- QUICK BUY -->
+<!-- BL -->
+<div id="bl" class="section">
+<h2 class="op-title">📡 Banglalink Offers</h2>
+
+<div class="card">1GB - 17৳<br><button class="btn" onclick="buy('BL 1GB')">Buy</button></div>
+<div class="card">2GB - 28৳<br><button class="btn" onclick="buy('BL 2GB')">Buy</button></div>
+<div class="card">3GB - 42৳<br><button class="btn" onclick="buy('BL 3GB')">Buy</button></div>
+<div class="card">5GB - 60৳<br><button class="btn" onclick="buy('BL 5GB')">Buy</button></div>
+</div>
+
+<!-- TELETALK -->
+<div id="teletalk" class="section">
+<h2 class="op-title">📡 Teletalk Offers</h2>
+
+<div class="card">1GB - 15৳<br><button class="btn" onclick="buy('Teletalk 1GB')">Buy</button></div>
+<div class="card">2GB - 25৳<br><button class="btn" onclick="buy('Teletalk 2GB')">Buy</button></div>
+<div class="card">3GB - 40৳<br><button class="btn" onclick="buy('Teletalk 3GB')">Buy</button></div>
+<div class="card">5GB - 55৳<br><button class="btn" onclick="buy('Teletalk 5GB')">Buy</button></div>
+</div>
+
+<!-- QUICK -->
 <div id="quick" class="section">
 <h2>⚡ Quick Buy</h2>
 
 <input id="number" placeholder="Number"><br>
-<select id="operator">
-<option>GP</option>
-<option>Robi</option>
-<option>Airtel</option>
-<option>Banglalink</option>
-<option>Teletalk</option>
-</select><br>
 <input id="pack" placeholder="Pack"><br>
 
-<button class="btn" onclick="quickBuy()">Send Order</button>
-</div>
-
-<!-- OFFERS -->
-<div id="offers" class="section">
-<h2>🎁 Offers</h2>
-<div class="card">🔥 2GB = 25৳</div>
-<div class="card">🔥 5GB = 60৳</div>
-</div>
-
-<!-- PAYMENT -->
-<div id="payment" class="section">
-<h2>💳 Payment</h2>
-<p>bKash / Nagad</p>
-<p>Send Money: 01618599077</p>
-</div>
-
-<!-- REVIEWS -->
-<div id="reviews" class="section">
-<h2>⭐ Reviews</h2>
-<div class="card">🔥 Fast Service</div>
-<div class="card">❤️ Trusted</div>
+<button class="btn" onclick="quick()">Send Order</button>
 </div>
 
 <!-- SUPPORT -->
 <div id="support" class="section">
 <h2>💬 Support</h2>
 <a href="https://wa.me/8801618599077">
-<button class="btn">Chat on WhatsApp</button>
+<button class="btn">Chat WhatsApp</button>
 </a>
 </div>
 
@@ -260,25 +253,22 @@ document.getElementById(id).classList.add('active');
 
 function buy(pack){
 window.open("https://wa.me/8801618599077?text=আমি " + pack + " কিনতে চাই");
-notify("Order Started: " + pack);
+toast("Order: " + pack);
 }
 
-function quickBuy(){
+function quick(){
 let n=document.getElementById("number").value;
-let o=document.getElementById("operator").value;
 let p=document.getElementById("pack").value;
 
-let msg=`Number:${n} Operator:${o} Pack:${p}`;
-
-window.open("https://wa.me/8801618599077?text="+msg);
-notify("Order Sent!");
+window.open("https://wa.me/8801618599077?text=Number:"+n+" Pack:"+p);
+toast("Quick Order Sent");
 }
 
-function notify(msg){
+function toast(msg){
 let t=document.getElementById("toast");
 t.innerText=msg;
 t.style.display="block";
-setTimeout(()=>{t.style.display="none";},3000);
+setTimeout(()=>t.style.display="none",3000);
 }
 
 </script>
