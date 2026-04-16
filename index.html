@@ -1,101 +1,55 @@
-// ========================================= // 💎 FULL PREMIUM INVEST DASHBOARD (SINGLE FILE DEMO) // Frontend Only (Super UI) - Ready to Extend Backend // =========================================
-
-import { useState } from "react";
-
-export default function App() { const [balance, setBalance] = useState(1250); const [amount, setAmount] = useState(0);
-
-return ( <div className="min-h-screen bg-gradient-to-br from-[#0f2027] via-[#203a43] to-[#2c5364] text-white p-4">
-
-{/* HEADER */}
-  <div className="flex justify-between items-center mb-6">
-    <h1 className="text-3xl font-bold">💎 InvestPro</h1>
-    <button className="bg-red-500 px-4 py-2 rounded-xl">Logout</button>
-  </div>
-
-  {/* DASHBOARD CARDS */}
-  <div className="grid grid-cols-2 gap-4 mb-6">
-    <div className="bg-white/10 backdrop-blur-lg p-4 rounded-2xl shadow">
-      <p>Total Balance</p>
-      <h2 className="text-2xl font-bold">{balance} ৳</h2>
-    </div>
-
-    <div className="bg-white/10 backdrop-blur-lg p-4 rounded-2xl shadow">
-      <p>Today Income</p>
-      <h2 className="text-2xl font-bold text-green-400">+50 ৳</h2>
-    </div>
-  </div>
-
-  {/* ACTION BOX */}
-  <div className="bg-white/10 p-4 rounded-2xl mb-6">
-    <input
-      type="number"
-      placeholder="Enter amount"
-      onChange={(e) => setAmount(Number(e.target.value))}
-      className="w-full p-3 rounded-xl text-black mb-3"
-    />
-
-    <div className="flex gap-2">
-      <button
-        onClick={() => setBalance(balance + amount)}
-        className="flex-1 bg-blue-500 p-3 rounded-xl"
-      >
-        Deposit
-      </button>
-
-      <button
-        onClick={() => setBalance(balance - amount)}
-        className="flex-1 bg-purple-500 p-3 rounded-xl"
-      >
-        Invest
-      </button>
-    </div>
-  </div>
-
-  {/* PLANS */}
-  <div className="mb-6">
-    <h2 className="text-xl mb-3">🔥 Investment Plans</h2>
-
-    <div className="grid gap-4">
-      {[500, 1000, 5000].map((plan) => (
-        <div
-          key={plan}
-          className="bg-gradient-to-r from-blue-500 to-purple-600 p-4 rounded-2xl shadow-lg hover:scale-105 transition"
-        >
-          <h3 className="text-lg font-bold">Plan {plan} ৳</h3>
-          <p>Estimated Daily: {Math.floor(plan * 0.04)} ৳</p>
-          <button className="mt-2 bg-black/40 px-4 py-2 rounded-lg">
-            Buy Plan
-          </button>
-        </div>
-      ))}
-    </div>
-  </div>
-
-  {/* REFERRAL */}
-  <div className="bg-white/10 p-4 rounded-2xl mb-6">
-    <h2 className="text-lg mb-2">👥 Referral</h2>
-    <p>Your link:</p>
-    <div className="bg-black/30 p-2 rounded">https://site.com/ref123</div>
-  </div>
-
-  {/* TRANSACTION */}
-  <div className="bg-white/10 p-4 rounded-2xl">
-    <h2 className="text-lg mb-2">📜 Recent Activity</h2>
-    <ul className="text-sm space-y-1">
-      <li>+200 ৳ Deposit</li>
-      <li>-500 ৳ Invest</li>
-      <li>+50 ৳ Profit</li>
-    </ul>
-  </div>
-
+<!DOCTYPE html><html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>💎 InvestPro Premium</title>
+<script src="https://cdn.tailwindcss.com"></script><style>
+body{font-family:sans-serif}
+.glass{background:rgba(255,255,255,0.08);backdrop-filter:blur(10px);}
+</style></head><body class="bg-gradient-to-br from-[#0f2027] via-[#203a43] to-[#2c5364] text-white"><div class="max-w-6xl mx-auto p-4"><!-- HEADER --><div class="flex justify-between items-center mb-6">
+<h1 class="text-3xl font-bold">💎 InvestPro</h1>
+<button class="bg-red-500 px-4 py-2 rounded-xl">Logout</button>
+</div><!-- HERO --><div class="glass p-6 rounded-2xl mb-6 text-center">
+<h2 class="text-2xl font-bold mb-2">Earn Smart Income</h2>
+<p class="opacity-70">Modern investment dashboard with premium UI</p>
+</div><!-- DASHBOARD --><div class="grid md:grid-cols-3 gap-4 mb-6"><div class="glass p-4 rounded-2xl">
+<p>Total Balance</p>
+<h2 class="text-2xl font-bold">1250 ৳</h2>
+</div><div class="glass p-4 rounded-2xl">
+<p>Today Income</p>
+<h2 class="text-2xl font-bold text-green-400">+50 ৳</h2>
+</div><div class="glass p-4 rounded-2xl">
+<p>Total Invest</p>
+<h2 class="text-2xl font-bold">5000 ৳</h2>
+</div></div><!-- ACTION --><div class="glass p-4 rounded-2xl mb-6">
+<input type="number" placeholder="Enter amount" class="w-full p-3 rounded-xl text-black mb-3">
+<div class="flex gap-2">
+<button class="flex-1 bg-blue-500 p-3 rounded-xl">Deposit</button>
+<button class="flex-1 bg-purple-500 p-3 rounded-xl">Invest</button>
 </div>
-
-); }
-
-// ========================================= // 🚀 WHAT NEXT YOU MUST ADD (IMPORTANT) // =========================================
-
-// 1. Backend API (Node / Laravel) // 2. Database (MongoDB) // 3. Payment Gateway (bKash/Nagad) // 4. Admin Panel // 5. Real Auth System
-
-// ========================================= // 🔥 DESIGN FEATURES INCLUDED // ========================================= // ✅ Glassmorphism UI // ✅ Gradient Neon Cards // ✅ Responsive Layout // ✅ Smooth Hover Effects // ✅ App-style Dashboard
-
-// ========================================= // END // =========================================
+</div><!-- PLANS --><div class="mb-6">
+<h2 class="text-xl mb-3">🔥 Investment Plans</h2><div class="grid md:grid-cols-3 gap-4"><div class="p-4 rounded-2xl bg-gradient-to-r from-blue-500 to-purple-600">
+<h3 class="font-bold">Starter - 500৳</h3>
+<p>Daily: ~20৳</p>
+<button class="mt-2 bg-black/40 px-4 py-2 rounded">Buy</button>
+</div><div class="p-4 rounded-2xl bg-gradient-to-r from-green-500 to-teal-600">
+<h3 class="font-bold">Silver - 1000৳</h3>
+<p>Daily: ~40৳</p>
+<button class="mt-2 bg-black/40 px-4 py-2 rounded">Buy</button>
+</div><div class="p-4 rounded-2xl bg-gradient-to-r from-pink-500 to-red-600">
+<h3 class="font-bold">Gold - 5000৳</h3>
+<p>Daily: ~200৳</p>
+<button class="mt-2 bg-black/40 px-4 py-2 rounded">Buy</button>
+</div></div>
+</div><!-- REFERRAL --><div class="glass p-4 rounded-2xl mb-6">
+<h2 class="text-lg mb-2">👥 Referral</h2>
+<div class="bg-black/30 p-2 rounded">https://site.com/ref123</div>
+</div><!-- ACTIVITY --><div class="glass p-4 rounded-2xl">
+<h2 class="text-lg mb-2">📜 Recent Activity</h2>
+<ul class="space-y-1 text-sm">
+<li>+200৳ Deposit</li>
+<li>-500৳ Invest</li>
+<li>+50৳ Profit</li>
+</ul>
+</div></div></body>
+</html>
